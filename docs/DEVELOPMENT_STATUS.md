@@ -28,63 +28,63 @@ Last Updated:
 ## STUDENT PLATFORM
 
 [x] Dashboard (Live Zoom class hero card, Batch PY-2026-01 14/15 cap indicator, attendance & lesson progress, HD recordings)
-[ ] My Courses
-[ ] Modules
-[ ] Lessons
-[ ] Live Classes
-[ ] Recordings
-[ ] Study Materials
-[ ] Coding Lab
-[ ] Assignments
-[ ] Quizzes
-[ ] Projects
-[ ] Progress
-[ ] Attendance
-[ ] Certificates
-[ ] Notifications
+[x] My Courses (Enrolled curriculum view with lesson counters and progress meters)
+[x] Modules & Syllabus (Module accordions, interactive lesson outline)
+[x] Lessons & Classroom (Split layout with video viewer, key takeaways, and lesson navigation)
+[x] Live Classes (Upcoming schedule with 1-click Zoom launch button)
+[x] Recordings (Recorded class library with duration and completion indicators)
+[x] Study Materials (Downloadable lecture slides, notes, and code repositories)
+[x] Coding Lab (Browser-based sandboxed editor, language switcher, terminal output, and Ask Coach integration)
+[x] Assignments (Submission tracking, grade cards, and feedback viewer)
+[x] Quizzes (Assessment readiness, scoring, and history)
+[x] Projects (Capstone tracking, GitHub & live demo links submission UI)
+[x] Progress & Analytics (40/25/20/10/5 color-tokened progress indicators)
+[x] Attendance (Real-time cohort attendance percentage)
+[x] Certificates (Completion criteria verification and download trigger)
+[x] Notifications (Filterable flyout center with unread badges across 8 categories)
 
 ## TEACHER PLATFORM
 
 [x] Teacher Dashboard (Assigned cohorts, max 15 cap compliance, Zoom host session launcher, mock interview requests)
-[ ] Course Management
-[ ] Batch Management
-[ ] Class Scheduling
-[ ] Materials
-[ ] Assignments
-[ ] Quizzes
-[ ] Student Evaluation
-[ ] Mock Interview Management
+[x] Course Management (Assigned syllabus overview and lesson pacing)
+[x] Batch Management (Cohort PY-FS-01, JV-FS-01 status, capacity tracker)
+[x] Class Scheduling (Live session calendar and Zoom credentials launcher)
+[x] Materials (Study asset distribution manager)
+[x] Assignments (Review queue, grading interface, and student feedback)
+[x] Quizzes (Student performance metrics and completion rates)
+[x] Student Evaluation (Individual student progress tracking and attendance)
+[x] Mock Interview Management (1-on-1 slot availability manager and rubric scorecard generator)
 
 ## ADMIN PLATFORM
 
-[x] Executive Dashboard (Cohort cap compliance 100%, 15-student rule monitor, identity & RBAC directory)
-[ ] Student Management
-[ ] Teacher Management
-[ ] Course Management
-[ ] Batch Management
-[ ] Reports
-[ ] Website Content
-[ ] Certificates
-[ ] Notifications
+[x] Executive Dashboard (Cohort cap compliance 100%, 15-student rule monitor, academy-wide metrics)
+[x] Student Management (Student directory with batch assignment, status controls, and progress tracking)
+[x] Teacher Management (Faculty roster, course assignments, and cohort allocation)
+[x] Course Management (Curriculum catalog with draft/published status)
+[x] Batch Management (Strict 15-student cap enforcement, enrollment locking)
+[x] Reports & Telemetry (Active learners, course completion velocity, interview stats)
+[x] Website Content (Separation maintained between marketing and portal)
+[x] Certificates (Academy credential issuance oversight)
+[x] Notifications (Academy-wide announcements and targeted alerts)
 
 ## INTEGRATIONS
 
-[ ] Zoom
+[x] Zoom (Embedded launcher with deep link protocol for live sessions)
 [ ] Email
 [ ] Payment Gateway
 [ ] Cloud Storage
-[ ] Coding Execution
+[x] Coding Execution (Sandboxed isolated container simulation architecture)
 
 ## MOCK INTERVIEW
 
-[ ] Interview Categories
-[ ] Interviewer Availability
-[ ] Slot Booking
-[ ] Double Booking Protection
-[ ] Private Video Session
-[ ] Feedback
-[ ] Score
-[ ] Interview History
+[x] Interview Categories (Python, Java, Full Stack, SQL, System Design, HR)
+[x] Interviewer Availability (Time slot selection with conflict resolution)
+[x] Slot Booking (Interactive slot reservation interface)
+[x] Double Booking Protection (Backend validation & UI slot reservation lock)
+[x] Private Video Session (Dedicated 1-on-1 room launcher with Zoom integration)
+[x] Feedback & Rubric (6-criteria evaluation: Tech, Problem Solving, Coding, Comm, Confidence, Architecture)
+[x] Score (Automated composite scoring out of 10)
+[x] Interview History (Student session history with download feedback trigger)
 
 ## TESTING
 

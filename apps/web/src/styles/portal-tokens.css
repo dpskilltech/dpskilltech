@@ -1,0 +1,85 @@
+/* ==========================================================================
+   DP SKILLTECH — AUTHENTICATED PORTAL DESIGN TOKENS
+   Color Hierarchy:
+   - ORANGE (20%): Primary brand identity, primary CTA, active navigation, progress
+   - BLACK / DARK SLATE (25%): Typography, dark headers/sidebar, strong contrast
+   - WHITE / LIGHT NEUTRAL (40%): Main background, cards, content surfaces
+   - BLUE (10%): Information, technology, classroom links, secondary actions, charts
+   - YELLOW (5%): Attention, warnings, pending submissions, achievement badges
+   ========================================================================== */
+
+:root {
+  /* Brand Orange (Primary Accent & Key Actions) */
+  --brand-orange: #ea580c;
+  --brand-orange-hover: #c2410c;
+  --brand-orange-light: #ffedd5;
+  --brand-orange-subtle: rgba(234, 88, 12, 0.08);
+  --brand-orange-gradient: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+
+  /* Brand Blue (Technology & Information) */
+  --brand-blue: #1d4ed8;
+  --brand-blue-hover: #1e40af;
+  --brand-blue-light: #eff6ff;
+  --brand-blue-subtle: rgba(29, 78, 216, 0.08);
+  --brand-blue-gradient: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+
+  /* Brand Yellow (Warning, Pending, Attention & Achievements) */
+  --brand-yellow: #eab308;
+  --brand-yellow-dark: #ca8a04;
+  --brand-yellow-light: #fef9c3;
+  --brand-yellow-subtle: rgba(234, 179, 8, 0.12);
+
+  /* Brand Black / Dark Slate */
+  --black: #090d16;
+  --black-surface: #0f172a;
+  --black-sidebar: #0b1120;
+  --black-sidebar-hover: #1e293b;
+  --black-border: #1e293b;
+
+  /* Neutrals & Whites */
+  --white: #ffffff;
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1e293b;
+  --gray-900: #0f172a;
+
+  /* Semantic Colors */
+  --success: #10b981;
+  --success-light: #ecfdf5;
+  --error: #ef4444;
+  --error-light: #fef2f2;
+  --info: #0ea5e9;
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.07), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
+  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 350ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Layout Dimensions */
+  --sidebar-width-expanded: 268px;
+  --sidebar-width-collapsed: 76px;
+  --header-height: 68px;
+}
