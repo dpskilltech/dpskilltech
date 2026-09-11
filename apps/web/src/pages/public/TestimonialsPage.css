@@ -1,0 +1,191 @@
+/* ==========================================================================
+   DP SKILLTECH — TESTIMONIALS & INTEGRITY STYLESHEET
+   Professional Blue · Orange · White Academy Theme
+   ========================================================================== */
+
+.testimonials-page {
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+.testimonials-hero {
+  background: linear-gradient(180deg, #f0f7ff 0%, #ffffff 100%);
+  padding: 6rem 0 3.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.testimonials-hero-title {
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 900;
+  color: #0f172a;
+  margin-bottom: 1rem;
+}
+
+.testimonials-hero-desc {
+  max-width: 740px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+  color: #475569;
+  line-height: 1.7;
+}
+
+/* Policy Banner */
+.policy-banner-section {
+  padding-bottom: 0;
+  background-color: #f8fafc;
+}
+
+.transparency-notice {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  background: #ffffff;
+  border: 1.5px solid #bfdbfe;
+  border-left: 5px solid #1a56db;
+  border-radius: 16px;
+  padding: 2.25rem 2.5rem;
+  box-shadow: 0 10px 25px -5px rgba(26, 86, 219, 0.08);
+}
+
+.notice-icon-wrap {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #1a56db;
+  border: 1px solid #bfdbfe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.transparency-notice h3 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.transparency-notice p {
+  font-size: 0.98rem;
+  color: #475569;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Placeholders Grid */
+.placeholders-section {
+  background-color: #f8fafc;
+  padding: 4.5rem 0;
+}
+
+.placeholders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 2rem;
+}
+
+.testimonial-card {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-top: 3px solid #f97316;
+  border-radius: 16px;
+  padding: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.testimonial-card:hover {
+  border-color: #93c5fd;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px -4px rgba(26, 86, 219, 0.12);
+}
+
+.testi-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.testi-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #059669;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+}
+
+.testi-category {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #1a56db;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.quote-icon-wrap {
+  color: #f97316;
+  margin-bottom: 0.75rem;
+}
+
+.testi-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.75rem;
+}
+
+.testi-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ea580c;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  padding: 0.3rem 0.65rem;
+  border-radius: 9999px;
+  margin-bottom: 1.25rem;
+  align-self: flex-start;
+}
+
+.testi-desc {
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: #334155;
+  margin-bottom: 1.75rem;
+  flex-grow: 1;
+}
+
+.testi-author-box {
+  padding-top: 1.25rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.author-placeholder-name {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.author-placeholder-role {
+  font-size: 0.82rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .transparency-notice {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

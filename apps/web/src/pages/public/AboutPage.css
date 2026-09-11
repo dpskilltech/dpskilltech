@@ -1,0 +1,129 @@
+/* ==========================================================================
+   DP SKILLTECH — ABOUT US STYLESHEET
+   Deep navy foundation, editorial story, institutional principles
+   ========================================================================== */
+
+.about-page {
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+.about-hero {
+  background: linear-gradient(135deg, #0f1b35 0%, #1a3a6e 60%, #162040 100%);
+  padding: 8rem 0 4rem;
+  border-bottom: none;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.about-hero-title {
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 900;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.about-hero-desc {
+  max-width: 740px;
+  margin: 0 auto;
+  font-size: 1.05rem;
+  color: #94a3b8;
+  line-height: 1.75;
+}
+
+/* Vision */
+.vision-section {
+  background-color: var(--bg-surface);
+  padding: 4.5rem 0;
+}
+
+.vision-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+}
+
+.vision-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 3rem 2.5rem;
+  box-shadow: var(--shadow-md);
+}
+
+.vision-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-lg);
+  background-color: rgba(37, 99, 235, 0.15);
+  color: var(--brand-cobalt-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.vision-card h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.vision-card p {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* Principles */
+.principles-section {
+  background-color: var(--bg-canvas);
+  padding: 4.5rem 0;
+}
+
+.principles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.principle-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 2.25rem 1.75rem;
+  transition: all var(--transition-fast);
+}
+
+.principle-item:hover {
+  border-color: var(--border-medium);
+  transform: translateY(-2px);
+}
+
+.principle-icon {
+  color: var(--brand-cyan);
+  margin-bottom: 1.25rem;
+}
+
+.principle-item h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.75rem;
+}
+
+.principle-item p {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .vision-grid {
+    grid-template-columns: 1fr;
+  }
+}

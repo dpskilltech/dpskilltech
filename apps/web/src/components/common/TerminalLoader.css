@@ -1,0 +1,145 @@
+/* ==========================================================================
+   TERMINAL LOADER STYLESHEET
+   Authentic developer terminal animation with blinking cursor & typing effect
+   ========================================================================== */
+
+@keyframes blinkCursor {
+  50% {
+    border-right-color: transparent;
+  }
+}
+
+@keyframes typeAndDelete {
+  0%,
+  10% {
+    width: 0;
+  }
+  45%,
+  55% {
+    width: 6.8em;
+  } /* adjust width based on content */
+  90%,
+  100% {
+    width: 0;
+  }
+}
+
+@keyframes typeAndDeleteFast {
+  0%,
+  8% {
+    width: 0;
+  }
+  45%,
+  60% {
+    width: 7.2em;
+  }
+  92%,
+  100% {
+    width: 0;
+  }
+}
+
+.terminal-loader {
+  border: 0.1em solid #333333;
+  background-color: #1a1a1a;
+  color: #00ff66;
+  font-family: "Courier New", Courier, "JetBrains Mono", monospace;
+  font-size: 1em;
+  padding: 1.5em 1.1em 1.2em;
+  width: 14em;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 15px rgba(0, 255, 102, 0.08);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  margin: 0 auto;
+}
+
+.terminal-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1.6em;
+  background-color: #262626;
+  border-bottom: 1px solid #333333;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  padding: 0 0.5em;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.terminal-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+}
+
+.control {
+  display: inline-block;
+  width: 0.65em;
+  height: 0.65em;
+  border-radius: 50%;
+  background-color: #777;
+  transition: opacity 0.15s ease;
+}
+
+.control.close {
+  background-color: #ff5f56;
+}
+
+.control.minimize {
+  background-color: #ffbd2e;
+}
+
+.control.maximize {
+  background-color: #27c93f;
+}
+
+.terminal-title {
+  line-height: 1.6em;
+  color: #d4d4d4;
+  font-size: 0.78em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.text {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 0.22em solid #00ff66; /* Green Cursor */
+  animation:
+    typeAndDelete 3.5s steps(14) infinite,
+    blinkCursor 0.5s step-end infinite alternate;
+  margin-top: 1.2em;
+  text-shadow: 0 0 6px rgba(0, 255, 102, 0.5);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Fast mode for responsive snappy feel */
+.terminal-loader.fast .text {
+  animation:
+    typeAndDeleteFast 2s steps(14) infinite,
+    blinkCursor 0.35s step-end infinite alternate;
+}
+
+/* Fullscreen Overlay for global loading screens */
+.terminal-loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: fadeIn 0.2s ease;
+}
+

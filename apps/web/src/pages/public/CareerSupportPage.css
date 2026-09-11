@@ -1,0 +1,175 @@
+/* ==========================================================================
+   DP SKILLTECH — CAREER SUPPORT & MOCK INTERVIEW STYLESHEET
+   Deep navy foundation, 1-on-1 private interview focus, rubric evaluation
+   ========================================================================== */
+
+.career-page {
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+.career-hero {
+  background: radial-gradient(circle at 50% 10%, rgba(37, 99, 235, 0.15) 0%, transparent 60%),
+              radial-gradient(circle at 80% 40%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
+              var(--bg-canvas);
+  padding: 8rem 0 4rem;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: center;
+}
+
+.career-hero-title {
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 900;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.career-hero-desc {
+  max-width: 760px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* Spotlight Card */
+.mock-interview-section {
+  background-color: var(--bg-surface);
+  padding: 4.5rem 0;
+}
+
+.mock-spotlight-card {
+  padding: 3.5rem;
+  background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.15) 0%, rgba(12, 20, 38, 0.95) 70%);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-2xl);
+}
+
+.spotlight-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--brand-cyan);
+  background: rgba(6, 182, 212, 0.15);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  padding: 0.35rem 0.9rem;
+  border-radius: var(--radius-full);
+  margin-bottom: 1.25rem;
+}
+
+.spotlight-title {
+  font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+  font-weight: 900;
+  color: #ffffff;
+  margin-bottom: 0.75rem;
+}
+
+.spotlight-lead {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 820px;
+  margin-bottom: 2.5rem;
+}
+
+.mock-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.mock-feature-box {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+}
+
+.mock-feature-box:hover {
+  border-color: var(--border-medium);
+  transform: translateY(-3px);
+}
+
+.feature-num {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--brand-cyan);
+  margin-bottom: 0.5rem;
+}
+
+.mock-feature-box h4 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.mock-feature-box p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Categories Grid */
+.categories-section {
+  background-color: var(--bg-canvas);
+  padding: 4.5rem 0;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.category-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  transition: all var(--transition-fast);
+}
+
+.category-card:hover {
+  border-color: var(--border-medium);
+  transform: translateY(-2px);
+}
+
+.category-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: rgba(37, 99, 235, 0.15);
+  color: var(--brand-cobalt-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.category-card h4 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.category-card p {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .mock-spotlight-card {
+    padding: 2rem 1.5rem;
+  }
+}

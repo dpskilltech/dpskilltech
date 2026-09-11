@@ -1,0 +1,23 @@
+{
+  "name": "dpskilltech-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/web",
+    "dev:api": "npm run dev --workspace=apps/api",
+    "build": "npm run build --workspace=apps/web",
+    "build:api": "npm run build --workspace=apps/api",
+    "lint": "npm run lint --workspace=apps/web",
+    "preview": "npm run preview --workspace=apps/web"
+  },
+  "keywords": [
+    "edtech",
+    "coding-academy",
+    "dpskilltech"
+  ],
+  "author": "DP Skilltech",
+  "license": "UNLICENSED"
+}

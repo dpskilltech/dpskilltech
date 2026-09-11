@@ -1,0 +1,167 @@
+/* ==========================================================================
+   DP SKILLTECH — FACULTY & TRAINERS STYLESHEET
+   Deep navy foundation, large portrait cards, transparent experience badges
+   ========================================================================== */
+
+.trainers-page {
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+.trainers-hero {
+  background: radial-gradient(circle at 50% 10%, rgba(37, 99, 235, 0.15) 0%, transparent 60%),
+              radial-gradient(circle at 80% 40%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
+              var(--bg-canvas);
+  padding: 8rem 0 4rem;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: center;
+}
+
+.trainers-hero-title {
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 900;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.trainers-hero-desc {
+  max-width: 740px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* Faculty Grid */
+.faculty-section {
+  background-color: var(--bg-surface);
+  padding: 4.5rem 0;
+}
+
+.faculty-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+  gap: 2.5rem;
+}
+
+.faculty-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: all var(--transition-fast);
+}
+
+.faculty-card:hover {
+  border-color: var(--border-medium);
+  box-shadow: var(--shadow-xl);
+  transform: translateY(-3px);
+}
+
+.faculty-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.faculty-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--brand-cobalt) 0%, var(--brand-navy-light) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+  color: #ffffff;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.faculty-name {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.2rem;
+}
+
+.faculty-role {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--brand-cobalt-light);
+  margin-bottom: 0.2rem;
+}
+
+.faculty-spec {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.faculty-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--brand-cyan);
+  background-color: rgba(6, 182, 212, 0.12);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-full);
+  margin-bottom: 1.25rem;
+  align-self: flex-start;
+}
+
+.faculty-bio {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.faculty-skills-section {
+  margin-bottom: 1.75rem;
+}
+
+.skills-heading {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+.faculty-skills-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.faculty-skill-tag {
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-sm);
+}
+
+.faculty-card-footer {
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+@media (max-width: 768px) {
+  .faculty-grid {
+    grid-template-columns: 1fr;
+  }
+}

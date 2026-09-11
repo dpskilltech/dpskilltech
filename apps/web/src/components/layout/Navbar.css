@@ -1,0 +1,614 @@
+/* ==========================================================================
+   DP SKILLTECH — PROFESSIONAL ACADEMY NAVIGATION
+   Blue · Orange · White — Clean, trustworthy, education-grade
+   ========================================================================== */
+
+/* ── Announcement Strip ── */
+.nav-announcement-strip {
+  background: linear-gradient(90deg, #0f1b35 0%, #162040 50%, #0f1b35 100%);
+  border-bottom: 1px solid rgba(26, 86, 219, 0.3);
+  font-size: 0.78rem;
+  color: #cbd5e1;
+  padding: 0.45rem 0;
+  position: relative;
+  z-index: 1001;
+}
+
+.announcement-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.announcement-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.live-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulseDot 1.8s infinite ease-in-out;
+  flex-shrink: 0;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(1.3); }
+}
+
+.announcement-tag {
+  color: #f97316;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.announcement-text {
+  color: #94a3b8;
+}
+
+.announcement-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.announcement-link {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #e2e8f0;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.announcement-link:hover   { color: #93c5fd; }
+
+.whatsapp-link             { color: #22c55e; }
+.whatsapp-link:hover       { color: #4ade80; }
+
+.announcement-sep {
+  color: #475569;
+}
+
+.announcement-badge {
+  background: rgba(249, 115, 22, 0.15);
+  border: 1px solid rgba(249, 115, 22, 0.4);
+  color: #fdba74;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 860px) {
+  .nav-announcement-strip { display: none; }
+}
+
+/* ── Main Navbar Wrapper ── */
+.navbar-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 0.9rem 0;
+}
+
+@media (min-width: 861px) {
+  .navbar-wrapper.navbar-top {
+    top: 31px;
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 1px 8px rgba(15, 27, 53, 0.06);
+  }
+}
+
+.navbar-wrapper.navbar-scrolled {
+  top: 0;
+  padding: 0.65rem 0;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px rgba(15, 27, 53, 0.08);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+/* ── Brand Logo ── */
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.brand-monogram {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1a56db 0%, #0f1b35 100%);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(26, 86, 219, 0.3);
+  flex-shrink: 0;
+}
+
+.brand-monogram span {
+  color: #ffffff;
+  font-family: var(--font-display, 'Outfit', sans-serif);
+  font-weight: 900;
+  font-size: 1.1rem;
+  letter-spacing: -0.04em;
+}
+
+.brand-titles {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  gap: 2px;
+}
+
+.brand-title-main {
+  font-family: var(--font-display, 'Outfit', sans-serif);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.brand-title-accent {
+  color: #1a56db;
+}
+
+/* Tagline "Learn. Build. Grow." */
+.brand-tagline {
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: #f97316;
+  letter-spacing: 0.04em;
+  font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+  text-transform: uppercase;
+}
+
+/* Legacy — keep for compatibility */
+.brand-badge-label {
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: #f97316;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ── Desktop Menu ── */
+.desktop-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  padding: 0.3rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.menu-item {
+  background: none;
+  border: none;
+  font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #475569;
+  padding: 0.45rem 0.9rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  white-space: nowrap;
+}
+
+.menu-item:hover {
+  color: #1a56db;
+  background: #dbeafe;
+}
+
+.menu-item.active {
+  color: #1a56db;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+
+/* ── Courses Dropdown ── */
+.menu-dropdown-container {
+  position: relative;
+}
+
+.dropdown-arrow {
+  transition: transform 0.2s ease;
+}
+
+.dropdown-arrow.rotated {
+  transform: rotate(180deg);
+}
+
+.courses-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 0.85rem);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 440px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.25rem;
+  box-shadow: 0 16px 48px rgba(15, 27, 53, 0.12);
+  z-index: 1002;
+}
+
+.dropdown-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 0.6rem;
+}
+
+.panel-category-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+}
+
+.panel-all-btn {
+  background: none;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #1a56db;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.panel-all-btn:hover { color: #1a4da8; }
+
+.dropdown-panel-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.dropdown-course-item {
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.dropdown-course-item:hover {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  transform: translateX(3px);
+}
+
+.dropdown-course-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 0.2rem;
+}
+
+.dropdown-course-meta {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.meta-accent {
+  color: #10b981;
+  font-weight: 600;
+}
+
+/* ── Right Actions ── */
+.nav-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-shrink: 0;
+}
+
+.nav-auth-badge {
+  display: flex !important;
+  align-items: center;
+  gap: 0.5rem !important;
+  padding: 0.45rem 0.85rem !important;
+  border: 1px solid #bfdbfe !important;
+  background: #eff6ff !important;
+  color: #1a56db !important;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.84rem;
+}
+
+.nav-user-avatar-mini {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #dbeafe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav-user-avatar-mini img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nav-role-pill {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  background: #dbeafe;
+  color: #1a56db;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ── Mobile Trigger ── */
+.mobile-menu-trigger {
+  display: none;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  color: #334155;
+  padding: 0.5rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Mobile Drawer ── */
+.mobile-nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 27, 53, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 2000;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mobile-nav-drawer {
+  width: 85%;
+  max-width: 360px;
+  height: 100%;
+  background: #ffffff;
+  border-left: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  overflow-y: auto;
+  box-shadow: -8px 0 32px rgba(15, 27, 53, 0.12);
+}
+
+.mobile-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.mobile-close-btn {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  padding: 0.4rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-drawer-contact-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.mobile-contact-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.55rem;
+  border-radius: 8px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1a56db;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.whatsapp-chip {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #16a34a;
+}
+
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  flex: 1;
+}
+
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border: none;
+  color: #334155;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.75rem 0.5rem;
+  border-radius: 8px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
+  color: #1a56db;
+  background: #eff6ff;
+}
+
+.mobile-subcourses {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.25rem 0 0.5rem 1rem;
+}
+
+.mobile-subcourse-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.35rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.mobile-subcourse-link:hover {
+  color: #1a56db;
+}
+
+.mobile-drawer-footer {
+  padding-top: 1.25rem;
+  border-top: 1px solid #f1f5f9;
+  margin-top: 1rem;
+}
+
+/* ── Sticky Mobile Bottom Bar ── */
+.mobile-sticky-bottom-bar {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.97);
+  border-top: 1px solid #e2e8f0;
+  padding: 0.65rem 1rem;
+  z-index: 999;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 -4px 20px rgba(15, 27, 53, 0.1);
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.sticky-mobile-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.65rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+}
+
+.sticky-call {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  flex: 0 0 75px;
+}
+
+.sticky-whatsapp {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+  flex: 0 0 95px;
+}
+
+.sticky-demo-cta {
+  background: linear-gradient(135deg, #1a56db 0%, #1a4da8 100%);
+  color: #ffffff;
+  flex: 1;
+  box-shadow: 0 4px 15px rgba(26, 86, 219, 0.3);
+}
+
+.live-dot-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #f97316;
+  box-shadow: 0 0 6px #f97316;
+  animation: pulseOrange 1.5s infinite;
+}
+
+@keyframes pulseOrange {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 1040px) {
+  .desktop-menu { display: none; }
+  .mobile-menu-trigger { display: flex; }
+  .nav-right-actions .btn-premium { display: none; }
+  .mobile-sticky-bottom-bar { display: flex; }
+}
