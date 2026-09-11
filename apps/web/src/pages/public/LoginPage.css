@@ -199,124 +199,32 @@
 .login-page .login-card {
   background: #ffffff;
   border: 1.5px solid #e2e8f0;
-  border-top: 4px solid #1a56db;
+  border-top: 4px solid #ea580c;
   border-radius: 16px;
   padding: 2.25rem 2rem;
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-}
-
-.login-page .role-selector-tabs {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.4rem;
-  background: #f1f5f9;
-  padding: 0.35rem;
-  border-radius: 10px;
-  border: 1px solid #e2e8f0;
-  margin-bottom: 1.25rem;
-}
-
-.login-page .role-tab {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  background: none;
-  border: none;
-  padding: 0.6rem 0.5rem;
-  border-radius: 8px;
-  font-size: 0.86rem;
-  font-weight: 700;
-  color: #64748b;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.login-page .role-tab:hover {
-  color: #0f172a;
-}
-
-.login-page .role-tab.active {
-  background: #1a56db;
-  color: #ffffff !important;
-  box-shadow: 0 2px 8px rgba(26, 86, 219, 0.3);
-}
-
-/* Quick Fill Credential Chips */
-.login-page .quick-fill-section {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-bottom: 1.5rem;
-  padding: 0.45rem 0.75rem;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  flex-wrap: wrap;
-}
-
-.login-page .quick-fill-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #64748b;
-}
-
-.login-page .quick-fill-icon {
-  color: #f59e0b;
-}
-
-.login-page .quick-fill-chips {
-  display: flex;
-  gap: 0.35rem;
-  flex-wrap: wrap;
-}
-
-.login-page .chip-btn {
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  color: #334155;
-  font-size: 0.76rem;
-  font-weight: 600;
-  padding: 0.25rem 0.65rem;
-  border-radius: 9999px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.login-page .chip-btn:hover {
-  border-color: #1a56db;
-  color: #1a56db;
-  background: #eff6ff;
-}
-
-.login-page .chip-btn.chip-active {
-  background: #eff6ff;
-  border-color: #93c5fd;
-  color: #1a56db;
-  font-weight: 700;
+  position: relative;
 }
 
 .login-page .login-card-header {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #f1f5f9;
 }
 
 .login-page .login-card-header h2 {
-  font-size: 1.5rem;
-  font-weight: 800;
+  font-size: 1.65rem;
+  font-weight: 900;
   color: #0f172a !important;
-  margin-bottom: 0.3rem;
-  letter-spacing: -0.01em;
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.02em;
 }
 
 .login-page .login-card-header p {
-  font-size: 0.88rem;
-  color: #64748b !important;
+  font-size: 0.9rem;
+  color: #475569 !important;
   margin: 0;
+  line-height: 1.5;
 }
 
 /* Alert Boxes */
@@ -369,9 +277,9 @@
 }
 
 .login-page .form-label {
-  font-size: 0.82rem;
+  font-size: 0.84rem;
   font-weight: 700;
-  color: #334155 !important;
+  color: #1e293b !important;
 }
 
 .login-page .password-label-row {
@@ -383,17 +291,18 @@
 .login-page .forgot-link-btn {
   background: none;
   border: none;
-  color: #1a56db;
-  font-size: 0.8rem;
-  font-weight: 600;
+  color: #1d4ed8;
+  font-size: 0.82rem;
+  font-weight: 700;
   cursor: pointer;
   padding: 0;
   text-decoration: underline;
   text-underline-offset: 2px;
+  transition: color 0.15s ease;
 }
 
 .login-page .forgot-link-btn:hover {
-  color: #ff6b00;
+  color: #ea580c;
 }
 
 .login-page .input-with-icon {
@@ -405,26 +314,27 @@
 .login-page .field-icon {
   position: absolute;
   left: 1rem;
-  color: #94a3b8;
+  color: #64748b;
   pointer-events: none;
 }
 
 .login-page .form-input.with-icon {
   width: 100%;
-  padding: 0.75rem 2.75rem 0.75rem 2.75rem;
+  padding: 0.8rem 2.75rem 0.8rem 2.75rem;
   background: #f8fafc;
   border: 1.5px solid #cbd5e1;
   border-radius: 8px;
   font-size: 0.95rem;
   color: #0f172a !important;
+  font-weight: 500;
   outline: none;
   transition: all 0.2s ease;
 }
 
 .login-page .form-input.with-icon:focus {
   background: #ffffff;
-  border-color: #1a56db;
-  box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.15);
+  border-color: #1d4ed8;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15);
 }
 
 .login-page .toggle-password-btn {
@@ -432,12 +342,13 @@
   right: 0.85rem;
   background: none;
   border: none;
-  color: #94a3b8;
+  color: #64748b;
   cursor: pointer;
   display: flex;
   align-items: center;
   padding: 0.25rem;
   border-radius: 4px;
+  transition: color 0.15s ease;
 }
 
 .login-page .toggle-password-btn:hover {
@@ -453,16 +364,17 @@
 .login-page .checkbox-label {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  color: #475569;
+  gap: 0.55rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #334155;
   cursor: pointer;
 }
 
 .login-page .checkbox-label input[type="checkbox"] {
-  accent-color: #1a56db;
-  width: 16px;
-  height: 16px;
+  accent-color: #ea580c;
+  width: 17px;
+  height: 17px;
   cursor: pointer;
 }
 
@@ -472,21 +384,21 @@
   justify-content: center;
   gap: 0.6rem;
   width: 100%;
-  padding: 0.85rem 1.5rem;
-  background: linear-gradient(135deg, #1a56db 0%, #1742a0 100%);
+  padding: 0.9rem 1.5rem;
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
   color: #ffffff !important;
   border: none;
   border-radius: 8px;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(26, 86, 219, 0.3);
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.3);
 }
 
 .login-page .btn-login-submit:hover:not(:disabled) {
-  background: linear-gradient(135deg, #ff6b00 0%, #ea580c 100%);
-  box-shadow: 0 6px 18px rgba(255, 107, 0, 0.35);
+  background: linear-gradient(135deg, #c2410c 0%, #ea580c 100%);
+  box-shadow: 0 6px 18px rgba(234, 88, 12, 0.4);
   transform: translateY(-1px);
 }
 
@@ -517,8 +429,9 @@
   align-items: center;
   justify-content: center;
   gap: 0.45rem;
-  font-size: 0.75rem;
-  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #475569;
   margin-top: 1.5rem;
   padding-top: 1.25rem;
   border-top: 1px solid #f1f5f9;
@@ -536,16 +449,199 @@
 .login-page .btn-return-home {
   background: none;
   border: none;
-  color: #64748b;
-  font-size: 0.85rem;
-  font-weight: 600;
+  color: #475569;
+  font-size: 0.88rem;
+  font-weight: 700;
   cursor: pointer;
   transition: color 0.15s ease;
 }
 
 .login-page .btn-return-home:hover {
-  color: #1a56db;
+  color: #1d4ed8;
   text-decoration: underline;
+}
+
+/* ==========================================================================
+   MODAL: Forgot Password / Credentials Assistance
+   ========================================================================== */
+.login-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.login-modal-dialog {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  max-width: 480px;
+  width: 100%;
+  padding: 2.25rem 2rem;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+  position: relative;
+  text-align: center;
+  animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.login-modal-dialog .modal-close-btn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: #f1f5f9;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.login-modal-dialog .modal-close-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.login-modal-dialog .modal-icon-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  color: #1d4ed8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+}
+
+.login-modal-dialog .modal-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a !important;
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.01em;
+}
+
+.login-modal-dialog .modal-desc {
+  font-size: 0.9rem;
+  color: #475569 !important;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.login-modal-dialog .modal-contact-card {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.15rem 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  text-align: left;
+}
+
+.login-modal-dialog .contact-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.88rem;
+  color: #334155;
+}
+
+.login-modal-dialog .contact-row-icon {
+  color: #ea580c;
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
+.login-modal-dialog .contact-row strong {
+  display: inline-block;
+  min-width: 120px;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.login-modal-dialog .contact-link {
+  color: #1d4ed8;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.login-modal-dialog .contact-link:hover {
+  color: #ea580c;
+}
+
+.login-modal-dialog .modal-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.login-modal-dialog .btn-modal-contact {
+  width: 100%;
+  padding: 0.8rem 1.25rem;
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.25);
+}
+
+.login-modal-dialog .btn-modal-contact:hover {
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.35);
+  transform: translateY(-1px);
+}
+
+.login-modal-dialog .btn-modal-cancel {
+  width: 100%;
+  padding: 0.65rem 1.25rem;
+  background: transparent;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.login-modal-dialog .btn-modal-cancel:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 @media (max-width: 992px) {
@@ -554,3 +650,4 @@
     gap: 2.5rem;
   }
 }
+

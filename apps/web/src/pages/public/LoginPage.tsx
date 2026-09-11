@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
 import {
-  User,
-  GraduationCap,
-  ShieldCheck,
   Lock,
   Mail,
   ArrowRight,
@@ -11,10 +8,15 @@ import {
   CheckCircle2,
   Sparkles,
   Layers,
-  Zap
+  GraduationCap,
+  ShieldCheck,
+  AlertCircle,
+  HelpCircle,
+  X,
+  Phone,
+  Clock
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { AlertCircle } from 'lucide-react';
 import { TerminalLoader } from '../../components/common/TerminalLoader';
 import './LoginPage.css';
 
@@ -25,30 +27,14 @@ interface LoginPageProps {
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModal }) => {
   const { login } = useAuth();
-  const [activeRole, setActiveRole] = useState<'student' | 'teacher' | 'admin'>('student');
-  const [email, setEmail] = useState('student@dpskilltech.in');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loginMessage, setLoginMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const handleRoleSelect = (role: 'student' | 'teacher' | 'admin') => {
-    setActiveRole(role);
-    setLoginMessage(null);
-    setErrorMessage(null);
-    if (role === 'student') {
-      setEmail('student@dpskilltech.in');
-      setPassword('password123');
-    } else if (role === 'teacher') {
-      setEmail('instructor@dpskilltech.in');
-      setPassword('password123');
-    } else {
-      setEmail('admin@dpskilltech.in');
-      setPassword('password123');
-    }
-  };
-
+  const [showForgotModal, setShowForgotModal] = useState(false);
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,22 +43,23 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
     setErrorMessage(null);
 
     try {
-      const res = await login(email, password);
+      const res = await login(email.trim(), password);
       if (res.success && res.user) {
+        const role = (res.user.role || '').toUpperCase();
         setLoginMessage(
-          `Authentication successful for ${res.user.fullName}. Redirecting to ${res.user.role} workspace...`
+          `Authentication successful for ${res.user.fullName}. Redirecting to your workspace...`
         );
         setTimeout(() => {
-          if (res.user?.role === 'STUDENT') {
+          if (role === 'STUDENT') {
             onNavigate('student-dashboard');
-          } else if (res.user?.role === 'TEACHER') {
+          } else if (role === 'TEACHER') {
             onNavigate('teacher-dashboard');
-          } else if (res.user?.role === 'ADMIN') {
+          } else if (role === 'ADMIN') {
             onNavigate('admin-dashboard');
           } else {
             onNavigate('home');
           }
-        }, 600);
+        }, 500);
       } else {
         setErrorMessage(res.error || 'Authentication failed. Please check your credentials.');
       }
@@ -98,7 +85,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
               Welcome to Your <span className="gradient-text-login">Virtual Academy</span>
             </h1>
 
-
             <p className="panel-desc">
               Access your daily live Zoom classes, watch past session recordings, practice in the browser coding lab, submit assignments, and book private 1-on-1 mock interviews.
             </p>
@@ -119,7 +105,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
                   <Layers size={22} />
                 </div>
                 <div className="feature-card-text">
-                  <strong>Teacher & Mentor Studio</strong>
+                  <strong>Teacher &amp; Mentor Studio</strong>
                   <p>Batch management, Zoom class scheduling, grading rubrics, and mock interview slots.</p>
                 </div>
               </div>
@@ -150,71 +136,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
           {/* Right Form Card */}
           <div className="login-form-panel">
             <div className="login-card">
-              {/* Role Selector Tabs */}
-              <div className="role-selector-tabs">
-                <button
-                  type="button"
-                  className={`role-tab ${activeRole === 'student' ? 'active' : ''}`}
-                  onClick={() => handleRoleSelect('student')}
-                >
-                  <User size={16} />
-                  <span>Student</span>
-                </button>
-                <button
-                  type="button"
-                  className={`role-tab ${activeRole === 'teacher' ? 'active' : ''}`}
-                  onClick={() => handleRoleSelect('teacher')}
-                >
-                  <GraduationCap size={16} />
-                  <span>Teacher</span>
-                </button>
-                <button
-                  type="button"
-                  className={`role-tab ${activeRole === 'admin' ? 'active' : ''}`}
-                  onClick={() => handleRoleSelect('admin')}
-                >
-                  <ShieldCheck size={16} />
-                  <span>Admin</span>
-                </button>
-              </div>
-
-              {/* Fast Test Credential Switcher Chips */}
-              <div className="quick-fill-section">
-                <span className="quick-fill-label">
-                  <Zap size={13} className="quick-fill-icon" />
-                  Quick Fill:
-                </span>
-                <div className="quick-fill-chips">
-                  <button
-                    type="button"
-                    className={`chip-btn ${activeRole === 'student' ? 'chip-active' : ''}`}
-                    onClick={() => handleRoleSelect('student')}
-                    title="Fill student credentials"
-                  >
-                    Student
-                  </button>
-                  <button
-                    type="button"
-                    className={`chip-btn ${activeRole === 'teacher' ? 'chip-active' : ''}`}
-                    onClick={() => handleRoleSelect('teacher')}
-                    title="Fill teacher credentials"
-                  >
-                    Teacher
-                  </button>
-                  <button
-                    type="button"
-                    className={`chip-btn ${activeRole === 'admin' ? 'chip-active' : ''}`}
-                    onClick={() => handleRoleSelect('admin')}
-                    title="Fill admin credentials"
-                  >
-                    Admin
-                  </button>
-                </div>
-              </div>
-
               <div className="login-card-header">
-                <h2>{activeRole.charAt(0).toUpperCase() + activeRole.slice(1)} Sign In</h2>
-                <p>Enter your credentials to access the authenticated portal.</p>
+                <h2>Sign In to Academy</h2>
+                <p>Enter your registered credentials to access your portal workspace.</p>
               </div>
 
               {loginMessage && (
@@ -235,7 +159,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
                 <div className="login-loader-wrap">
                   <TerminalLoader
                     title="Auth-Daemon"
-                    text={`Authenticating ${activeRole}...`}
+                    text="Authenticating credentials..."
                   />
                   <p className="loader-subtext">Verifying role permissions with secure DP-Kernel...</p>
                 </div>
@@ -253,6 +177,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="you@dpskilltech.in"
+                        autoComplete="email"
                       />
                     </div>
                   </div>
@@ -263,7 +188,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
                       <button
                         type="button"
                         className="forgot-link-btn"
-                        onClick={() => alert('Please contact academy admin at support@dpskilltech.in to reset your credentials.')}
+                        onClick={() => setShowForgotModal(true)}
                       >
                         Forgot password?
                       </button>
@@ -279,6 +204,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••••••"
+                        autoComplete="current-password"
                       />
                       <button
                         type="button"
@@ -293,7 +219,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
 
                   <div className="remember-me-row">
                     <label className="checkbox-label">
-                      <input type="checkbox" defaultChecked />
+                      <input
+                        type="checkbox"
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                      />
                       <span>Keep me signed in for 7 days</span>
                     </label>
                   </div>
@@ -303,7 +233,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
                     className="btn-login-submit"
                     disabled={isLoading}
                   >
-                    <span>Sign In to {activeRole.charAt(0).toUpperCase() + activeRole.slice(1)} Portal</span>
+                    <span>Sign In to Academy</span>
                     <ArrowRight size={18} />
                   </button>
                 </form>
@@ -311,7 +241,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
 
               <div className="login-security-footer">
                 <ShieldCheck size={16} className="security-icon" />
-                <span>Protected by DP Skilltech RBAC & Session Rotation</span>
+                <span>Protected by DP Skilltech RBAC &amp; Session Rotation</span>
               </div>
 
               <div className="return-website-row">
@@ -327,7 +257,87 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
           </div>
         </div>
       </div>
+
+      {/* Forgot Password / Admin Assistance Modal */}
+      {showForgotModal && (
+        <div className="login-modal-overlay" onClick={() => setShowForgotModal(false)}>
+          <div
+            className="login-modal-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="modal-close-btn"
+              onClick={() => setShowForgotModal(false)}
+              aria-label="Close dialog"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="modal-icon-badge">
+              <HelpCircle size={28} />
+            </div>
+
+            <h3 id="modal-title" className="modal-title">Account Credentials Assistance</h3>
+
+            <p className="modal-desc">
+              DP Skilltech student and instructor accounts are provisioned directly by our academic administration upon batch enrollment. Self-service password resets are restricted for security.
+            </p>
+
+            <div className="modal-contact-card">
+              <div className="contact-row">
+                <Mail size={16} className="contact-row-icon" />
+                <div>
+                  <strong>Email Support:</strong>
+                  <a href="mailto:support@dpskilltech.in" className="contact-link">support@dpskilltech.in</a>
+                </div>
+              </div>
+
+              <div className="contact-row">
+                <Phone size={16} className="contact-row-icon" />
+                <div>
+                  <strong>Admissions Desk:</strong>
+                  <span>+91 98765 43210</span>
+                </div>
+              </div>
+
+              <div className="contact-row">
+                <Clock size={16} className="contact-row-icon" />
+                <div>
+                  <strong>Desk Hours:</strong>
+                  <span>Mon – Sat, 9:00 AM – 8:00 PM IST</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="modal-actions">
+              <button
+                type="button"
+                className="btn-modal-contact"
+                onClick={() => {
+                  setShowForgotModal(false);
+                  onNavigate('contact');
+                }}
+              >
+                Open Admissions Inquiry Form
+              </button>
+              <button
+                type="button"
+                className="btn-modal-cancel"
+                onClick={() => setShowForgotModal(false)}
+              >
+                Back to Sign In
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
+
+
 

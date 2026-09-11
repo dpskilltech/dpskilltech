@@ -1,5 +1,20 @@
 import React, { useState } from 'react';
-import { X, CheckCircle, Sparkles, Send, Clock, Users, Video } from 'lucide-react';
+import {
+  X,
+  CheckCircle,
+  Sparkles,
+  Clock,
+  Users,
+  Video,
+  User,
+  Mail,
+  Phone,
+  BookOpen,
+  Briefcase,
+  ShieldCheck,
+  ArrowRight,
+  Code
+} from 'lucide-react';
 import './BookDemoModal.css';
 import { COURSES_DATA } from '../../data/coursesData';
 
@@ -37,7 +52,7 @@ export const BookDemoModal: React.FC<BookDemoModalProps> = ({
       errs.email = 'Valid email address is required';
     }
     if (!formData.phone.trim() || formData.phone.length < 8) {
-      errs.phone = 'Valid phone number is required';
+      errs.phone = 'Valid phone / WhatsApp number is required';
     }
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -73,172 +88,238 @@ export const BookDemoModal: React.FC<BookDemoModalProps> = ({
   const selectedCourse = COURSES_DATA.find((c) => c.id === formData.courseId) || COURSES_DATA[0];
 
   return (
-    <div className="modal-backdrop" onClick={handleResetAndClose}>
-      <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close-btn" onClick={handleResetAndClose} aria-label="Close modal">
+    <div className="demo-modal-backdrop" onClick={handleResetAndClose}>
+      <div className="demo-modal-container" onClick={(e) => e.stopPropagation()}>
+        <button className="demo-modal-close-btn" onClick={handleResetAndClose} aria-label="Close modal">
           <X size={20} />
         </button>
 
         {submitted ? (
-          <div className="modal-success">
-            <div className="success-icon-wrap">
-              <CheckCircle size={48} className="success-icon" />
+          <div className="demo-modal-success">
+            <div className="demo-success-badge">
+              <CheckCircle size={44} className="demo-success-icon" />
             </div>
-            <h3 className="success-title">Demo Session Reserved!</h3>
-            <p className="success-text">
-              Thank you, <strong>{formData.name}</strong>. We have registered your request for the{' '}
-              <strong>{selectedCourse.title}</strong> live interactive demo.
+            <h3 className="demo-success-title">Demo Seat Reserved Successfully!</h3>
+            <p className="demo-success-desc">
+              Thank you, <strong>{formData.name}</strong>. Your invitation for the{' '}
+              <strong className="text-highlight">{selectedCourse.title}</strong> live interactive demo class is confirmed.
             </p>
-            <div className="success-details-card">
-              <div className="success-detail-row">
-                <Video size={16} />
-                <span>Format: Live Interactive Class on Zoom</span>
+
+            <div className="demo-summary-box">
+              <div className="demo-summary-item">
+                <Video size={17} className="summary-icon" />
+                <div>
+                  <span className="summary-label">Format</span>
+                  <strong>Live Zoom Interactive Session</strong>
+                </div>
               </div>
-              <div className="success-detail-row">
-                <Clock size={16} />
-                <span>Slot: {formData.preferredSlot}</span>
+              <div className="demo-summary-item">
+                <Clock size={17} className="summary-icon" />
+                <div>
+                  <span className="summary-label">Scheduled Time</span>
+                  <strong>{formData.preferredSlot}</strong>
+                </div>
               </div>
-              <div className="success-detail-row">
-                <Users size={16} />
-                <span>Group Size: Max 15 Attendees</span>
+              <div className="demo-summary-item">
+                <Users size={17} className="summary-icon" />
+                <div>
+                  <span className="summary-label">Batch Size</span>
+                  <strong>Capped at 15 Students Max</strong>
+                </div>
               </div>
             </div>
-            <p className="success-sub">
-              Our academic coordinator will send the Zoom join link and orientation syllabus to <strong>{formData.email}</strong> and connect with you shortly on WhatsApp / Phone.
-            </p>
-            <button className="btn btn-primary w-100" onClick={handleResetAndClose}>
-              Done & Explore Platform
-            </button>
-          </div>
-        ) : (
-          <div className="modal-body">
-            <div className="modal-header">
-              <div className="modal-tag">
-                <Sparkles size={14} />
-                <span>Zero Cost • Free 90-Minute Live Demo</span>
-              </div>
-              <h2 className="modal-title">Experience a Real DP Skilltech Class</h2>
-              <p className="modal-desc">
-                Attend an actual 15-student live session on Zoom. Meet our instructors, view the browser coding lab, and ask any questions before enrolling.
+
+            <div className="demo-success-instructions">
+              <p>
+                Our academic coordinator will send the Zoom join link and orientation syllabus to{' '}
+                <strong>{formData.email}</strong> and verify your WhatsApp number{' '}
+                <strong>{formData.phone}</strong>.
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="modal-form">
-              {/* Name */}
-              <div className="form-group">
-                <label className="form-label" htmlFor="name">Full Name *</label>
-                <input
-                  id="name"
-                  type="text"
-                  className={`form-input ${errors.name ? 'error' : ''}`}
-                  placeholder="e.g. Ramesh Kumar"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                />
-                {errors.name && <span className="form-error">{errors.name}</span>}
+            <button type="button" className="btn-demo-primary w-100" onClick={handleResetAndClose}>
+              Done &amp; Explore Courses
+            </button>
+          </div>
+        ) : (
+          <div className="demo-modal-content">
+            {/* Modal Header */}
+            <div className="demo-modal-header">
+              <div className="demo-pill-tag">
+                <Sparkles size={14} className="tag-sparkle" />
+                <span>Zero Cost • Free 90-Minute Live Demo</span>
+              </div>
+              <h2 className="demo-modal-title">Experience a Real DP Skilltech Class</h2>
+              <p className="demo-modal-desc">
+                Attend an actual 15-student live session on Zoom. Meet our instructors, view the browser coding lab, and ask any questions before enrolling.
+              </p>
+
+              <div className="demo-highlights-bar">
+                <div className="highlight-chip">
+                  <Users size={14} />
+                  <span>Max 15 Students</span>
+                </div>
+                <div className="highlight-chip">
+                  <Video size={14} />
+                  <span>Live Zoom Session</span>
+                </div>
+                <div className="highlight-chip">
+                  <Code size={14} />
+                  <span>Browser Coding Sandbox</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Form */}
+            <form onSubmit={handleSubmit} className="demo-form">
+              {/* Full Name */}
+              <div className="demo-form-group">
+                <label className="demo-form-label" htmlFor="demo-name">
+                  Full Name <span className="req-asterisk">*</span>
+                </label>
+                <div className="demo-input-wrap">
+                  <User size={18} className="demo-field-icon" />
+                  <input
+                    id="demo-name"
+                    type="text"
+                    className={`demo-input with-icon ${errors.name ? 'demo-input-error' : ''}`}
+                    placeholder="e.g. Ramesh Kumar"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  />
+                </div>
+                {errors.name && <span className="demo-error-text">{errors.name}</span>}
               </div>
 
               {/* Email & Phone */}
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="form-label" htmlFor="email">Email Address *</label>
-                  <input
-                    id="email"
-                    type="email"
-                    className={`form-input ${errors.email ? 'error' : ''}`}
-                    placeholder="name@example.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  />
-                  {errors.email && <span className="form-error">{errors.email}</span>}
+              <div className="demo-form-row">
+                <div className="demo-form-group">
+                  <label className="demo-form-label" htmlFor="demo-email">
+                    Email Address <span className="req-asterisk">*</span>
+                  </label>
+                  <div className="demo-input-wrap">
+                    <Mail size={18} className="demo-field-icon" />
+                    <input
+                      id="demo-email"
+                      type="email"
+                      className={`demo-input with-icon ${errors.email ? 'demo-input-error' : ''}`}
+                      placeholder="name@example.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    />
+                  </div>
+                  {errors.email && <span className="demo-error-text">{errors.email}</span>}
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label" htmlFor="phone">Phone / WhatsApp Number *</label>
-                  <input
-                    id="phone"
-                    type="tel"
-                    className={`form-input ${errors.phone ? 'error' : ''}`}
-                    placeholder="+91 98765 43210"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  />
-                  {errors.phone && <span className="form-error">{errors.phone}</span>}
+                <div className="demo-form-group">
+                  <label className="demo-form-label" htmlFor="demo-phone">
+                    Phone / WhatsApp Number <span className="req-asterisk">*</span>
+                  </label>
+                  <div className="demo-input-wrap">
+                    <Phone size={18} className="demo-field-icon" />
+                    <input
+                      id="demo-phone"
+                      type="tel"
+                      className={`demo-input with-icon ${errors.phone ? 'demo-input-error' : ''}`}
+                      placeholder="+91 98765 43210"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    />
+                  </div>
+                  {errors.phone && <span className="demo-error-text">{errors.phone}</span>}
                 </div>
               </div>
 
               {/* Course Selection */}
-              <div className="form-group">
-                <label className="form-label" htmlFor="course">Program of Interest *</label>
-                <select
-                  id="course"
-                  className="form-select"
-                  value={formData.courseId}
-                  onChange={(e) => setFormData({ ...formData, courseId: e.target.value })}
-                >
-                  {COURSES_DATA.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.title} ({c.duration})
-                    </option>
-                  ))}
-                </select>
+              <div className="demo-form-group">
+                <label className="demo-form-label" htmlFor="demo-course">
+                  Program of Interest <span className="req-asterisk">*</span>
+                </label>
+                <div className="demo-input-wrap">
+                  <BookOpen size={18} className="demo-field-icon" />
+                  <select
+                    id="demo-course"
+                    className="demo-select with-icon"
+                    value={formData.courseId}
+                    onChange={(e) => setFormData({ ...formData, courseId: e.target.value })}
+                  >
+                    {COURSES_DATA.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.title} ({c.duration})
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               {/* Experience Level & Preferred Slot */}
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="form-label" htmlFor="exp">Current Background</label>
-                  <select
-                    id="exp"
-                    className="form-select"
-                    value={formData.experienceLevel}
-                    onChange={(e) => setFormData({ ...formData, experienceLevel: e.target.value })}
-                  >
-                    <option value="Student / Recent Graduate">Student / Recent Graduate</option>
-                    <option value="Working Professional (IT)">Working Professional (IT)</option>
-                    <option value="Working Professional (Non-IT)">Working Professional (Non-IT)</option>
-                    <option value="Career Switcher / Break">Career Switcher / Returning</option>
-                  </select>
+              <div className="demo-form-row">
+                <div className="demo-form-group">
+                  <label className="demo-form-label" htmlFor="demo-exp">
+                    Current Background
+                  </label>
+                  <div className="demo-input-wrap">
+                    <Briefcase size={18} className="demo-field-icon" />
+                    <select
+                      id="demo-exp"
+                      className="demo-select with-icon"
+                      value={formData.experienceLevel}
+                      onChange={(e) => setFormData({ ...formData, experienceLevel: e.target.value })}
+                    >
+                      <option value="Student / Recent Graduate">Student / Recent Graduate</option>
+                      <option value="Working Professional (IT)">Working Professional (IT)</option>
+                      <option value="Working Professional (Non-IT)">Working Professional (Non-IT)</option>
+                      <option value="Career Switcher / Break">Career Switcher / Returning</option>
+                    </select>
+                  </div>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label" htmlFor="slot">Preferred Demo Time</label>
-                  <select
-                    id="slot"
-                    className="form-select"
-                    value={formData.preferredSlot}
-                    onChange={(e) => setFormData({ ...formData, preferredSlot: e.target.value })}
-                  >
-                    <option value="Morning (07:30 AM - 09:00 AM IST)">Morning (07:30 AM - 09:00 AM IST)</option>
-                    <option value="Morning (09:30 AM - 11:00 AM IST)">Morning (09:30 AM - 11:00 AM IST)</option>
-                    <option value="Afternoon (02:00 PM - 03:30 PM IST)">Afternoon (02:00 PM - 03:30 PM IST)</option>
-                    <option value="Evening (05:30 PM - 07:00 PM IST)">Evening (05:30 PM - 07:00 PM IST)</option>
-                    <option value="Evening (07:30 PM - 09:00 PM IST)">Evening (07:30 PM - 09:00 PM IST)</option>
-                    <option value="Night (09:00 PM - 10:30 PM IST)">Night (09:00 PM - 10:30 PM IST)</option>
-                    <option value="Weekend Saturday (11:00 AM - 12:30 PM IST)">Weekend Saturday (11:00 AM - 12:30 PM IST)</option>
-                    <option value="Weekend Sunday (10:00 AM - 11:30 AM IST)">Weekend Sunday (10:00 AM - 11:30 AM IST)</option>
-                  </select>
+                <div className="demo-form-group">
+                  <label className="demo-form-label" htmlFor="demo-slot">
+                    Preferred Demo Time
+                  </label>
+                  <div className="demo-input-wrap">
+                    <Clock size={18} className="demo-field-icon" />
+                    <select
+                      id="demo-slot"
+                      className="demo-select with-icon"
+                      value={formData.preferredSlot}
+                      onChange={(e) => setFormData({ ...formData, preferredSlot: e.target.value })}
+                    >
+                      <option value="Morning (07:30 AM - 09:00 AM IST)">Morning (07:30 AM - 09:00 AM IST)</option>
+                      <option value="Morning (09:30 AM - 11:00 AM IST)">Morning (09:30 AM - 11:00 AM IST)</option>
+                      <option value="Afternoon (02:00 PM - 03:30 PM IST)">Afternoon (02:00 PM - 03:30 PM IST)</option>
+                      <option value="Evening (05:30 PM - 07:00 PM IST)">Evening (05:30 PM - 07:00 PM IST)</option>
+                      <option value="Evening (07:30 PM - 09:00 PM IST)">Evening (07:30 PM - 09:00 PM IST)</option>
+                      <option value="Night (09:00 PM - 10:30 PM IST)">Night (09:00 PM - 10:30 PM IST)</option>
+                      <option value="Weekend Saturday (11:00 AM - 12:30 PM IST)">Weekend Saturday (11:00 AM - 12:30 PM IST)</option>
+                      <option value="Weekend Sunday (10:00 AM - 11:30 AM IST)">Weekend Sunday (10:00 AM - 11:30 AM IST)</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
-              <div className="modal-submit-wrap">
+              {/* Submit Button & Trust Note */}
+              <div className="demo-submit-wrap">
                 <button
                   type="submit"
-                  className="btn btn-primary btn-lg w-100"
+                  className="btn-demo-primary btn-demo-large"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
-                    <span>Registering Demo...</span>
+                    <span>Registering Demo Seat...</span>
                   ) : (
                     <>
-                      <Send size={18} />
                       <span>Confirm Free Live Demo Booking</span>
+                      <ArrowRight size={18} />
                     </>
                   )}
                 </button>
-                <span className="submit-footnote">
-                  🔒 We respect your privacy. No promotional spam. Only official academy details.
-                </span>
+
+                <div className="demo-privacy-bar">
+                  <ShieldCheck size={16} className="privacy-shield-icon" />
+                  <span>We respect your privacy. No promotional spam. Only official academy details.</span>
+                </div>
               </div>
             </form>
           </div>

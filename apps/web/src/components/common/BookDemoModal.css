@@ -1,202 +1,380 @@
 /* ==========================================================================
    DP SKILLTECH — BOOK DEMO MODAL STYLESHEET
-   Deep navy foundation, glassmorphic backdrop, accessible form inputs
+   Clean Enterprise Theme: White · Royal Blue · Orange · Dark Slate (#0f172a)
    ========================================================================== */
 
-.modal-backdrop {
+.demo-modal-backdrop {
   position: fixed;
   inset: 0;
-  background-color: rgba(4, 7, 17, 0.85);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background-color: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 2000;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
-  animation: modalFadeIn 200ms ease;
+  animation: demoModalFadeIn 200ms ease;
 }
 
-@keyframes modalFadeIn {
+@keyframes demoModalFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-.modal-container {
-  background-color: var(--bg-card);
-  border-radius: var(--radius-2xl);
-  max-width: 600px;
+.demo-modal-container {
+  background-color: #ffffff;
+  border-radius: 20px;
+  max-width: 660px;
   width: 100%;
-  max-height: 90vh;
+  max-height: 92vh;
   overflow-y: auto;
   position: relative;
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 35px rgba(37, 99, 235, 0.2);
-  border: 1px solid var(--border-medium);
-  animation: modalScaleUp 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(226, 232, 240, 0.8);
+  border-top: 5px solid #ea580c;
+  animation: demoModalScaleUp 250ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes modalScaleUp {
-  from { transform: scale(0.94); opacity: 0; }
+@keyframes demoModalScaleUp {
+  from { transform: scale(0.95); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
 
-.modal-close-btn {
+.demo-modal-close-btn {
   position: absolute;
   top: 1.25rem;
   right: 1.25rem;
   width: 36px;
   height: 36px;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--border-subtle);
-  background-color: rgba(255, 255, 255, 0.06);
-  color: var(--text-secondary);
+  border-radius: 50%;
+  border: 1px solid #e2e8f0;
+  background-color: #f1f5f9;
+  color: #64748b;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.15s ease;
   z-index: 10;
 }
 
-.modal-close-btn:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-  color: #ffffff;
+.demo-modal-close-btn:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+  transform: scale(1.05);
 }
 
-.modal-body {
-  padding: 2.5rem;
+.demo-modal-content {
+  padding: 2.25rem 2.5rem;
 }
 
-.modal-header {
-  margin-bottom: 2rem;
+/* Modal Header */
+.demo-modal-header {
+  margin-bottom: 1.75rem;
+  text-align: left;
 }
 
-.modal-tag {
+.demo-pill-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #1d4ed8;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  margin-bottom: 0.85rem;
+}
+
+.demo-pill-tag .tag-sparkle {
+  color: #ea580c;
+}
+
+.demo-modal-title {
+  font-size: clamp(1.45rem, 2.8vw, 1.85rem);
+  font-weight: 900;
+  color: #0f172a !important;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.demo-modal-desc {
+  font-size: 0.94rem;
+  color: #475569 !important;
+  line-height: 1.55;
+  margin-bottom: 1.15rem;
+}
+
+/* Trust Badges Ribbon */
+.demo-highlights-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  padding: 0.65rem 0.85rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.highlight-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--brand-cyan);
-  background-color: rgba(6, 182, 212, 0.12);
-  border: 1px solid rgba(6, 182, 212, 0.25);
-  padding: 0.25rem 0.65rem;
-  border-radius: var(--radius-full);
-  margin-bottom: 0.75rem;
-}
-
-.modal-title {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: #ffffff;
-  margin-bottom: 0.5rem;
-}
-
-.modal-desc {
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-}
-
-.modal-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.form-group-modal {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.form-group-modal label {
   font-size: 0.78rem;
   font-weight: 700;
-  color: var(--text-secondary);
-  text-transform: uppercase;
+  color: #1e293b;
 }
 
-.form-group-modal input,
-.form-group-modal select {
-  background: rgba(4, 7, 17, 0.8);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 0.75rem 1rem;
-  font-size: 0.92rem;
-  color: #ffffff;
-  font-family: inherit;
-  outline: none;
-  transition: border-color var(--transition-fast);
+.highlight-chip svg {
+  color: #1d4ed8;
 }
 
-.form-group-modal input:focus,
-.form-group-modal select:focus {
-  border-color: var(--brand-cobalt-light);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+/* Form Styles */
+.demo-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
 }
 
-.form-row-modal {
+.demo-form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
 
-.modal-guarantees {
+.demo-form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
-  padding: 1rem;
-  background-color: rgba(4, 7, 17, 0.6);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
+  gap: 0.4rem;
+  text-align: left;
+}
+
+.demo-form-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1e293b !important;
+  letter-spacing: -0.01em;
+}
+
+.req-asterisk {
+  color: #ea580c;
+  font-weight: 800;
+}
+
+.demo-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.demo-field-icon {
+  position: absolute;
+  left: 0.95rem;
+  color: #64748b;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.demo-input.with-icon,
+.demo-select.with-icon {
+  width: 100%;
+  padding: 0.78rem 1rem 0.78rem 2.65rem;
+  background-color: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  color: #0f172a !important;
+  font-weight: 500;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.18s ease;
+  box-sizing: border-box;
+}
+
+.demo-input.with-icon::placeholder {
+  color: #94a3b8;
+}
+
+.demo-input.with-icon:focus,
+.demo-select.with-icon:focus {
+  background-color: #ffffff;
+  border-color: #1d4ed8;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.14);
+}
+
+.demo-input-error {
+  border-color: #dc2626 !important;
+  background-color: #fef2f2 !important;
+}
+
+.demo-error-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #dc2626;
+  margin-top: 0.15rem;
+}
+
+/* Submit Section */
+.demo-submit-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   margin-top: 0.5rem;
 }
 
-.guarantee-line {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.78rem;
-  color: var(--text-muted);
-}
-
-/* Success Confirmation Screen */
-.modal-success-screen {
-  text-align: center;
-  padding: 2rem 0;
-}
-
-.success-icon-wrap-modal {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: rgba(16, 185, 129, 0.15);
+.btn-demo-primary {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.95rem 1.5rem;
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  color: #ffffff !important;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.02rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(234, 88, 12, 0.32);
+}
+
+.btn-demo-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #c2410c 0%, #ea580c 100%);
+  box-shadow: 0 6px 20px rgba(234, 88, 12, 0.42);
+  transform: translateY(-1px);
+}
+
+.btn-demo-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.demo-privacy-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748b;
+  text-align: center;
+}
+
+.privacy-shield-icon {
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   SUCCESS SCREEN
+   ========================================================================== */
+.demo-modal-success {
+  padding: 2.75rem 2.25rem;
+  text-align: center;
+}
+
+.demo-success-badge {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background-color: #ecfdf5;
+  border: 1.5px solid #a7f3d0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem auto;
+}
+
+.demo-success-icon {
+  color: #059669;
+}
+
+.demo-success-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #0f172a !important;
+  margin-bottom: 0.65rem;
+  letter-spacing: -0.01em;
+}
+
+.demo-success-desc {
+  font-size: 0.98rem;
+  color: #334155 !important;
+  line-height: 1.6;
+  max-width: 520px;
   margin: 0 auto 1.5rem auto;
 }
 
-.modal-success-title {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: #ffffff;
-  margin-bottom: 0.75rem;
+.text-highlight {
+  color: #1d4ed8;
 }
 
-.modal-success-desc {
-  font-size: 1rem;
-  color: var(--text-secondary);
-  line-height: 1.65;
-  margin-bottom: 2rem;
+.demo-summary-box {
+  background-color: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  text-align: left;
+}
+
+.demo-summary-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.summary-icon {
+  color: #ea580c;
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
+
+.summary-label {
+  display: block;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.demo-summary-item strong {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.demo-success-instructions {
+  font-size: 0.88rem;
+  color: #475569;
+  line-height: 1.6;
+  margin-bottom: 1.75rem;
 }
 
 @media (max-width: 640px) {
-  .modal-body {
-    padding: 1.75rem;
+  .demo-modal-content {
+    padding: 1.75rem 1.25rem;
   }
-  .form-row-modal {
+  .demo-form-row {
     grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+  .demo-highlights-bar {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
+
