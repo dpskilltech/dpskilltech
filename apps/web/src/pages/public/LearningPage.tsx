@@ -120,8 +120,13 @@ export const LearningPage: React.FC<LearningPageProps> = ({ onNavigate, onOpenDe
       {/* Hero Header */}
       <section className="learning-hero">
         <div className="container text-center">
-          <span className="section-tag">Pedagogical Philosophy</span>
-          <h1 className="learning-hero-title">The DP Skilltech Learning Engine</h1>
+          <div className="learning-hero-badge">
+            <span className="learning-badge-dot"></span>
+            <span>PEDAGOGICAL PHILOSOPHY • THE 7-STAGE CURRICULUM</span>
+          </div>
+          <h1 className="learning-hero-title">
+            The DP Skilltech <span className="learning-title-gradient">Learning Engine</span>
+          </h1>
           <p className="learning-hero-desc">
             A structured, 7-step engineering curriculum designed to bridge the gap between beginner theory and production-grade software mastery.
           </p>
@@ -129,11 +134,15 @@ export const LearningPage: React.FC<LearningPageProps> = ({ onNavigate, onOpenDe
       </section>
 
       {/* Interactive Flow Walker */}
-      <section className="section-py learning-flow-section">
+      <section className="learning-flow-section">
         <div className="container">
           <div className="flow-layout">
-            {/* Step Selector Column */}
+            {/* Step Selector Column (01 to 07) */}
             <div className="flow-steps-nav">
+              <div className="nav-column-header">
+                <span className="column-title">Curriculum Progression (7 Phases)</span>
+                <span className="column-sub">Click any stage to inspect execution details</span>
+              </div>
               {steps.map((s, idx) => {
                 const Icon = s.icon;
                 const isActive = activeStep === idx;
@@ -148,44 +157,72 @@ export const LearningPage: React.FC<LearningPageProps> = ({ onNavigate, onOpenDe
                       <div className="nav-step-title">{s.title}</div>
                       <div className="nav-step-tag">{s.tag}</div>
                     </div>
-                    <Icon size={18} className="nav-step-icon" />
+                    <div className="nav-icon-wrap">
+                      <Icon size={18} className="nav-step-icon" />
+                    </div>
                   </div>
                 );
               })}
             </div>
 
             {/* Step Detail Display */}
-            <div className="flow-detail-card card">
-              <div className="detail-top">
-                <span className="detail-step-badge">Phase {steps[activeStep].step}</span>
-                <span className="detail-tag">{steps[activeStep].tag}</span>
-              </div>
+            <div className="flow-detail-card">
+              <div className="detail-card-topbar" />
+              <div className="detail-card-body">
+                <div className="detail-top">
+                  <span className="detail-step-badge">Phase {steps[activeStep].step}</span>
+                  <span className="detail-tag">{steps[activeStep].tag}</span>
+                </div>
 
-              <h2 className="detail-title">{steps[activeStep].title}</h2>
-              <p className="detail-summary">{steps[activeStep].summary}</p>
+                <h2 className="detail-title">{steps[activeStep].title}</h2>
+                <p className="detail-summary">{steps[activeStep].summary}</p>
 
-              <div className="detail-highlights">
-                <h4>What Happens in this Phase:</h4>
-                <ul>
-                  {steps[activeStep].highlights.map((h, i) => (
-                    <li key={i}>
-                      <CheckCircle2 size={18} className="text-emerald" />
-                      <span>{h}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+                <div className="detail-highlights">
+                  <h4>What Happens in this Phase:</h4>
+                  <ul>
+                    {steps[activeStep].highlights.map((h, i) => (
+                      <li key={i}>
+                        <CheckCircle2 size={18} className="highlight-icon" />
+                        <span>{h}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-              <div className="detail-actions">
-                <button className="btn btn-primary" onClick={onOpenDemoModal}>
-                  <Sparkles size={16} />
-                  <span>Book a Live Class Demo</span>
-                </button>
-                <button className="btn btn-secondary" onClick={() => onNavigate('courses')}>
-                  <span>View Courses Using this Engine</span>
-                  <ArrowRight size={16} />
-                </button>
+                <div className="detail-actions">
+                  <button type="button" className="btn-detail-demo" onClick={onOpenDemoModal}>
+                    <Sparkles size={16} />
+                    <span>Book a Live Class Demo</span>
+                  </button>
+                  <button type="button" className="btn-detail-courses" onClick={() => onNavigate('courses')}>
+                    <span>View Courses Using this Engine</span>
+                    <ArrowRight size={16} />
+                  </button>
+                </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Bottom CTA Banner */}
+      <section className="learning-cta-section">
+        <div className="container">
+          <div className="learning-cta-card">
+            <div className="learning-cta-content">
+              <span className="learning-cta-badge">STRICTLY 15 STUDENTS PER BATCH</span>
+              <h2 className="learning-cta-title">
+                Ready to transform your tech career with <span className="cta-title-mix">real live training?</span>
+              </h2>
+              <p className="learning-cta-desc">
+                Experience the DP Skilltech difference: daily live Zoom sessions, sandboxed coding labs, and 1-on-1 live mock interviews.
+              </p>
+            </div>
+            <div className="learning-cta-actions">
+              <button type="button" className="btn-cta-primary" onClick={onOpenDemoModal}>
+                <Sparkles size={18} />
+                <span>Book a Free Live Demo</span>
+              </button>
             </div>
           </div>
         </div>
@@ -193,3 +230,4 @@ export const LearningPage: React.FC<LearningPageProps> = ({ onNavigate, onOpenDe
     </div>
   );
 };
+

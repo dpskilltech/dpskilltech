@@ -463,13 +463,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
   const [demoSubmitted, setDemoSubmitted] = useState(false);
   const [demoFormError, setDemoFormError] = useState('');
 
-  // Hero Showcase Interactive State (Inspired by Quality Thought & Byju's)
-  const [heroShowcaseTab, setHeroShowcaseTab] = useState<'zoom' | 'sandbox' | 'mock'>('zoom');
+  // Hero Showcase Interactive State — Dedicated Cloud Code Lab
   const [codeSubject, setCodeSubject] = useState<'python' | 'java' | 'cpp' | 'sql'>('python');
   const [selectedChallengeId, setSelectedChallengeId] = useState<string>('py-1');
   const [heroSnippetRunning, setHeroSnippetRunning] = useState<boolean>(false);
   const [heroSnippetOutput, setHeroSnippetOutput] = useState<boolean>(true);
-  const [trendingSlide, setTrendingSlide] = useState<number>(0);
 
   const subjectChallenges = CODING_CHALLENGES.filter((c) => c.subject === codeSubject);
   const activeChallenge = CODING_CHALLENGES.find((c) => c.id === selectedChallengeId) || subjectChallenges[0] || CODING_CHALLENGES[0];
@@ -544,10 +542,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
             </div>
 
             <h1 className="hero-editorial-heading">
-              <span>Master Real Tech.</span>
-              <span className="heading-line-accent">Build Production Systems.</span>
-              <span className="heading-line-future">Launch Your Engineering Career.</span>
+              <span className="heading-line-tech">Master Real Tech.</span>
+              <span className="heading-line-systems">Build Production Systems.</span>
+              <span className="heading-line-career">Launch Your Engineering Career.</span>
             </h1>
+
 
             <p className="hero-editorial-description">
               Industry-calibrated software engineering training across Full Stack Python + AI, Java Enterprise, Data Science, and Cybersecurity.
@@ -602,237 +601,121 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
                 transform: `perspective(1200px) rotateX(${heroTilt.x * 0.4}deg) rotateY(${heroTilt.y * 0.4}deg)`
               }}
             >
-              <div className="hero-edtech-card">
-                {/* Showcase Switcher Tabs */}
-                <div className="showcase-nav-tabs">
-                  <button
-                    className={`showcase-tab-btn ${heroShowcaseTab === 'zoom' ? 'active' : ''}`}
-                    onClick={() => setHeroShowcaseTab('zoom')}
-                  >
-                    <span className="live-dot-red" />
-                    <span>Live Zoom Class</span>
-                  </button>
+              <div className="hero-edtech-card hero-code-lab-card">
 
-                  <button
-                    className={`showcase-tab-btn ${heroShowcaseTab === 'sandbox' ? 'active' : ''}`}
-                    onClick={() => setHeroShowcaseTab('sandbox')}
-                  >
-                    <Code2 size={14} />
-                    <span>Cloud Code Lab</span>
-                  </button>
-
-                  <button
-                    className={`showcase-tab-btn ${heroShowcaseTab === 'mock' ? 'active' : ''}`}
-                    onClick={() => setHeroShowcaseTab('mock')}
-                  >
-                    <ShieldCheck size={14} />
-                    <span>1-on-1 Mock</span>
-                  </button>
+                {/* Dedicated Cloud Code Lab Terminal Header */}
+                <div className="code-lab-card-header">
+                  <div className="code-lab-header-left">
+                    <div className="terminal-dots">
+                      <span className="tdot tdot-red" />
+                      <span className="tdot tdot-yellow" />
+                      <span className="tdot tdot-green" />
+                    </div>
+                    <span className="code-lab-header-title">
+                      <Code2 size={16} className="text-cyan" />
+                      <span>In-Browser Cloud Code Lab</span>
+                    </span>
+                  </div>
+                  <span className="sandbox-docker-badge">Docker Isolated • Linux v6.8</span>
                 </div>
 
-                {/* Tab 1: Live Zoom Classroom Showcase */}
-                {heroShowcaseTab === 'zoom' && (
-                  <div className="showcase-view-body zoom-showcase-view">
-                    <div className="showcase-header-row">
-                      <div className="showcase-cohort-badge">
-                        <span className="status-live-dot" />
-                        <span>NEXT LIVE CLASS • TODAY 07:00 PM IST</span>
-                      </div>
-                      <span className="seats-alert-badge">🔥 ONLY 1 SEAT LEFT</span>
-                    </div>
-
-                    <div className="zoom-class-meta-box">
-                      <h4 className="zoom-topic-title">Async I/O & FastAPI Concurrency Patterns</h4>
-                      <p className="zoom-track-sub">Track: Full Stack Python + AI Architecture</p>
-
-                      <div className="zoom-capacity-meter">
-                        <div className="capacity-label-row">
-                          <span>Batch PY-2026-01 (15 Student Cap)</span>
-                          <span className="capacity-stat">14 / 15 Enrolled</span>
-                        </div>
-                        <div className="meter-track">
-                          <div className="meter-fill" style={{ width: '93%' }} />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Classroom Active Experience */}
-                    <div className="zoom-classroom-mini-grid">
-                      <div className="instructor-mini-tile">
-                        <div className="instructor-tile-header">
-                          <span className="instructor-tag">LEAD INSTRUCTOR (HOST)</span>
-                          <div className="mini-audio-wave">
-                            <span /><span /><span /><span />
-                          </div>
-                        </div>
-                        <div className="instructor-tile-info">
-                          <strong>Dr. Rajesh Verma</strong>
-                          <span>Principal Architect • 12+ Yrs Exp</span>
-                        </div>
-                      </div>
-
-                      <div className="cohort-mini-chat-stream">
-                        <div className="mini-chat-msg">
-                          <span className="chat-author">Aarav (Student):</span>
-                          <span className="chat-text">"Does TaskGroup cancel remaining tasks on error?"</span>
-                        </div>
-                        <div className="mini-chat-msg instructor-reply">
-                          <span className="chat-author">Dr. Rajesh:</span>
-                          <span className="chat-text">"Yes Aarav, precisely. All child tasks cancel safely."</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Quick Demo Seat Trigger */}
-                    <div className="showcase-card-cta-row">
+                {/* Cloud Code Sandbox Body */}
+                <div className="showcase-view-body sandbox-showcase-view">
+                  <div className="sandbox-header-row">
+                    <div className="sandbox-lang-selector">
                       <button
-                        className="btn-showcase-reserve"
-                        onClick={() => onOpenDemoModal('full-stack-python-ai')}
+                        type="button"
+                        className={`lang-pill ${codeSubject === 'python' ? 'active' : ''}`}
+                        onClick={() => handleSelectSubject('python')}
                       >
-                        <Video size={16} />
-                        <span>Reserve Demo Seat in Tonight's Class</span>
-                        <ArrowRight size={15} />
+                        Python (5)
+                      </button>
+                      <button
+                        type="button"
+                        className={`lang-pill ${codeSubject === 'java' ? 'active' : ''}`}
+                        onClick={() => handleSelectSubject('java')}
+                      >
+                        Java (5)
+                      </button>
+                      <button
+                        type="button"
+                        className={`lang-pill ${codeSubject === 'cpp' ? 'active' : ''}`}
+                        onClick={() => handleSelectSubject('cpp')}
+                      >
+                        C++ (5)
+                      </button>
+                      <button
+                        type="button"
+                        className={`lang-pill ${codeSubject === 'sql' ? 'active' : ''}`}
+                        onClick={() => handleSelectSubject('sql')}
+                      >
+                        SQL (5)
                       </button>
                     </div>
                   </div>
-                )}
 
-                {/* Tab 2: In-Browser Cloud Code Sandbox */}
-                {heroShowcaseTab === 'sandbox' && (
-                  <div className="showcase-view-body sandbox-showcase-view">
-                    <div className="sandbox-header-row">
-                      <div className="sandbox-lang-selector">
-                        <button
-                          className={`lang-pill ${codeSubject === 'python' ? 'active' : ''}`}
-                          onClick={() => handleSelectSubject('python')}
-                        >
-                          Python (5)
-                        </button>
-                        <button
-                          className={`lang-pill ${codeSubject === 'java' ? 'active' : ''}`}
-                          onClick={() => handleSelectSubject('java')}
-                        >
-                          Java (5)
-                        </button>
-                        <button
-                          className={`lang-pill ${codeSubject === 'cpp' ? 'active' : ''}`}
-                          onClick={() => handleSelectSubject('cpp')}
-                        >
-                          C++ (5)
-                        </button>
-                        <button
-                          className={`lang-pill ${codeSubject === 'sql' ? 'active' : ''}`}
-                          onClick={() => handleSelectSubject('sql')}
-                        >
-                          SQL (5)
-                        </button>
-                      </div>
-                      <span className="sandbox-docker-badge">Docker Isolated</span>
-                    </div>
-
-                    {/* Challenge Dropdown Selector (5 per subject) */}
-                    <div className="challenge-dropdown-bar">
-                      <select
-                        id="challenge-select"
-                        className="challenge-dropdown-select"
-                        value={activeChallenge.id}
-                        onChange={(e) => {
-                          setSelectedChallengeId(e.target.value);
-                          setHeroSnippetOutput(true);
-                        }}
-                        aria-label="Select Coding Challenge"
-                      >
-                        {subjectChallenges.map((c) => (
-                          <option key={c.id} value={c.id}>
-                            [{c.difficulty}] {c.title}
-                          </option>
-                        ))}
-                      </select>
-                      <span className={`challenge-diff-badge ${activeChallenge.difficulty.toLowerCase()}`}>
-                        {activeChallenge.difficulty}
-                      </span>
-                    </div>
-
-                    <div className="challenge-desc-row">
-                      <span className="challenge-desc-text">📌 {activeChallenge.description}</span>
-                      <span className="challenge-filename">{activeChallenge.filename}</span>
-                    </div>
-
-                    <div className="mini-editor-surface">
-                      <pre className="mini-code-pre">
-                        <code>{activeChallenge.starterCode}</code>
-                      </pre>
-                    </div>
-
-                    <div className="sandbox-output-row">
-                      <div className="sandbox-output-left">
-                        {heroSnippetRunning ? (
-                          <span className="running-text">⚡ Compiling & executing container...</span>
-                        ) : heroSnippetOutput ? (
-                          <span className="stdout-text">
-                            <strong>{activeChallenge.output.split('\n')[0]}</strong>
-                          </span>
-                        ) : (
-                          <span className="ready-text">Container runtime ready.</span>
-                        )}
-                      </div>
-                      <button
-                        className="btn-mini-run"
-                        onClick={handleRunHeroSnippet}
-                        disabled={heroSnippetRunning}
-                      >
-                        {heroSnippetRunning ? 'Executing...' : 'Run Code'}
-                      </button>
-                    </div>
+                  {/* Challenge Dropdown Selector (5 per subject) */}
+                  <div className="challenge-dropdown-bar">
+                    <select
+                      id="challenge-select"
+                      className="challenge-dropdown-select"
+                      value={activeChallenge.id}
+                      onChange={(e) => {
+                        setSelectedChallengeId(e.target.value);
+                        setHeroSnippetOutput(true);
+                      }}
+                      aria-label="Select Coding Challenge"
+                    >
+                      {subjectChallenges.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          [{c.difficulty}] {c.title}
+                        </option>
+                      ))}
+                    </select>
+                    <span className={`challenge-diff-badge ${activeChallenge.difficulty.toLowerCase()}`}>
+                      {activeChallenge.difficulty}
+                    </span>
                   </div>
-                )}
 
-                {/* Tab 3: 1-on-1 Mock Interview Scorecard */}
-                {heroShowcaseTab === 'mock' && (
-                  <div className="showcase-view-body mock-showcase-view">
-                    <div className="mock-card-header">
-                      <div>
-                        <span className="mock-session-pill">PRIVATE 1-ON-1 SESSION</span>
-                        <h4 className="mock-candidate-name">Candidate: Aarav Sharma • Track: Python + AI</h4>
-                      </div>
-                      <span className="mock-locked-tag">
-                        <Lock size={12} />
-                        <span>Slot Anti-Double-Booked</span>
-                      </span>
-                    </div>
-
-                    <div className="mock-score-split">
-                      <div className="mock-score-big">
-                        <span className="score-num">8.2</span>
-                        <span className="score-den">/ 10</span>
-                        <span className="score-lbl">Verified Score</span>
-                      </div>
-                      <div className="mock-competency-bars">
-                        <div className="comp-row">
-                          <span>Problem Solving & Logic</span>
-                          <strong>8.5/10</strong>
-                        </div>
-                        <div className="comp-row">
-                          <span>System Design & Architecture</span>
-                          <strong>8.0/10</strong>
-                        </div>
-                        <div className="comp-row">
-                          <span>Code Quality & Edge Cases</span>
-                          <strong>8.2/10</strong>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mock-mentor-feedback">
-                      <strong>Mentor Verdict:</strong> "Demonstrates production architecture mastery. Ready for client interviews."
-                    </div>
+                  <div className="challenge-desc-row">
+                    <span className="challenge-desc-text">📌 {activeChallenge.description}</span>
+                    <span className="challenge-filename">{activeChallenge.filename}</span>
                   </div>
-                )}
+
+                  <div className="mini-editor-surface">
+                    <pre className="mini-code-pre">
+                      <code>{activeChallenge.starterCode}</code>
+                    </pre>
+                  </div>
+
+                  <div className="sandbox-output-row">
+                    <div className="sandbox-output-left">
+                      {heroSnippetRunning ? (
+                        <span className="running-text">⚡ Compiling & executing container...</span>
+                      ) : heroSnippetOutput ? (
+                        <span className="stdout-text">
+                          <strong>{activeChallenge.output.split('\n')[0]}</strong>
+                        </span>
+                      ) : (
+                        <span className="ready-text">Container runtime ready.</span>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      className="btn-mini-run"
+                      onClick={handleRunHeroSnippet}
+                      disabled={heroSnippetRunning}
+                    >
+                      {heroSnippetRunning ? 'Executing...' : 'Run Code'}
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
+
 
       {/* ===================================================================
           TRUST MARQUEE — Full-width scrolling social proof (edge-to-edge)
@@ -996,105 +879,68 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
             <p className="qt-section-sub">Master in-demand skills with our specialized programs</p>
           </div>
 
-          {/* Slider Controls */}
-          <div className="qt-slider-controls">
-            <button
-              className="qt-arrow-btn"
-              onClick={() => setTrendingSlide(Math.max(0, trendingSlide - 1))}
-              disabled={trendingSlide === 0}
-              aria-label="Previous"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              className="qt-arrow-btn"
-              onClick={() => setTrendingSlide(Math.min(COURSES_DATA.length - (window.innerWidth >= 1024 ? 4 : window.innerWidth >= 640 ? 2 : 1), trendingSlide + 1))}
-              disabled={trendingSlide >= COURSES_DATA.length - (window.innerWidth >= 1024 ? 4 : 2)}
-              aria-label="Next"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
-
-          {/* Cards viewport */}
-          <div className="qt-cards-viewport">
-            <div
-              className="qt-cards-track"
-              style={{ transform: `translateX(calc(-${trendingSlide} * (100% / 4 + 6px)))` }}
-            >
-              {COURSES_DATA.map((course) => (
-                <div key={course.id} className="qt-course-card">
-                  {/* Card Header — dark navy→purple gradient */}
-                  <div className="qt-card-header">
-                    <h3 className="qt-card-title">{course.title}</h3>
-                    <p className="qt-card-subtitle">{course.subtitle || course.category}</p>
-                    <span className="qt-card-badge">{course.badgeLabel || course.badge}</span>
-                  </div>
-
-                  {/* Features Checklist */}
-                  <ul className="qt-card-features">
-                    {(course.features || [
-                      'Online / Offline Classes',
-                      'Job Oriented Curriculum',
-                      'Mock Interviews & Career Support',
-                      'Industry Expert Instructors'
-                    ]).map((feat, i) => (
-                      <li key={i} className="qt-feature-item">
-                        <CheckCircle2 size={16} className="qt-check-icon" />
-                        <span>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* Pricing Table */}
-                  {course.pricing && (
-                    <div className="qt-pricing-table">
-                      <div className="qt-price-label">Best Price</div>
-                      <div className="qt-price-row">
-                        <span className="qt-price-type">Training</span>
-                        <span className="qt-price-val">{course.pricing.training}</span>
-                      </div>
-                      <div className="qt-price-row">
-                        <span className="qt-price-type">Job Placement</span>
-                        <span className="qt-price-val">{course.pricing.jobPlacement}</span>
-                      </div>
-                      <div className="qt-price-row">
-                        <span className="qt-price-type">Internship</span>
-                        <span className="qt-price-val">{course.pricing.internship}</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Duration row */}
-                  <div className="qt-card-duration">
-                    <Clock size={14} />
-                    <span>{course.duration}</span>
-                    <span className="qt-duration-sep">•</span>
-                    <Users size={14} />
-                    <span>{course.batchSize}</span>
-                  </div>
-
-                  {/* CTA */}
-                  <button
-                    className="qt-card-cta"
-                    onClick={() => onNavigate('course-detail', { slug: course.slug })}
-                  >
-                    View Course Details <ArrowRight size={16} />
-                  </button>
+          {/* Courses Grid View */}
+          <div className="qt-courses-grid">
+            {COURSES_DATA.map((course) => (
+              <div key={course.id} className="qt-course-card">
+                {/* Card Header — dark navy→blue gradient with orange badge */}
+                <div className="qt-card-header">
+                  <h3 className="qt-card-title">{course.title}</h3>
+                  <p className="qt-card-subtitle">{course.subtitle || course.category}</p>
+                  <span className="qt-card-badge">{course.badgeLabel || course.badge}</span>
                 </div>
-              ))}
-            </div>
-          </div>
 
-          {/* Dot indicators */}
-          <div className="qt-slider-dots">
-            {COURSES_DATA.map((_, i) => (
-              <button
-                key={i}
-                className={`qt-dot ${i === trendingSlide ? 'active' : ''}`}
-                onClick={() => setTrendingSlide(i)}
-                aria-label={`Go to course ${i + 1}`}
-              />
+                {/* Features Checklist */}
+                <ul className="qt-card-features">
+                  {(course.features || [
+                    'Online / Offline Classes',
+                    'Job Oriented Curriculum',
+                    'Mock Interviews & Career Support',
+                    'Industry Expert Instructors'
+                  ]).map((feat, i) => (
+                    <li key={i} className="qt-feature-item">
+                      <CheckCircle2 size={16} className="qt-check-icon" />
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Pricing Table */}
+                {course.pricing && (
+                  <div className="qt-pricing-table">
+                    <div className="qt-price-label">Best Price</div>
+                    <div className="qt-price-row">
+                      <span className="qt-price-type">Training</span>
+                      <span className="qt-price-val">{course.pricing.training}</span>
+                    </div>
+                    <div className="qt-price-row">
+                      <span className="qt-price-type">Job Placement</span>
+                      <span className="qt-price-val">{course.pricing.jobPlacement}</span>
+                    </div>
+                    <div className="qt-price-row">
+                      <span className="qt-price-type">Internship</span>
+                      <span className="qt-price-val">{course.pricing.internship}</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* Duration row */}
+                <div className="qt-card-duration">
+                  <Clock size={14} />
+                  <span>{course.duration}</span>
+                  <span className="qt-duration-sep">•</span>
+                  <Users size={14} />
+                  <span>{course.batchSize}</span>
+                </div>
+
+                {/* CTA */}
+                <button
+                  className="qt-card-cta"
+                  onClick={() => onNavigate('course-detail', { slug: course.slug })}
+                >
+                  View Course Details <ArrowRight size={16} />
+                </button>
+              </div>
             ))}
           </div>
         </div>

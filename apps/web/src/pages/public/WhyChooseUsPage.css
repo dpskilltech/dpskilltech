@@ -1,50 +1,57 @@
 /* ==========================================================================
    DP SKILLTECH — WHY CHOOSE US STYLESHEET
-   Deep navy foundation, high-contrast comparison table, clear architectural pillars
+   White · Orange · Royal Blue Mix with High Contrast & Visual Hierarchy
    ========================================================================== */
 
-.why-page {
-  background-color: var(--bg-canvas);
-  color: var(--text-primary);
+.why-choose-us-page {
+  background-color: #f8fafc;
+  color: #0f172a;
   min-height: 100vh;
 }
 
+/* --------------------------------------------------------------------------
+   Hero Header
+   -------------------------------------------------------------------------- */
 .why-hero-section {
-  background: radial-gradient(circle at 50% 10%, rgba(37, 99, 235, 0.15) 0%, transparent 60%),
-              radial-gradient(circle at 80% 40%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
-              var(--bg-canvas);
-  padding: 8rem 0 4rem;
-  border-bottom: 1px solid var(--border-subtle);
+  background: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.08) 0%, transparent 65%),
+              radial-gradient(circle at 85% 30%, rgba(234, 88, 12, 0.06) 0%, transparent 55%),
+              #ffffff;
+  padding: 6.5rem 0 3.5rem;
+  border-bottom: 1px solid #e2e8f0;
   text-align: center;
 }
 
 .why-hero-title {
-  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
   font-weight: 900;
-  color: #ffffff;
+  color: #0f172a !important;
   margin-bottom: 1rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
 .why-hero-desc {
   max-width: 760px;
   margin: 0 auto;
-  font-size: 1.1rem;
-  color: var(--text-secondary);
+  font-size: 1.15rem;
+  color: #475569;
   line-height: 1.7;
 }
 
-/* Comparison Table */
+/* --------------------------------------------------------------------------
+   Comparison Table Section
+   -------------------------------------------------------------------------- */
 .comparison-section {
-  background-color: var(--bg-surface);
+  background-color: #f1f5f9;
   padding: 4.5rem 0;
 }
 
 .comparison-table-wrap {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xl);
-  overflow-x: auto;
-  box-shadow: var(--shadow-xl);
+  background-color: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 16px 36px -8px rgba(15, 23, 42, 0.08);
 }
 
 .comparison-table {
@@ -56,14 +63,15 @@
 .comparison-table th,
 .comparison-table td {
   padding: 1.25rem 1.75rem;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .comparison-table thead th {
-  background-color: rgba(8, 13, 26, 0.95);
+  background-color: #0f172a;
   font-size: 0.95rem;
-  font-weight: 700;
+  font-weight: 800;
   color: #ffffff;
+  letter-spacing: 0.02em;
 }
 
 .th-feature {
@@ -72,10 +80,8 @@
 
 .th-dp {
   width: 38%;
-  background-color: rgba(37, 99, 235, 0.18) !important;
+  background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important;
   color: #ffffff !important;
-  border-left: 2px solid var(--brand-cobalt-light);
-  border-right: 2px solid var(--brand-cobalt-light);
 }
 
 .th-brand {
@@ -88,95 +94,152 @@
 .badge-highlight {
   font-size: 0.72rem;
   font-weight: 800;
-  background-color: var(--brand-cobalt);
+  background-color: #ea580c;
   color: #ffffff;
-  padding: 0.2rem 0.6rem;
-  border-radius: var(--radius-full);
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.4);
 }
 
 .td-feature {
-  font-weight: 600;
-  color: #ffffff;
-  font-size: 0.95rem;
+  font-weight: 800;
+  color: #0f172a !important;
+  font-size: 0.96rem;
+  background-color: #ffffff;
 }
 
 .td-dp {
-  background-color: rgba(37, 99, 235, 0.08);
-  border-left: 2px solid rgba(59, 130, 246, 0.3);
-  border-right: 2px solid rgba(59, 130, 246, 0.3);
-  font-weight: 600;
-  color: var(--brand-cyan);
+  background-color: #eff6ff !important;
+  border-left: 2px solid #bfdbfe;
+  border-right: 2px solid #bfdbfe;
+  font-weight: 700;
+  color: #1e3a8a !important;
 }
 
 .td-content {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  font-size: 0.94rem;
+}
+
+.icon-check {
+  color: #16a34a;
+  flex-shrink: 0;
+}
+
+.icon-cross {
+  color: #ef4444;
+  flex-shrink: 0;
+}
+
+.td-others {
+  color: #64748b;
   font-size: 0.92rem;
+  background-color: #ffffff;
 }
 
-.td-other {
-  color: var(--text-muted);
-  font-size: 0.9rem;
+/* --------------------------------------------------------------------------
+   4 Core Pillars Section
+   -------------------------------------------------------------------------- */
+.pillars-detail-section {
+  padding: 5rem 0;
+  background-color: #f8fafc;
 }
 
-/* Detailed Pillars */
-.detailed-pillars-section {
-  padding: 4.5rem 0;
-  background-color: var(--bg-canvas);
-}
-
-.detailed-pillars-grid {
+.detail-pillars-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
 }
 
-.detailed-pillar-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-xl);
-  padding: 2.25rem;
-  display: flex;
-  gap: 1.5rem;
-  transition: all var(--transition-fast);
+.detail-pillar {
+  background-color: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 2.5rem;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+  position: relative;
 }
 
-.detailed-pillar-card:hover {
-  border-color: var(--border-medium);
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lg);
+.detail-pillar:hover {
+  border-color: #ea580c;
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(234, 88, 12, 0.1);
 }
 
-.pillar-icon-box {
-  width: 52px;
-  height: 52px;
-  border-radius: var(--radius-lg);
-  background: rgba(37, 99, 235, 0.15);
-  color: var(--brand-cobalt-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.detailed-pillar-card h3 {
-  font-size: 1.3rem;
+.detail-pillar .pillar-num {
+  font-family: 'JetBrains Mono', monospace, ui-monospace;
+  font-size: 0.9rem;
   font-weight: 800;
-  color: #ffffff;
-  margin-bottom: 0.75rem;
+  color: #1d4ed8;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 0.3rem 0.75rem;
+  border-radius: 8px;
+  display: inline-block;
+  margin-bottom: 1.25rem;
 }
 
-.detailed-pillar-card p {
-  font-size: 0.95rem;
-  color: var(--text-secondary);
-  line-height: 1.65;
+.detail-pillar:hover .pillar-num {
+  color: #ffffff;
+  background-color: #ea580c;
+  border-color: #ea580c;
+}
+
+.detail-pillar h3 {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #0f172a !important;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+.detail-pillar p {
+  font-size: 0.96rem;
+  color: #475569;
+  line-height: 1.7;
   margin: 0;
 }
 
+/* --------------------------------------------------------------------------
+   Bottom CTA
+   -------------------------------------------------------------------------- */
+.why-cta-section {
+  padding: 5rem 0;
+  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 50%, #fff7ed 100%);
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.why-cta-section h2 {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 900;
+  color: #0f172a !important;
+  margin-bottom: 0.75rem;
+}
+
+.why-cta-section p {
+  font-size: 1.1rem;
+  color: #475569;
+  line-height: 1.65;
+}
+
 @media (max-width: 992px) {
-  .detailed-pillars-grid {
+  .detail-pillars-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .why-hero-section {
+    padding: 5rem 0 2.5rem;
+  }
+  .comparison-table th,
+  .comparison-table td {
+    padding: 1rem;
   }
 }

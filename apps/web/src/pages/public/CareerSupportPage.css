@@ -1,175 +1,433 @@
 /* ==========================================================================
    DP SKILLTECH — CAREER SUPPORT & MOCK INTERVIEW STYLESHEET
-   Deep navy foundation, 1-on-1 private interview focus, rubric evaluation
+   White · Orange · Royal Blue Mix with High Contrast & Visual Hierarchy
    ========================================================================== */
 
-.career-page {
-  background-color: var(--bg-canvas);
-  color: var(--text-primary);
+.career-support-page {
+  background-color: #f8fafc;
+  color: #0f172a;
   min-height: 100vh;
 }
 
+/* --------------------------------------------------------------------------
+   Hero Header
+   -------------------------------------------------------------------------- */
 .career-hero {
-  background: radial-gradient(circle at 50% 10%, rgba(37, 99, 235, 0.15) 0%, transparent 60%),
-              radial-gradient(circle at 80% 40%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
-              var(--bg-canvas);
-  padding: 8rem 0 4rem;
-  border-bottom: 1px solid var(--border-subtle);
+  background: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.08) 0%, transparent 65%),
+              radial-gradient(circle at 85% 30%, rgba(234, 88, 12, 0.06) 0%, transparent 55%),
+              #ffffff;
+  padding: 6.5rem 0 3.5rem;
+  border-bottom: 1px solid #e2e8f0;
   text-align: center;
 }
 
+.career-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 0.45rem 1.15rem;
+  border-radius: 9999px;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+}
+
+.career-badge-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #ea580c;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #ea580c;
+  animation: pulse-career-orange 2s infinite ease-in-out;
+}
+
+@keyframes pulse-career-orange {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
 .career-hero-title {
-  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
   font-weight: 900;
-  color: #ffffff;
+  color: #0f172a !important;
   margin-bottom: 1rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.career-title-gradient {
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
 }
 
 .career-hero-desc {
   max-width: 760px;
   margin: 0 auto;
-  font-size: 1.1rem;
-  color: var(--text-secondary);
+  font-size: 1.15rem;
+  color: #475569;
   line-height: 1.7;
 }
 
-/* Spotlight Card */
+/* --------------------------------------------------------------------------
+   Spotlight Card Section
+   -------------------------------------------------------------------------- */
 .mock-interview-section {
-  background-color: var(--bg-surface);
+  background-color: #f1f5f9;
   padding: 4.5rem 0;
 }
 
 .mock-spotlight-card {
+  background-color: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.08);
+}
+
+.spotlight-topbar {
+  height: 6px;
+  background: linear-gradient(90deg, #1d4ed8 0%, #2563eb 50%, #ea580c 100%);
+  width: 100%;
+}
+
+.spotlight-content {
   padding: 3.5rem;
-  background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.15) 0%, rgba(12, 20, 38, 0.95) 70%);
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-2xl);
 }
 
 .spotlight-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 800;
-  color: var(--brand-cyan);
-  background: rgba(6, 182, 212, 0.15);
-  border: 1px solid rgba(6, 182, 212, 0.3);
-  padding: 0.35rem 0.9rem;
-  border-radius: var(--radius-full);
+  color: #1d4ed8;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 0.4rem 1rem;
+  border-radius: 9999px;
   margin-bottom: 1.25rem;
 }
 
 .spotlight-title {
-  font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
   font-weight: 900;
-  color: #ffffff;
-  margin-bottom: 0.75rem;
+  color: #0f172a !important;
+  margin-bottom: 0.85rem;
+  line-height: 1.25;
 }
 
 .spotlight-lead {
   font-size: 1.1rem;
-  color: var(--text-secondary);
+  color: #475569;
   line-height: 1.7;
   max-width: 820px;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2.75rem;
 }
 
 .mock-features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
 }
 
 .mock-feature-box {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 1.75rem;
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition-fast);
+  background-color: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 2rem 1.75rem;
+  transition: all 0.22s ease;
 }
 
 .mock-feature-box:hover {
-  border-color: var(--border-medium);
-  transform: translateY(-3px);
+  border-color: #f97316;
+  background-color: #ffffff;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(234, 88, 12, 0.09);
 }
 
 .feature-num {
-  font-family: var(--font-mono);
-  font-size: 1.25rem;
+  font-family: 'JetBrains Mono', monospace, ui-monospace;
+  font-size: 1rem;
   font-weight: 800;
-  color: var(--brand-cyan);
-  margin-bottom: 0.5rem;
-}
-
-.mock-feature-box h4 {
-  font-size: 1.15rem;
-  font-weight: 700;
   color: #ffffff;
-  margin-bottom: 0.5rem;
-}
-
-.mock-feature-box p {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-}
-
-/* Categories Grid */
-.categories-section {
-  background-color: var(--bg-canvas);
-  padding: 4.5rem 0;
-}
-
-.categories-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
-}
-
-.category-card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: 1.75rem;
-  transition: all var(--transition-fast);
-}
-
-.category-card:hover {
-  border-color: var(--border-medium);
-  transform: translateY(-2px);
-}
-
-.category-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-md);
-  background: rgba(37, 99, 235, 0.15);
-  color: var(--brand-cobalt-light);
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(234, 88, 12, 0.35);
+}
+
+.mock-feature-box h4 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a !important;
+  margin-bottom: 0.5rem;
+}
+
+.mock-feature-box p {
+  font-size: 0.92rem;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Categories Grid Section
+   -------------------------------------------------------------------------- */
+.categories-section {
+  background-color: #f8fafc;
+  padding: 5rem 0;
+}
+
+.section-editorial-header {
+  margin-bottom: 3rem;
+}
+
+.editorial-pill {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #ea580c;
+  background-color: #fff7ed;
+  border: 1px solid #fed7aa;
+  padding: 0.35rem 0.95rem;
+  border-radius: 9999px;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+
+.editorial-title {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 900;
+  color: #0f172a !important;
+  margin-bottom: 0.6rem;
+}
+
+.editorial-desc {
+  font-size: 1.05rem;
+  color: #64748b;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.category-card {
+  background-color: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 1.85rem;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+.category-card:hover {
+  border-color: #ea580c;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(234, 88, 12, 0.1);
+}
+
+.category-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.15rem;
 }
 
 .category-card h4 {
   font-size: 1.15rem;
-  font-weight: 700;
-  color: #ffffff;
+  font-weight: 800;
+  color: #0f172a !important;
   margin-bottom: 0.5rem;
 }
 
 .category-card p {
-  font-size: 0.88rem;
-  color: var(--text-secondary);
-  line-height: 1.55;
+  font-size: 0.9rem;
+  color: #475569;
+  line-height: 1.6;
   margin: 0;
 }
 
-@media (max-width: 768px) {
-  .mock-spotlight-card {
-    padding: 2rem 1.5rem;
+/* --------------------------------------------------------------------------
+   The 4 Pillars Section
+   -------------------------------------------------------------------------- */
+.prep-pillars-section {
+  background-color: #f1f5f9;
+  padding: 5rem 0;
+}
+
+.prep-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.75rem;
+  margin-bottom: 3.5rem;
+}
+
+.prep-card {
+  background-color: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 18px;
+  padding: 2.25rem 1.85rem;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+  transition: all 0.22s ease;
+}
+
+.prep-card:hover {
+  border-color: #f97316;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(234, 88, 12, 0.1);
+}
+
+.prep-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background-color: #fff7ed;
+  color: #ea580c;
+  border: 1px solid #fed7aa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.prep-card h4 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0f172a !important;
+  margin-bottom: 0.6rem;
+}
+
+.prep-card p {
+  font-size: 0.92rem;
+  color: #475569;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* Bottom Career CTA */
+.career-cta-card {
+  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 50%, #fff7ed 100%);
+  border: 1.5px solid #fed7aa;
+  border-radius: 22px;
+  padding: 2.75rem 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  box-shadow: 0 16px 36px -8px rgba(234, 88, 12, 0.1);
+}
+
+.career-cta-body h3 {
+  font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+  font-weight: 900;
+  color: #0f172a !important;
+  margin-bottom: 0.4rem;
+}
+
+.career-cta-body p {
+  font-size: 1rem;
+  color: #475569;
+  margin: 0;
+}
+
+.career-cta-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.btn-career-primary {
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1rem;
+  padding: 0.95rem 1.85rem;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  box-shadow: 0 8px 20px rgba(234, 88, 12, 0.35);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-career-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(234, 88, 12, 0.45);
+}
+
+.btn-career-secondary {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border: 1.5px solid #bfdbfe;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.95rem 1.6rem;
+  border-radius: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-career-secondary:hover {
+  background-color: #dbeafe;
+  border-color: #93c5fd;
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .spotlight-content {
+    padding: 2.5rem 1.75rem;
+  }
+  .career-cta-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 2.25rem 1.5rem;
+  }
+  .career-cta-actions {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .career-hero {
+    padding: 5rem 0 2.5rem;
+  }
+  .btn-career-primary,
+  .btn-career-secondary {
+    width: 100%;
+    justify-content: center;
   }
 }
