@@ -26,7 +26,7 @@ interface LoginPageProps {
 export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModal }) => {
   const { login } = useAuth();
   const [activeRole, setActiveRole] = useState<'student' | 'teacher' | 'admin'>('student');
-  const [email, setEmail] = useState('student@dpskilltech.com');
+  const [email, setEmail] = useState('student@dpskilltech.in');
   const [password, setPassword] = useState('password123');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,16 +38,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
     setLoginMessage(null);
     setErrorMessage(null);
     if (role === 'student') {
-      setEmail('student@dpskilltech.com');
+      setEmail('student@dpskilltech.in');
       setPassword('password123');
     } else if (role === 'teacher') {
-      setEmail('instructor@dpskilltech.com');
+      setEmail('instructor@dpskilltech.in');
       setPassword('password123');
     } else {
-      setEmail('admin@dpskilltech.com');
+      setEmail('admin@dpskilltech.in');
       setPassword('password123');
     }
   };
+
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -251,7 +252,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        placeholder="you@dpskilltech.com"
+                        placeholder="you@dpskilltech.in"
                       />
                     </div>
                   </div>
@@ -262,11 +263,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
                       <button
                         type="button"
                         className="forgot-link-btn"
-                        onClick={() => alert('Please contact academy admin at support@dpskilltech.com to reset your credentials.')}
+                        onClick={() => alert('Please contact academy admin at support@dpskilltech.in to reset your credentials.')}
                       >
                         Forgot password?
                       </button>
                     </div>
+
                     <div className="input-with-icon">
                       <Lock size={18} className="field-icon" />
                       <input

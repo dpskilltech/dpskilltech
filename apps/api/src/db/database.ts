@@ -25,7 +25,7 @@ class InMemoryDatabase {
     const studentId = 'usr_student_01';
     const studentUser: User = {
       id: studentId,
-      email: 'student@dpskilltech.com',
+      email: 'student@dpskilltech.in',
       passwordHash: defaultPasswordHash,
       role: 'STUDENT',
       fullName: 'Aarav Sharma',
@@ -57,7 +57,7 @@ class InMemoryDatabase {
     const teacherId = 'usr_teacher_01';
     const teacherUser: User = {
       id: teacherId,
-      email: 'instructor@dpskilltech.com',
+      email: 'instructor@dpskilltech.in',
       passwordHash: defaultPasswordHash,
       role: 'TEACHER',
       fullName: 'Dr. Rajesh Verma',
@@ -83,7 +83,7 @@ class InMemoryDatabase {
     const adminId = 'usr_admin_01';
     const adminUser: User = {
       id: adminId,
-      email: 'admin@dpskilltech.com',
+      email: 'admin@dpskilltech.in',
       passwordHash: defaultPasswordHash,
       role: 'ADMIN',
       fullName: 'Siddharth Patel',
@@ -106,12 +106,18 @@ class InMemoryDatabase {
   public findUserByEmail(email: string): User | undefined {
     const normalized = email.trim().toLowerCase();
     for (const user of this.users.values()) {
-      if (user.email.toLowerCase() === normalized) {
+      const userEmail = user.email.toLowerCase();
+      if (
+        userEmail === normalized ||
+        userEmail.replace('@dpskilltech.in', '@dpskilltech.com') === normalized ||
+        userEmail.replace('@dpskilltech.com', '@dpskilltech.in') === normalized
+      ) {
         return user;
       }
     }
     return undefined;
   }
+
 
   public findUserById(id: string): User | undefined {
     return this.users.get(id);

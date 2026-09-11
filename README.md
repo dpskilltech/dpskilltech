@@ -89,13 +89,16 @@ For rapid local testing across roles, use the **Quick Fill** chips on the [Virtu
 
 | Role | Email | Password |
 |------|-------|----------|
-| **Student** | `student@dpskilltech.com` | `password123` |
-| **Teacher** | `instructor@dpskilltech.com` | `password123` |
-| **Admin** | `admin@dpskilltech.com` | `password123` |
+| **Student** | `student@dpskilltech.in` | `password123` |
+| **Teacher** | `instructor@dpskilltech.in` | `password123` |
+| **Admin** | `admin@dpskilltech.in` | `password123` |
+
+For inquiries, admissions, or support: **[support@dpskilltech.in](mailto:support@dpskilltech.in)**
 
 ---
 
 ## 📜 Development Rules & Integrity Policy
+
 
 See `PROJECT_REQUIREMENTS.md` and `docs/DEVELOPMENT_STATUS.md` for platform requirements and development milestones.
 

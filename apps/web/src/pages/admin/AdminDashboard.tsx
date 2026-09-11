@@ -195,25 +195,26 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToPubl
               <tbody>
                 <tr>
                   <td><strong>Aarav Sharma</strong></td>
-                  <td>student@dpskilltech.com</td>
+                  <td>student@dpskilltech.in</td>
                   <td><span className="role-tag role-student">STUDENT</span></td>
                   <td><span className="status-tag active-tag">Active</span></td>
                   <td>Student LMS, Coding Lab, Mock Scheduler</td>
                 </tr>
                 <tr>
                   <td><strong>Dr. Rajesh Verma</strong></td>
-                  <td>instructor@dpskilltech.com</td>
+                  <td>instructor@dpskilltech.in</td>
                   <td><span className="role-tag role-teacher">TEACHER</span></td>
                   <td><span className="status-tag active-tag">Active</span></td>
                   <td>Batch Operations, Zoom Host, Evaluation Studio</td>
                 </tr>
                 <tr>
                   <td><strong>Siddharth Patel</strong></td>
-                  <td>admin@dpskilltech.com</td>
+                  <td>admin@dpskilltech.in</td>
                   <td><span className="role-tag role-admin">ADMIN</span></td>
                   <td><span className="status-tag active-tag">Active</span></td>
                   <td>Platform Director & System Governance</td>
                 </tr>
+
               </tbody>
             </table>
           </div>

@@ -127,8 +127,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDemoModal }) =
           <div className="footer-contact-info">
             <div className="contact-line">
               <Mail size={16} className="contact-icon" />
-              <span>admissions@dpskilltech.com</span>
+              <a href="mailto:support@dpskilltech.in" className="footer-contact-email">support@dpskilltech.in</a>
             </div>
+
             <div className="contact-line">
               <Phone size={16} className="contact-icon" />
               <span>+91 (Admissions Desk Placeholder)</span>

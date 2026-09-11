@@ -180,11 +180,12 @@ export const TeacherDashboard: React.FC<TeacherDashboardProps> = ({ onNavigateTo
               <tbody>
                 <tr>
                   <td><strong>Aarav Sharma</strong></td>
-                  <td>student@dpskilltech.com</td>
+                  <td>student@dpskilltech.in</td>
                   <td><span className="attendance-pill high">94% (Verified)</span></td>
                   <td>Batch PY-2026-01</td>
                   <td>1 Completed (8.2 / 10 Rubric)</td>
                 </tr>
+
                 <tr>
                   <td><strong>Neha Patel</strong></td>
                   <td>neha.p@example.com</td>

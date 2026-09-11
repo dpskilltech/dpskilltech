@@ -70,11 +70,12 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onOpenDemoModal }) => 
                 <div className="info-card card">
                   <Mail size={22} className="info-icon" />
                   <div>
-                    <h4>Email Admissions Desk</h4>
-                    <p>admissions@dpskilltech.com</p>
-                    <span className="info-sub">Official inquiries and enrollment queries</span>
+                    <h4>Email Support & Admissions</h4>
+                    <p>support@dpskilltech.in</p>
+                    <span className="info-sub">Official inquiries, student support, and enrollment queries</span>
                   </div>
                 </div>
+
 
                 <div className="info-card card">
                   <Phone size={22} className="info-icon" />
