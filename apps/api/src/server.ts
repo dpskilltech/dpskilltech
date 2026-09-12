@@ -5,6 +5,11 @@ import authRoutes from './routes/auth.routes';
 import studentRoutes from './routes/student.routes';
 import teacherRoutes from './routes/teacher.routes';
 import adminRoutes from './routes/admin.routes';
+import paymentRoutes from './routes/payment.routes';
+import emailRoutes from './routes/email.routes';
+import reviewRoutes from './routes/review.routes';
+import { checkDatabaseConnection } from './db/prisma';
+import { emailService } from './services/email.service';
 
 // Load environment variables (Rule 9, 10, 11)
 dotenv.config();
@@ -32,12 +37,29 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
   next();
 });
 
-// Health check endpoint
-app.get('/api/health', (_req: Request, res: Response) => {
+// Comprehensive Health check endpoint with Database & Service verification
+app.get('/api/health', async (_req: Request, res: Response) => {
+  const dbStatus = await checkDatabaseConnection();
+  const emailStatus = emailService.getStatus();
+
   res.status(200).json({
     status: 'ok',
     service: 'DP Skilltech API Service',
     environment: process.env.NODE_ENV || 'development',
+    database: {
+      provider: 'postgresql',
+      connected: dbStatus.isConnected,
+      message: dbStatus.message
+    },
+    paymentGateway: {
+      provider: 'razorpay',
+      configured: Boolean(process.env.RAZORPAY_KEY_ID)
+    },
+    emailNotification: {
+      configured: emailStatus.isConfigured,
+      provider: emailStatus.provider,
+      from: emailStatus.defaultFrom
+    },
     timestamp: new Date().toISOString()
   });
 });
@@ -47,6 +69,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/student', studentRoutes);
 app.use('/api/teacher', teacherRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/payment', paymentRoutes);
+app.use('/api/email', emailRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // Catch-all 404 handler for undefined API routes
 app.use((req: Request, res: Response) => {

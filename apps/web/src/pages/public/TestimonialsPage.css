@@ -189,3 +189,139 @@
     align-items: flex-start;
   }
 }
+
+/* Real-Time Reviews Section & Cards */
+.real-reviews-section {
+  background-color: #ffffff;
+  padding: 4.5rem 0 2rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.real-reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 2rem;
+}
+
+.real-review-card {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-top: 3.5px solid #1a56db;
+  border-radius: 16px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.real-review-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.1);
+  border-color: #cbd5e1;
+}
+
+.real-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.stars-row {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.star-score-text {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #b45309;
+  margin-left: 0.35rem;
+}
+
+.real-card-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-admin-del-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.55rem;
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  border-radius: 6px;
+  font-size: 0.725rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-admin-del-card:hover {
+  background: #ef4444;
+  color: #ffffff;
+  border-color: #dc2626;
+}
+
+.quote-icon-wrap-sm {
+  color: #cbd5e1;
+  margin-bottom: 0.75rem;
+}
+
+.real-review-text {
+  font-size: 0.96rem;
+  line-height: 1.65;
+  color: #334155;
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.real-review-author-box {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.author-avatar-initials {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1a56db, #2563eb);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.author-name-text {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.author-role-sub {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.testi-hero-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+

@@ -51,7 +51,7 @@ export const CourseDetailPage: React.FC<CourseDetailPageProps> = ({
   return (
     <div className="course-detail-page">
       {/* Top Breadcrumb & Hero */}
-      <section className="course-hero">
+      <section className={`course-hero ${course.id === 'course-py-ai' || course.slug?.includes('python') ? 'course-hero-python' : ''}`}>
         <div className="container">
           <div className="breadcrumb">
             <button className="breadcrumb-link" onClick={() => onNavigate('home')}>Home</button>
@@ -463,7 +463,7 @@ export const CourseDetailPage: React.FC<CourseDetailPageProps> = ({
             </div>
 
             {/* Academic Guidance */}
-            <div className="sidebar-card card mt-4">
+            <div className={`sidebar-card card mt-4 guidance-sidebar-card ${course.id === 'course-py-ai' || course.slug?.includes('python') ? 'guidance-card-python' : ''}`}>
               <div className="sidebar-card-top">
                 <div className="icon-badge-round icon-blue">
                   <Users size={20} />
@@ -490,10 +490,11 @@ export const CourseDetailPage: React.FC<CourseDetailPageProps> = ({
               </div>
 
               <button
-                className="btn btn-secondary btn-sm w-100 mt-3"
+                className="btn btn-primary btn-sm btn-admissions-cta w-100 mt-3"
                 onClick={() => onNavigate('contact')}
               >
-                Contact Admissions Team
+                <span>Contact Admissions Team</span>
+                <ArrowRight size={15} />
               </button>
             </div>
           </div>

@@ -99,6 +99,16 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDemoModal }) =
               </button>
             </li>
             <li>
+              <button className="footer-link-btn" onClick={() => handleNav('certificates')}>
+                Certificates &amp; Standards
+              </button>
+            </li>
+            <li>
+              <button className="footer-link-btn" onClick={() => handleNav('verify-certificate')}>
+                Verify Certificate ID
+              </button>
+            </li>
+            <li>
               <button className="footer-link-btn" onClick={() => handleNav('trainers')}>
                 Our Instructors
               </button>

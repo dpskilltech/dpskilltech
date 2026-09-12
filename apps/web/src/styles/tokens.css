@@ -1,153 +1,143 @@
 :root {
   /* ==========================================================================
-     DP SKILLTECH — PROFESSIONAL ACADEMY PALETTE
-     Blue · Orange · White — Clean, trustworthy, education-grade
+     DP SKILL TECH — PROFESSIONAL ACADEMY PALETTE (70 / 20 / 10 RULE)
+     70% Neutral / Light (#F8FAFC, #FFFFFF)
+     20% Blue / Dark Navy (#2563EB, #0F172A)
+     10% Orange Accent / Highlights (#F97316)
+     Green Success / Verified States (#16A34A)
      ========================================================================== */
+
+  /* ── Core Brand Foundations (Exact Specification) ── */
+  --brand-blue:         #2563eb; /* Primary Blue */
+  --brand-blue-hover:   #1d4ed8;
+  --brand-blue-light:   #eff6ff;
+  --brand-blue-glow:    rgba(37, 99, 235, 0.18);
+
+  --brand-navy:         #0f172a; /* Dark Navy */
+  --brand-navy-card:    #1e293b;
+  --brand-navy-light:   #334155;
+
+  --brand-orange:       #f97316; /* Orange Accent */
+  --brand-orange-hover: #ea580c;
+  --brand-orange-light: #fff7ed;
+  --brand-orange-glow:  rgba(249, 115, 22, 0.2);
+
+  --brand-green:        #16a34a; /* Green Success / Verified */
+  --brand-green-hover:  #15803d;
+  --brand-green-light:  #f0fdf4;
+  --brand-green-glow:   rgba(22, 163, 74, 0.2);
 
   /* ── Background Foundations ── */
   --bg-canvas:          #ffffff;
   --bg-surface:         #f8fafc;
-  --bg-section-alt:     #eef2f8;
+  --bg-section-alt:     #f1f5f9;
   --bg-card:            #ffffff;
-  --bg-card-hover:      #f0f6ff;
-  --bg-dark:            #0f1b35;
-  --bg-dark-card:       #162040;
+  --bg-card-hover:      #f8fafc;
+  --bg-dark:            #0f172a;
+  --bg-dark-card:       #1e293b;
 
-  /* ── Brand Blue Spectrum ── */
-  --blue-950:           #071633;
-  --blue-900:           #0f1b35;
-  --blue-800:           #162040;
-  --blue-700:           #1a3a6e;
-  --blue-600:           #1a4da8;
-  --blue-500:           #1a56db;
-  --blue-400:           #3b82f6;
+  /* ── Blue Spectrum ── */
+  --blue-950:           #0f172a;
+  --blue-900:           #1e293b;
+  --blue-800:           #1e3a8a;
+  --blue-700:           #1d4ed8;
+  --blue-600:           #2563eb;
+  --blue-500:           #3b82f6;
+  --blue-400:           #60a5fa;
   --blue-300:           #93c5fd;
   --blue-100:           #dbeafe;
   --blue-50:            #eff6ff;
 
-  /* ── Brand Orange / Accent Spectrum ── */
-  --orange-600:         #ea6b00;
+  /* ── Orange Spectrum ── */
+  --orange-600:         #ea580c;
   --orange-500:         #f97316;
   --orange-400:         #fb923c;
   --orange-300:         #fdba74;
   --orange-100:         #ffedd5;
   --orange-50:          #fff7ed;
 
-  /* ── Primary Brand Aliases ── */
-  --brand-blue:         #1a56db;
-  --brand-blue-hover:   #1a4da8;
-  --brand-blue-light:   #eff6ff;
-  --brand-blue-glow:    rgba(26, 86, 219, 0.18);
-  --brand-orange:       #f97316;
-  --brand-orange-hover: #ea6b00;
-  --brand-orange-light: #fff7ed;
-  --brand-orange-glow:  rgba(249, 115, 22, 0.18);
+  /* ── Text Colors ── */
+  --text-primary:       #111827; /* Main Text */
+  --text-secondary:     #64748b; /* Secondary Text */
+  --text-muted:         #94a3b8;
+  --text-light:         #cbd5e1;
 
-  /* Legacy nav aliases — kept for compatibility */
-  --navy-950:           #0f1b35;
-  --navy-900:           #162040;
-  --navy-850:           #1a3a6e;
-  --navy-800:           #1a4da8;
-  --navy-700:           #1a56db;
+  /* Dark Surface Text */
+  --text-dark-primary:  #ffffff;
+  --text-dark-secondary:#cbd5e1;
+  --text-dark-muted:    #94a3b8;
+
+  /* Legacy aliases for backwards compatibility */
+  --navy-950:           #0f172a;
+  --navy-900:           #1e293b;
+  --navy-850:           #1e3a8a;
+  --navy-800:           #1d4ed8;
+  --navy-700:           #2563eb;
   --navy-600:           #3b82f6;
-  --brand-violet:       #1a56db;
-  --brand-violet-light: #93c5fd;
-  --brand-violet-glow:  rgba(26, 86, 219, 0.18);
-  --brand-indigo:       #1a56db;
-  --brand-cobalt:       #1a56db;
-  --brand-cobalt-light: #93c5fd;
-  --brand-cobalt-hover: #1a4da8;
+  --brand-violet:       #2563eb;
+  --brand-violet-light: #eff6ff;
+  --brand-violet-glow:  rgba(37, 99, 235, 0.18);
+  --brand-indigo:       #2563eb;
+  --brand-cobalt:       #2563eb;
+  --brand-cobalt-light: #eff6ff;
+  --brand-cobalt-hover: #1d4ed8;
   --brand-cyan:         #0284c7;
   --brand-cyan-glow:    rgba(2, 132, 199, 0.18);
   --accent-amber:       #f97316;
-  --accent-emerald:     #10b981;
+  --accent-emerald:     #16a34a;
   --accent-rose:        #f43f5e;
-  --violet-950:         #0f1b35;
-  --violet-900:         #162040;
-  --violet-850:         #1a3a6e;
-  --violet-800:         #1a4da8;
-  --violet-700:         #1a56db;
+  --violet-950:         #0f172a;
+  --violet-900:         #1e293b;
+  --violet-850:         #1e3a8a;
+  --violet-800:         #1d4ed8;
+  --violet-700:         #2563eb;
   --violet-600:         #3b82f6;
-  --violet-500:         #1a56db;
+  --violet-500:         #2563eb;
   --violet-400:         #93c5fd;
   --violet-300:         #dbeafe;
 
-  /* ── Neutral Surfaces ── */
+  /* ── Neutral Surfaces & Borders ── */
   --surface-body:             #ffffff;
-  --surface-dark:             #0f1b35;
-  --surface-dark-card:        #162040;
-  --surface-dark-card-hover:  #1a3a6e;
-  --surface-dark-border:      rgba(26, 86, 219, 0.2);
-  --surface-dark-border-hover:rgba(26, 86, 219, 0.5);
+  --surface-dark:             #0f172a;
+  --surface-dark-card:        #1e293b;
+  --surface-dark-card-hover:  #334155;
+  --surface-dark-border:      rgba(37, 99, 235, 0.2);
+  --surface-dark-border-hover:rgba(37, 99, 235, 0.4);
   --surface-light:            #f8fafc;
   --surface-white:            #ffffff;
-  --surface-light-subtle:     #eef2f8;
+  --surface-light-subtle:     #f1f5f9;
   --surface-light-border:     #e2e8f0;
 
-  /* ── Border Utilities ── */
-  --border-subtle:            rgba(26, 86, 219, 0.12);
-  --border-medium:            rgba(26, 86, 219, 0.25);
-  --border-strong:            rgba(26, 86, 219, 0.5);
+  --border-subtle:            rgba(37, 99, 235, 0.12);
+  --border-medium:            rgba(37, 99, 235, 0.25);
+  --border-strong:            rgba(37, 99, 235, 0.5);
   --border-light:             #e2e8f0;
 
-  /* Legacy slate aliases */
-  --slate-950:  #0f1b35;
-  --slate-900:  #162040;
-  --slate-800:  #e2e8f0;
-  --slate-700:  #cbd5e1;
-  --slate-400:  #64748b;
-  --slate-300:  #94a3b8;
-
-  /* ── Text Colors ── */
-  --text-primary:            #0f172a;
-  --text-secondary:          #334155;
-  --text-muted:              #64748b;
-  --text-light:              #94a3b8;
-
-  /* Dark-surface text (footer, dark sections) */
-  --text-dark-primary:       #ffffff;
-  --text-dark-secondary:     #cbd5e1;
-  --text-dark-muted:         #94a3b8;
-
-  /* Legacy aliases */
-  --text-light-primary:      #0f172a;
-  --text-light-secondary:    #334155;
-  --text-light-muted:        #64748b;
-
   /* ── Typography ── */
-  --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-body:    'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono:    'JetBrains Mono', monospace;
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Fira Code', monospace;
 
-  /* ── Border Radii ── */
-  --radius-xs:   4px;
-  --radius-sm:   8px;
-  --radius-md:   12px;
-  --radius-lg:   18px;
-  --radius-xl:   26px;
-  --radius-2xl:  36px;
+  /* ── Shadows (Subtle, Clean Educational Elevation) ── */
+  --shadow-sm:  0 1px 3px rgba(15, 23, 42, 0.05);
+  --shadow-md:  0 4px 12px rgba(15, 23, 42, 0.07);
+  --shadow-lg:  0 10px 25px rgba(15, 23, 42, 0.08);
+  --shadow-xl:  0 20px 35px rgba(15, 23, 42, 0.1);
+
+  /* ── Radii (Specification: 12-20px for cards) ── */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
   --radius-full: 9999px;
 
-  /* ── Shadows ── */
-  --perspective-deep:     1400px;
-  --shadow-elevation-1:   0 1px 3px rgba(15,27,53,0.08), 0 1px 2px rgba(15,27,53,0.06);
-  --shadow-elevation-2:   0 4px 16px rgba(15,27,53,0.1), 0 2px 6px rgba(15,27,53,0.06);
-  --shadow-elevation-3:   0 16px 48px rgba(15,27,53,0.15);
-  --shadow-card:          0 2px 12px rgba(26,86,219,0.08), 0 1px 3px rgba(15,27,53,0.05);
-  --shadow-card-hover:    0 8px 32px rgba(26,86,219,0.16), 0 2px 8px rgba(15,27,53,0.08);
-  --shadow-glow-blue:     0 0 40px rgba(26,86,219,0.2);
-  --shadow-glow-cyan:     0 0 40px rgba(2,132,199,0.15);
-  --shadow-glow-orange:   0 0 40px rgba(249,115,22,0.2);
-
-  /* ── Transitions ── */
-  --ease-out-expo:       cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-fast:     150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal:   250ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-smooth:   350ms cubic-bezier(0.16, 1, 0.3, 1);
-  --transition-spring:   450ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* ── Transitions (Specification: 150-300ms) ── */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 
   /* ── Layout ── */
-  --container-max-width: 1280px;
-  --container-wide:      1440px;
-  --nav-height:          72px;
+  --max-width: 1240px;
+  --header-height: 72px;
 }

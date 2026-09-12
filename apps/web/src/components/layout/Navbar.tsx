@@ -169,6 +169,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             <button
+              className={`menu-item ${activePage === 'certificates' || activePage === 'verify-certificate' ? 'active' : ''}`}
+              onClick={() => handleNavClick('certificates')}
+            >
+              Certificates
+            </button>
+
+            <button
               className={`menu-item ${activePage === 'about' ? 'active' : ''}`}
               onClick={() => handleNavClick('about')}
             >
@@ -315,6 +322,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => handleNavClick('why-choose-us')}
               >
                 Why DP Skilltech (15 Cap)
+              </button>
+              <button
+                className={`mobile-nav-link ${activePage === 'certificates' || activePage === 'verify-certificate' ? 'active' : ''}`}
+                onClick={() => handleNavClick('certificates')}
+              >
+                Certificates &amp; Verification
               </button>
               <button
                 className={`mobile-nav-link ${activePage === 'about' ? 'active' : ''}`}

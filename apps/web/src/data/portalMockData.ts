@@ -625,6 +625,39 @@ export interface AdminCertificate {
 
 export const ADMIN_CERTIFICATES: AdminCertificate[] = [
   {
+    id: 'cert-123',
+    certificateId: 'DPSK-2026-000123',
+    studentName: 'Arjun Sharma',
+    studentId: 'STU-1088',
+    courseTitle: 'Cybersecurity & Ethical Hacking',
+    issueDate: 'August 28, 2026',
+    verificationCode: 'a8f9c2d1e4b7891234567890abcdef1234567890abcdef1234567890abcdef12',
+    status: 'Issued',
+    grade: 'Distinction (94%)'
+  },
+  {
+    id: 'cert-124',
+    certificateId: 'DPSK-2026-000124',
+    studentName: 'Priya Raman',
+    studentId: 'STU-1089',
+    courseTitle: 'Full Stack Web Development',
+    issueDate: 'September 02, 2026',
+    verificationCode: 'b3e4f5a6c7d8901234567890abcdef1234567890abcdef1234567890abcdef34',
+    status: 'Issued',
+    grade: 'Distinction (96%)'
+  },
+  {
+    id: 'cert-125',
+    certificateId: 'DPSK-2026-000125',
+    studentName: 'Rahul Deshmukh',
+    studentId: 'STU-1090',
+    courseTitle: 'Full Stack Python + AI Architecture',
+    issueDate: 'September 08, 2026',
+    verificationCode: 'c5d6e7f8a9b0123456789012abcdef1234567890abcdef1234567890abcdef56',
+    status: 'Issued',
+    grade: 'First Class (89%)'
+  },
+  {
     id: 'cert-01',
     certificateId: 'DPS-PY-2026-8821',
     studentName: 'Vikram Malhotra',

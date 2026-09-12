@@ -1,0 +1,409 @@
+/* ==========================================================================
+   DP SKILL TECH — CERTIFICATES PAGE STYLES (70 / 20 / 10 RULE)
+   ========================================================================== */
+
+.certs-page-root {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+/* Hero Section */
+.certs-hero-section {
+  background: linear-gradient(180deg, #ffffff 0%, var(--bg-surface) 100%);
+  border-bottom: 1px solid var(--border-light);
+  padding: 64px 0 52px;
+  text-align: center;
+}
+
+.certs-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--brand-blue-light);
+  color: var(--brand-blue);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 18px;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+}
+
+.certs-hero-title {
+  font-size: clamp(30px, 4.5vw, 48px);
+  font-weight: 800;
+  color: var(--brand-navy);
+  letter-spacing: -0.02em;
+  max-width: 820px;
+  margin: 0 auto 18px;
+  line-height: 1.2;
+}
+
+.certs-hero-desc {
+  font-size: 17px;
+  color: var(--text-secondary);
+  max-width: 680px;
+  margin: 0 auto 36px;
+  line-height: 1.6;
+}
+
+.certs-hero-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn-certs-primary {
+  background-color: var(--brand-blue);
+  color: #ffffff;
+  border: none;
+  padding: 14px 28px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color var(--transition-fast);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.btn-certs-primary:hover {
+  background-color: var(--brand-blue-hover);
+}
+
+.btn-certs-secondary {
+  background-color: #ffffff;
+  color: var(--brand-navy);
+  border: 1px solid var(--border-light);
+  padding: 14px 24px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all var(--transition-fast);
+}
+
+.btn-certs-secondary:hover {
+  background-color: var(--bg-surface);
+  border-color: var(--brand-blue);
+  color: var(--brand-blue);
+}
+
+/* 7-Stage Pipeline Section */
+.pipeline-section {
+  padding: 64px 0;
+  background-color: #ffffff;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.section-header {
+  margin-bottom: 40px;
+}
+
+.section-header.text-center {
+  text-align: center;
+}
+
+.section-kicker {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--brand-blue);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-size: clamp(24px, 3.5vw, 36px);
+  font-weight: 800;
+  color: var(--brand-navy);
+  margin: 0 0 12px;
+  letter-spacing: -0.02em;
+}
+
+.section-desc {
+  font-size: 16px;
+  color: var(--text-secondary);
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.pipeline-visual-container {
+  overflow-x: auto;
+  padding: 16px 0;
+}
+
+.pipeline-flow-grid {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  min-width: 1000px;
+}
+
+.pipeline-card {
+  flex: 1;
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 20px 16px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pipeline-card.highlight-card {
+  background-color: #f0fdf4;
+  border-color: #86efac;
+}
+
+.p-step {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-secondary);
+  background-color: #ffffff;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.p-icon-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.icon-blue { background: #eff6ff; color: #2563eb; }
+.icon-cyan { background: #ecfeff; color: #0891b2; }
+.icon-orange { background: #fff7ed; color: #ea580c; }
+.icon-navy { background: #f1f5f9; color: #0f172a; }
+.icon-purple { background: #faf5ff; color: #7c3aed; }
+.icon-gold { background: #fefce8; color: #ca8a04; }
+.icon-green { background: #dcfce7; color: #16a34a; }
+
+.pipeline-card h3 {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--brand-navy);
+  margin: 0 0 6px;
+}
+
+.pipeline-card p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.pipeline-arrow-icon {
+  display: flex;
+  align-items: center;
+  color: var(--text-muted);
+  font-weight: 800;
+  font-size: 18px;
+}
+
+/* Representation Grid */
+.rep-section {
+  padding: 72px 0;
+}
+
+.rep-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 48px;
+  align-items: center;
+}
+
+.rep-lead {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 28px;
+}
+
+.rep-bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rep-bullet {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.bullet-icon-check {
+  color: var(--brand-green);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.rep-bullet strong {
+  display: block;
+  font-size: 15px;
+  color: var(--brand-navy);
+  margin-bottom: 4px;
+}
+
+.rep-bullet p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Official Showcase Certificate Card */
+.showcase-card-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.showcase-image-wrapper {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(226, 232, 240, 0.8);
+  background: #ffffff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.showcase-image-wrapper:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 28px 55px -12px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(37, 99, 235, 0.3);
+}
+
+.showcase-cert-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.showcase-cert-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 20px;
+  background: linear-gradient(180deg, transparent 0%, rgba(15, 23, 42, 0.85) 40%, rgba(15, 23, 42, 0.96) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  backdrop-filter: blur(8px);
+}
+
+.cert-verified-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(16, 185, 129, 0.45);
+  color: #34d399;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+
+.btn-showcase-verify {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-showcase-verify:hover {
+  background: #1d4ed8;
+  transform: scale(1.03);
+}
+
+.showcase-caption {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.showcase-caption strong {
+  color: var(--brand-navy);
+}
+
+/* CTA Banner */
+.verify-cta-banner {
+  padding: 30px 0 60px;
+}
+
+.cta-banner-card {
+  background: linear-gradient(135deg, var(--brand-navy) 0%, #1e293b 100%);
+  color: #ffffff;
+  border-radius: var(--radius-xl);
+  padding: 36px 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.cta-copy h2 {
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0 0 8px;
+}
+
+.cta-copy p {
+  font-size: 15px;
+  color: #cbd5e1;
+  margin: 0;
+  max-width: 500px;
+}
+
+.btn-banner-verify {
+  background-color: var(--brand-orange);
+  color: #ffffff;
+  border: none;
+  padding: 14px 28px;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color var(--transition-fast);
+}
+
+.btn-banner-verify:hover {
+  background-color: var(--brand-orange-hover);
+}
+
+@media (max-width: 900px) {
+  .rep-grid {
+    grid-template-columns: 1fr;
+  }
+}

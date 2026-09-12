@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Clock, Users, Calendar, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Search, Clock, Users, Calendar, Sparkles, CheckCircle2, ArrowRight, ShieldCheck, Zap, Code2 } from 'lucide-react';
 import './CoursesPage.css';
 import { COURSES_DATA } from '../../data/coursesData';
 
@@ -12,7 +12,8 @@ export const CoursesPage: React.FC<CoursesPageProps> = ({ onNavigate, onOpenDemo
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const categories = ['All', 'Full Stack Development', 'Data & Artificial Intelligence', 'Security & Networking', 'Databases & Engineering'];
+  // Dynamically extract real unique categories from COURSES_DATA
+  const categories = ['All', ...Array.from(new Set(COURSES_DATA.map((c) => c.category)))];
 
   const filteredCourses = COURSES_DATA.filter((course) => {
     const matchesCategory = selectedCategory === 'All' || course.category === selectedCategory;
@@ -22,6 +23,8 @@ export const CoursesPage: React.FC<CoursesPageProps> = ({ onNavigate, onOpenDemo
       course.skills.some((s) => s.toLowerCase().includes(searchQuery.toLowerCase()));
     return matchesCategory && matchesSearch;
   });
+
+  const isDefaultView = selectedCategory === 'All' && !searchQuery.trim();
 
   return (
     <div className="courses-page">
@@ -41,7 +44,7 @@ export const CoursesPage: React.FC<CoursesPageProps> = ({ onNavigate, onOpenDemo
               <input
                 type="text"
                 className="search-input"
-                placeholder="Search by tech stack, language or skill (e.g. Python, Spring Boot, PyTorch, SQL, Burp Suite)..."
+                placeholder="Search by tech stack, language or skill (e.g. Python, Spring Boot, React, SQL, Burp Suite)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -66,92 +69,211 @@ export const CoursesPage: React.FC<CoursesPageProps> = ({ onNavigate, onOpenDemo
       <section className="section-py courses-catalog-section">
         <div className="container">
           <div className="catalog-status">
-            <span>Showing <strong>{filteredCourses.length}</strong> of {COURSES_DATA.length} training programs</span>
+            <span>
+              Showing <strong>{filteredCourses.length}</strong> of {COURSES_DATA.length} training programs
+              {selectedCategory !== 'All' && ` in ${selectedCategory}`}
+            </span>
           </div>
 
           <div className="catalog-grid">
-            {filteredCourses.map((course) => (
-              <div key={course.id} className="catalog-course-card">
-                <div className="catalog-card-header">
-                  <span className="catalog-badge">{course.badge}</span>
-                  <span className="catalog-fee-note">{course.feeNote}</span>
-                </div>
+            {filteredCourses.map((course) => {
+              // In default view, give the Flagship course (Python + AI) the featured wide treatment
+              const isFeatured = isDefaultView && course.badge === 'Flagship Program';
 
-                <h3 className="catalog-course-title">{course.title}</h3>
-                <span className="catalog-category-tag">{course.category}</span>
-                <p className="catalog-course-desc">{course.shortDesc}</p>
+              if (isFeatured) {
+                return (
+                  <div key={course.id} className="catalog-course-card catalog-featured-card">
+                    <div className="featured-card-inner">
+                      <div className="featured-left-col">
+                        <div className="card-badge-row">
+                          <span className="catalog-badge badge-flagship">
+                            <Sparkles size={13} />
+                            <span>{course.badge}</span>
+                          </span>
+                          <span className="catalog-category-tag">{course.category}</span>
+                          <span className="catalog-fee-note">{course.feeNote}</span>
+                        </div>
 
-                {/* Key Attributes */}
-                <div className="catalog-attributes-grid">
-                  <div className="attr-item">
-                    <Clock size={15} />
-                    <div>
-                      <div className="attr-label">Duration</div>
-                      <div className="attr-val">{course.duration}</div>
+                        <h2 className="featured-course-title">{course.title}</h2>
+                        <p className="featured-course-desc">{course.shortDesc}</p>
+
+                        <div className="featured-pillars-strip">
+                          <div className="featured-pillar">
+                            <Zap size={16} className="text-orange" />
+                            <span>Full-Stack Microservices &amp; FastAPI</span>
+                          </div>
+                          <div className="featured-pillar">
+                            <Code2 size={16} className="text-blue" />
+                            <span>Applied GenAI &amp; LangChain Pipelines</span>
+                          </div>
+                          <div className="featured-pillar">
+                            <ShieldCheck size={16} className="text-emerald" />
+                            <span>Strict 15-Student Intimate Cohort</span>
+                          </div>
+                        </div>
+
+                        <div className="catalog-attributes-grid mt-3">
+                          <div className="attr-item">
+                            <Clock size={16} />
+                            <div>
+                              <div className="attr-label">Duration</div>
+                              <div className="attr-val">{course.duration}</div>
+                            </div>
+                          </div>
+
+                          <div className="attr-item">
+                            <Users size={16} />
+                            <div>
+                              <div className="attr-label">Batch Size</div>
+                              <div className="attr-val">{course.batchSize}</div>
+                            </div>
+                          </div>
+
+                          <div className="attr-item">
+                            <Calendar size={16} />
+                            <div>
+                              <div className="attr-label">Schedule</div>
+                              <div className="attr-val">{course.schedule}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="featured-right-col">
+                        <div className="featured-perks-box">
+                          <h4 className="perks-box-title">Course Architecture:</h4>
+                          <div className="catalog-perks">
+                            <div className="perk-item">
+                              <CheckCircle2 size={16} className="perk-check" />
+                              <span><strong>{course.modules.length} Intensive Modules:</strong> Foundational logic to deployment</span>
+                            </div>
+                            <div className="perk-item">
+                              <CheckCircle2 size={16} className="perk-check" />
+                              <span><strong>{course.projectsCount} Production Capstones:</strong> GitHub repositories ready for recruiters</span>
+                            </div>
+                            <div className="perk-item">
+                              <CheckCircle2 size={16} className="perk-check" />
+                              <span><strong>{course.mockInterviewsCount} 1-on-1 Live Mocks:</strong> Dedicated defenses with lead mentors</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="catalog-skills-wrap">
+                          <span className="skills-title">Core Technologies Covered:</span>
+                          <div className="skills-list">
+                            {course.skills.map((skill, i) => (
+                              <span key={i} className="skill-chip">{skill}</span>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="catalog-card-actions">
+                          <button
+                            className="btn-card-primary"
+                            onClick={() => onOpenDemoModal(course.id)}
+                          >
+                            <Sparkles size={16} />
+                            <span>Book Free Live Demo Class</span>
+                          </button>
+                          <button
+                            className="btn-card-secondary"
+                            onClick={() => onNavigate('course-detail', { slug: course.slug })}
+                          >
+                            <span>View Full Curriculum &amp; Syllabus</span>
+                            <ArrowRight size={15} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
+              return (
+                <div key={course.id} className="catalog-course-card">
+                  <div className="card-top-content">
+                    <div className="card-badge-row">
+                      <span className="catalog-badge">{course.badge}</span>
+                      <span className="catalog-category-tag">{course.category}</span>
+                    </div>
+
+                    <h3 className="catalog-course-title">{course.title}</h3>
+                    <p className="catalog-course-desc">{course.shortDesc}</p>
+
+                    {/* Key Attributes Strip */}
+                    <div className="catalog-attributes-grid">
+                      <div className="attr-item">
+                        <Clock size={15} />
+                        <div>
+                          <div className="attr-label">Duration</div>
+                          <div className="attr-val">{course.duration}</div>
+                        </div>
+                      </div>
+
+                      <div className="attr-item">
+                        <Users size={15} />
+                        <div>
+                          <div className="attr-label">Batch Size</div>
+                          <div className="attr-val">{course.batchSize}</div>
+                        </div>
+                      </div>
+
+                      <div className="attr-item">
+                        <Calendar size={15} />
+                        <div>
+                          <div className="attr-label">Schedule</div>
+                          <div className="attr-val">{course.schedule}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Modules & Projects Snapshot */}
+                    <div className="catalog-perks">
+                      <div className="perk-item">
+                        <CheckCircle2 size={15} className="perk-check" />
+                        <span><strong>{course.modules.length}</strong> Intensive Modules</span>
+                      </div>
+                      <div className="perk-item">
+                        <CheckCircle2 size={15} className="perk-check" />
+                        <span><strong>{course.projectsCount}</strong> Production Capstones</span>
+                      </div>
+                      <div className="perk-item">
+                        <CheckCircle2 size={15} className="perk-check" />
+                        <span><strong>{course.mockInterviewsCount}</strong> 1-on-1 Mock Interviews</span>
+                      </div>
+                    </div>
+
+                    {/* Skills Preview */}
+                    <div className="catalog-skills-wrap">
+                      <span className="skills-title">Core Technologies Covered:</span>
+                      <div className="skills-list">
+                        {course.skills.map((skill, i) => (
+                          <span key={i} className="skill-chip">{skill}</span>
+                        ))}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="attr-item">
-                    <Users size={15} />
-                    <div>
-                      <div className="attr-label">Batch Size</div>
-                      <div className="attr-val">{course.batchSize}</div>
-                    </div>
-                  </div>
-
-                  <div className="attr-item">
-                    <Calendar size={15} />
-                    <div>
-                      <div className="attr-label">Schedule</div>
-                      <div className="attr-val">{course.schedule}</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Modules & Projects Snapshot */}
-                <div className="catalog-perks">
-                  <div className="perk-item">
-                    <CheckCircle2 size={15} className="perk-check" />
-                    <span>{course.modules.length} Intensive Modules</span>
-                  </div>
-                  <div className="perk-item">
-                    <CheckCircle2 size={15} className="perk-check" />
-                    <span>{course.projectsCount} Industry Capstone Projects</span>
-                  </div>
-                  <div className="perk-item">
-                    <CheckCircle2 size={15} className="perk-check" />
-                    <span>{course.mockInterviewsCount} 1-on-1 Live Mock Interviews</span>
+                  {/* Card Actions (Stacked Full Width) */}
+                  <div className="catalog-card-actions">
+                    <button
+                      className="btn-card-primary"
+                      onClick={() => onOpenDemoModal(course.id)}
+                    >
+                      <Sparkles size={16} />
+                      <span>Book Free Live Demo Class</span>
+                    </button>
+                    <button
+                      className="btn-card-secondary"
+                      onClick={() => onNavigate('course-detail', { slug: course.slug })}
+                    >
+                      <span>View Full Curriculum</span>
+                      <ArrowRight size={15} />
+                    </button>
                   </div>
                 </div>
-
-                {/* Skills Preview */}
-                <div className="catalog-skills-wrap">
-                  <span className="skills-title">Core Technologies Covered:</span>
-                  <div className="skills-list">
-                    {course.skills.map((skill, i) => (
-                      <span key={i} className="skill-chip">{skill}</span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Card Actions */}
-                <div className="catalog-card-actions">
-                  <button
-                    className="btn btn-secondary"
-                    onClick={() => onNavigate('course-detail', { slug: course.slug })}
-                  >
-                    View Full Curriculum &rarr;
-                  </button>
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => onOpenDemoModal(course.id)}
-                  >
-                    <Sparkles size={16} />
-                    <span>Book Free Live Demo</span>
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {filteredCourses.length === 0 && (
@@ -183,7 +305,7 @@ export const CoursesPage: React.FC<CoursesPageProps> = ({ onNavigate, onOpenDemo
               At DP Skilltech, we reject the mass-enrollment webinar model. Every batch is locked at exactly 15 students to ensure that every learner receives real-time code reviews, active Zoom screen sharing, personalized doubt clearance, and private 1-to-1 mock interview evaluations.
             </p>
           </div>
-          <button className="btn btn-dark btn-lg" onClick={() => onOpenDemoModal()}>
+          <button className="btn-policy-cta" onClick={() => onOpenDemoModal()}>
             Experience a 15-Student Class
           </button>
         </div>

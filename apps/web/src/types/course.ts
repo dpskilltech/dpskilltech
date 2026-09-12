@@ -18,11 +18,12 @@ export interface CoursePricing {
 export interface Course {
   id: string;
   slug: string;
+  slugAliases?: string[];    // SEO aliases like 'cyber-security', 'web-development', 'python-programming', 'ai'
   title: string;
   badge: string;
-  badgeLabel?: string;       // QT-style: "Most Popular" | "High Demand" etc.
+  badgeLabel?: string;
   category: string;
-  subtitle?: string;         // Short tagline under title on card
+  subtitle?: string;
   shortDesc: string;
   fullDesc: string;
   duration: string;
@@ -31,13 +32,14 @@ export interface Course {
   mode: string;
   iconName: string;
   feeNote: string;
-  features?: string[];       // 3-4 checklist bullets on card
-  pricing?: CoursePricing;   // Pricing rows on card
+  features?: string[];
+  pricing?: CoursePricing;
   skills: string[];
   tools: string[];
   modules: CourseModule[];
   careerRoles: string[];
   prerequisites: string[];
+  learningOutcomes?: string[]; // "After completing this course, students will be able to..."
   projectsCount: number;
   mockInterviewsCount: number;
 }

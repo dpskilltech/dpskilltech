@@ -18,6 +18,8 @@ import { TestimonialsPage } from './pages/public/TestimonialsPage';
 import { FAQPage } from './pages/public/FAQPage';
 import { ContactPage } from './pages/public/ContactPage';
 import { LoginPage } from './pages/public/LoginPage';
+import { CertificatesPage } from './pages/public/CertificatesPage';
+import { VerifyCertificatePage } from './pages/public/VerifyCertificatePage';
 
 // Authenticated Portals (Rule 20: Clean separation of LMS from marketing site)
 import { StudentDashboard } from './pages/student/StudentDashboard';
@@ -46,6 +48,10 @@ const AppContent: React.FC = () => {
         const slug = hash.replace('course/', '');
         setActivePage('course-detail');
         setPageParams({ slug });
+      } else if (hash.startsWith('verify-certificate/')) {
+        const id = hash.replace('verify-certificate/', '');
+        setActivePage('verify-certificate');
+        setPageParams({ id });
       } else {
         setActivePage(hash);
         setPageParams({});
@@ -77,6 +83,8 @@ const AppContent: React.FC = () => {
       window.location.hash = '';
     } else if (page === 'course-detail' && params?.slug) {
       window.location.hash = `course/${params.slug}`;
+    } else if (page === 'verify-certificate' && params?.id) {
+      window.location.hash = `verify-certificate/${params.id}`;
     } else {
       window.location.hash = page;
     }
@@ -171,6 +179,12 @@ const AppContent: React.FC = () => {
         )}
         {activePage === 'login' && (
           <LoginPage onNavigate={navigate} onOpenDemoModal={openDemoModal} />
+        )}
+        {activePage === 'certificates' && (
+          <CertificatesPage onNavigate={navigate} onOpenDemoModal={openDemoModal} />
+        )}
+        {activePage === 'verify-certificate' && (
+          <VerifyCertificatePage initialCertificateId={pageParams.id} onNavigate={navigate} />
         )}
       </main>
 

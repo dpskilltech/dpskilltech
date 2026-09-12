@@ -1,0 +1,22 @@
+# DP Skill Tech Academy - Robots.txt
+# Strict indexation rules ensuring public educational content is discovered
+# while private LMS dashboards and authentication paths are protected.
+
+User-agent: *
+Allow: /
+Allow: /courses
+Allow: /about
+Allow: /certificates
+Allow: /verify-certificate
+Allow: /contact
+Allow: /faq
+Allow: /why-choose-us
+
+# Protect authenticated LMS dashboards from search engine indexing
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /student
+Disallow: /teacher
+Disallow: /api/
+
+Sitemap: https://www.dpskilltech.in/sitemap.xml

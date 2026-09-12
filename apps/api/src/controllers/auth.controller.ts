@@ -37,7 +37,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     const { email, password } = parseResult.data;
-    const user = db.findUserByEmail(email);
+    const user = await db.findUserByEmail(email);
 
     if (!user) {
       res.status(401).json({
@@ -75,10 +75,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       expiresIn: JWT_EXPIRES_IN
     });
 
+    const userProfile = await db.getAuthUserResponse(user);
+
     res.status(200).json({
       success: true,
       token,
-      user: db.getAuthUserResponse(user)
+      user: userProfile
     });
   } catch (error: any) {
     console.error('Login error:', error);
@@ -105,7 +107,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     const { fullName, email, password, phone, courseId } = parseResult.data;
 
-    const existingUser = db.findUserByEmail(email);
+    const existingUser = await db.findUserByEmail(email);
     if (existingUser) {
       res.status(409).json({
         success: false,
@@ -114,7 +116,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const { user } = db.createStudent({
+    const { user } = await db.createStudent({
       fullName,
       email,
       passwordPlain: password,
@@ -133,10 +135,12 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       expiresIn: JWT_EXPIRES_IN
     });
 
+    const userProfile = await db.getAuthUserResponse(user);
+
     res.status(201).json({
       success: true,
       token,
-      user: db.getAuthUserResponse(user)
+      user: userProfile
     });
   } catch (error: any) {
     console.error('Registration error:', error);
@@ -157,15 +161,17 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const user = db.findUserById(req.user.userId);
+    const user = await db.findUserById(req.user.userId);
     if (!user) {
       res.status(404).json({ success: false, error: 'User record not found.' });
       return;
     }
 
+    const userProfile = await db.getAuthUserResponse(user);
+
     res.status(200).json({
       success: true,
-      user: db.getAuthUserResponse(user)
+      user: userProfile
     });
   } catch (error: any) {
     console.error('GetMe error:', error);

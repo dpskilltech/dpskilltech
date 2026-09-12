@@ -1,0 +1,57 @@
+[
+  {
+    "id": "rev_1789245242579_9pji3",
+    "authorName": "Kavya Reddy",
+    "roleOrCourse": "Cyber Security Fundamentals & Ethical Defense",
+    "rating": 5,
+    "reviewText": "The 15-student cohort allowed me to get immediate answers in live class, and the Wireshark lab defense prepared me for technical rounds!",
+    "batchOrCohort": "Verified Learner",
+    "isVerified": true,
+    "createdAt": "2026-09-12T20:34:02.579Z",
+    "status": "approved"
+  },
+  {
+    "id": "rev_1789245057662_gikvf",
+    "authorName": "Kavya Reddy",
+    "roleOrCourse": "Cyber Security Fundamentals & Ethical Defense",
+    "rating": 5,
+    "reviewText": "The sandboxed hands-on challenges and Wireshark labs were exceptional. Highly recommend!",
+    "batchOrCohort": "Verified Learner",
+    "isVerified": true,
+    "createdAt": "2026-09-12T20:30:57.662Z",
+    "status": "approved"
+  },
+  {
+    "id": "rev_2026_001",
+    "authorName": "Aarav Sharma",
+    "roleOrCourse": "Full Stack Python + AI Architecture",
+    "rating": 5,
+    "reviewText": "The 15-student batch cap makes an enormous difference. In normal bootcamps, you are lost in a lecture of 150 people. Here Dr. Rajesh reviewed my FastAPI pull requests personally and gave line-by-line feedback on asynchronous database pooling.",
+    "batchOrCohort": "Batch #PY-2026-01",
+    "isVerified": true,
+    "createdAt": "2026-09-08T14:30:00.000Z",
+    "status": "approved"
+  },
+  {
+    "id": "rev_2026_002",
+    "authorName": "Pooja Hegde",
+    "roleOrCourse": "Cyber Security Fundamentals & Ethical Defense",
+    "rating": 5,
+    "reviewText": "The live sandboxed attack labs run directly in the browser—no difficult VM setups required on day one. We simulated realistic firewall breaches, practiced Wireshark packet capture, and analyzed actual vulnerability CVEs.",
+    "batchOrCohort": "Batch #CS-2026-A1",
+    "isVerified": true,
+    "createdAt": "2026-09-09T18:45:00.000Z",
+    "status": "approved"
+  },
+  {
+    "id": "rev_2026_003",
+    "authorName": "Rohan Gupta",
+    "roleOrCourse": "Modern Web Development (React & Node)",
+    "rating": 5,
+    "reviewText": "The 1-on-1 private mock interview was a game changer for my confidence. My interviewer pushed me on React fiber reconciliation and PostgreSQL index structures just like a Tier-1 tech interview. Absolutely worth every minute.",
+    "batchOrCohort": "Batch #WD-2026-02",
+    "isVerified": true,
+    "createdAt": "2026-09-10T11:15:00.000Z",
+    "status": "approved"
+  }
+]

@@ -503,6 +503,15 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
               </button>
               <button
                 type="button"
+                className={`portal-nav-item ${activeTab === 'reviews' ? 'active' : ''}`}
+                onClick={() => handleTabClick('reviews')}
+                title="Student Reviews & Feedback Moderation"
+              >
+                <MessageSquareQuote size={18} className="nav-icon text-yellow" />
+                {!isSidebarCollapsed && <span>Reviews Moderation</span>}
+              </button>
+              <button
+                type="button"
                 className={`portal-nav-item ${activeTab === 'analytics' ? 'active' : ''}`}
                 onClick={() => handleTabClick('analytics')}
                 title="Academy Analytics & Audits"

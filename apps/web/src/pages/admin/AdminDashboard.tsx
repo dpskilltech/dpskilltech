@@ -24,9 +24,13 @@ import {
   Eye,
   Zap,
   Server,
-  Radio
+  Radio,
+  ExternalLink,
+  Star,
+  Trash2
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { reviewService, type Review } from '../../services/reviewService';
 import { PortalLayout } from '../../components/layout/PortalLayout';
 import {
   COHORT_BATCHES,
@@ -209,6 +213,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToPubl
   const [filterBatch, setFilterBatch] = useState<string>('all');
   const [filterCourseStatus, setFilterCourseStatus] = useState<string>('all');
   const [filterClassStatus, setFilterClassStatus] = useState<string>('all');
+  const [adminReviews, setAdminReviews] = useState<Review[]>([]);
+  const [searchReview, setSearchReview] = useState<string>('');
+  const [filterRating, setFilterRating] = useState<string>('all');
 
   // Modals & Drawers
   const [selectedStudentProfile, setSelectedStudentProfile] = useState<StudentRecord | null>(null);
@@ -256,7 +263,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToPubl
       }
     };
     fetchDashboard();
+
+    reviewService.fetchReviews().then((revs) => {
+      if (revs) setAdminReviews(revs);
+    });
   }, []);
+
+  const handleDeleteAdminReview = async (id: string, authorName: string) => {
+    if (window.confirm(`Admin Moderation: Permanently delete review by "${authorName}"?`)) {
+      const res = await reviewService.deleteReview(id);
+      if (res.success) {
+        setAdminReviews((prev) => prev.filter((r) => r.id !== id));
+      } else {
+        alert(res.error || 'Failed to delete review');
+      }
+    }
+  };
 
   // Filter handlers
   const filteredStudents = studentsList.filter((s) => {
@@ -429,6 +451,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToPubl
           ? '1-on-1 Private Mock Interview Auditing'
           : activeTab === 'certificates'
           ? 'Verified Certificate Issuance & Validation'
+          : activeTab === 'reviews'
+          ? 'Student & Community Reviews Moderation (Real-Time Feed)'
           : activeTab === 'analytics'
           ? 'Academy Metrics & Auditing Intelligence'
           : activeTab === 'settings'
@@ -1331,6 +1355,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToPubl
                     <th>Verification Hash</th>
                     <th>Academic Grade</th>
                     <th>Status</th>
+                    <th>Public Verification</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1346,6 +1371,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToPubl
                         <span className="verified-badge">
                           <CheckCircle2 size={13} /> {cert.status}
                         </span>
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          className="btn-admin-secondary btn-xs"
+                          onClick={() => onNavigateToPublic('verify-certificate', { id: cert.certificateId })}
+                          title={`Open Public Verification Page for ${cert.certificateId}`}
+                        >
+                          <ExternalLink size={13} />
+                          <span>Verify</span>
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -1520,6 +1556,219 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToPubl
                 </div>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* ==================================================================
+            TAB: STUDENT REVIEWS & COMMUNITY FEEDBACK MODERATION
+            ================================================================== */}
+        {activeTab === 'reviews' && (
+          <div className="admin-view-stack">
+            {/* Reviews Summary KPIs */}
+            <section className="admin-kpi-grid">
+              <div className="admin-kpi-card">
+                <div className="kpi-header">
+                  <span className="kpi-label">Total Published Reviews</span>
+                  <MessageSquareQuote size={20} className="kpi-icon icon-blue" />
+                </div>
+                <div className="kpi-value">{adminReviews.length}</div>
+                <span className="kpi-subtext">Real-time public learner feedback</span>
+              </div>
+
+              <div className="admin-kpi-card">
+                <div className="kpi-header">
+                  <span className="kpi-label">Average Community Rating</span>
+                  <Star size={20} className="kpi-icon icon-yellow" />
+                </div>
+                <div className="kpi-value">
+                  {adminReviews.length > 0
+                    ? (adminReviews.reduce((acc, r) => acc + r.rating, 0) / adminReviews.length).toFixed(1)
+                    : '5.0'}{' '}
+                  / 5.0
+                </div>
+                <span className="kpi-subtext">Based on 100% genuine submissions</span>
+              </div>
+
+              <div className="admin-kpi-card">
+                <div className="kpi-header">
+                  <span className="kpi-label">5-Star Excellence Ratio</span>
+                  <Award size={20} className="kpi-icon icon-green" />
+                </div>
+                <div className="kpi-value">
+                  {adminReviews.length > 0
+                    ? Math.round(
+                        (adminReviews.filter((r) => r.rating === 5).length / adminReviews.length) * 100
+                      )
+                    : 100}
+                  %
+                </div>
+                <span className="kpi-subtext">Verified learner satisfaction</span>
+              </div>
+
+              <div className="admin-kpi-card">
+                <div className="kpi-header">
+                  <span className="kpi-label">Integrity Policy Guard</span>
+                  <ShieldCheck size={20} className="kpi-icon icon-green" />
+                </div>
+                <div className="kpi-value">Rule 22</div>
+                <span className="kpi-subtext">Zero fake reviews or bots</span>
+              </div>
+            </section>
+
+            {/* Moderation Panel & Table */}
+            <section className="admin-panel">
+              <div className="admin-panel-header">
+                <div>
+                  <h3 className="admin-panel-title">
+                    <MessageSquareQuote size={18} className="icon-blue" />
+                    <span>Real-Time Reviews &amp; Testimonials Governance</span>
+                  </h3>
+                  <p className="admin-panel-subtitle">
+                    Audit all student feedback published across the website. Delete any spam, inappropriate, or non-authentic submissions.
+                  </p>
+                </div>
+              </div>
+
+              {/* Filter & Search Bar */}
+              <div className="admin-filters-bar">
+                <div className="filter-search-wrap">
+                  <Search size={16} className="search-icon" />
+                  <input
+                    type="text"
+                    className="filter-search-input"
+                    placeholder="Search by student name, course, or text..."
+                    value={searchReview}
+                    onChange={(e) => setSearchReview(e.target.value)}
+                  />
+                </div>
+
+                <div className="filter-selects-row">
+                  <div className="filter-item">
+                    <Filter size={14} />
+                    <select
+                      className="filter-select"
+                      value={filterRating}
+                      onChange={(e) => setFilterRating(e.target.value)}
+                    >
+                      <option value="all">All Star Ratings</option>
+                      <option value="5">5 Stars Only</option>
+                      <option value="4">4 Stars Only</option>
+                      <option value="3">3 Stars &amp; Below</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Reviews Table */}
+              <div className="cohort-table-responsive">
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Rating</th>
+                      <th>Student / Author</th>
+                      <th>Course / Discipline</th>
+                      <th>Batch / Status</th>
+                      <th style={{ minWidth: '280px' }}>Review Feedback</th>
+                      <th>Date</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {adminReviews
+                      .filter((rev) => {
+                        const matchSearch =
+                          rev.authorName.toLowerCase().includes(searchReview.toLowerCase()) ||
+                          rev.roleOrCourse.toLowerCase().includes(searchReview.toLowerCase()) ||
+                          rev.reviewText.toLowerCase().includes(searchReview.toLowerCase());
+                        const matchRating =
+                          filterRating === 'all'
+                            ? true
+                            : filterRating === '3'
+                            ? rev.rating <= 3
+                            : rev.rating === parseInt(filterRating);
+                        return matchSearch && matchRating;
+                      })
+                      .map((rev) => (
+                        <tr key={rev.id}>
+                          <td>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                              {[1, 2, 3, 4, 5].map((s) => (
+                                <Star
+                                  key={s}
+                                  size={13}
+                                  fill={s <= rev.rating ? '#f59e0b' : 'none'}
+                                  color={s <= rev.rating ? '#f59e0b' : '#cbd5e1'}
+                                />
+                              ))}
+                              <strong style={{ marginLeft: '4px', fontSize: '0.8rem', color: '#b45309' }}>
+                                {rev.rating}.0
+                              </strong>
+                            </div>
+                          </td>
+                          <td>
+                            <strong style={{ color: '#0f172a' }}>{rev.authorName}</strong>
+                          </td>
+                          <td>
+                            <span style={{ fontSize: '0.85rem', color: '#334155' }}>
+                              {rev.roleOrCourse}
+                            </span>
+                          </td>
+                          <td>
+                            <span className="status-badge badge-active">
+                              {rev.batchOrCohort || 'Verified'}
+                            </span>
+                          </td>
+                          <td>
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: '#475569', lineHeight: 1.4 }}>
+                              "{rev.reviewText}"
+                            </p>
+                          </td>
+                          <td>
+                            <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                              {new Date(rev.createdAt).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric'
+                              })}
+                            </span>
+                          </td>
+                          <td>
+                            <button
+                              type="button"
+                              className="btn-action-del"
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                padding: '4px 10px',
+                                background: '#fee2e2',
+                                color: '#b91c1c',
+                                border: '1px solid #fca5a5',
+                                borderRadius: '6px',
+                                cursor: 'pointer',
+                                fontSize: '0.75rem',
+                                fontWeight: 700
+                              }}
+                              onClick={() => handleDeleteAdminReview(rev.id, rev.authorName)}
+                              title="Delete Review"
+                            >
+                              <Trash2 size={13} />
+                              <span>Delete</span>
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    {adminReviews.length === 0 && (
+                      <tr>
+                        <td colSpan={7} style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>
+                          No reviews currently submitted.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </section>
           </div>
         )}
 

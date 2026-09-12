@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Sparkles,
   ArrowRight,
@@ -10,7 +10,6 @@ import {
   ShieldCheck,
   Clock,
   Award,
-
   ChevronRight,
   ChevronLeft,
   ChevronDown,
@@ -24,13 +23,23 @@ import {
   Network,
   MessageSquare,
   RefreshCw,
-  UserCheck
+  HeartHandshake,
+  User,
+  Phone,
+  Mail,
+  BookOpen,
+  Calendar,
+  FileCheck2,
+  Star,
+  Trash2
 } from 'lucide-react';
 import './HomePage.css';
 import { COURSES_DATA } from '../../data/coursesData';
 import { TRAINERS_DATA } from '../../data/trainersData';
 import { FAQ_DATA } from '../../data/faqData';
-import { TESTIMONIALS_DATA } from '../../data/testimonialsData';
+import { useAuth } from '../../context/AuthContext';
+import { reviewService, type Review } from '../../services/reviewService';
+import { ReviewModal } from '../../components/modals/ReviewModal';
 
 interface HomePageProps {
   onNavigate: (page: string, params?: Record<string, string>) => void;
@@ -429,6 +438,284 @@ const TECH_NODES: TechNode[] = [
   }
 ];
 
+// Truth Trust Bar Pillars (100% Real, Honest & Practical)
+const TRUTH_TRUST_ITEMS = [
+  {
+    icon: Video,
+    title: '100% Live Instructor-Led',
+    desc: 'Mon–Sat live on Zoom with screen sharing'
+  },
+  {
+    icon: Users,
+    title: 'Max 15 Students / Batch',
+    desc: 'Strictly capped cohorts for 100% doubt clearing'
+  },
+  {
+    icon: Code2,
+    title: 'In-Browser Cloud Sandbox',
+    desc: 'Instant containerized labs; zero local errors'
+  },
+  {
+    icon: Terminal,
+    title: 'Real Capstone Projects',
+    desc: 'Production repositories that impress employers'
+  },
+  {
+    icon: ShieldCheck,
+    title: '1-on-1 Private Mock Interviews',
+    desc: 'Strictly 1 student + 1 senior interviewer'
+  },
+  {
+    icon: FileCheck2,
+    title: 'Publicly Verifiable Certificates',
+    desc: 'Permanent cryptographic verification URL'
+  },
+  {
+    icon: HeartHandshake,
+    title: 'Zero Fake Placement Claims',
+    desc: '100% authentic skills & genuine career readiness'
+  }
+];
+
+// The Core Academic Methodology: 7-Stage Pipeline
+// Learn → Practice → Project → Assessment → Completion → Certificate → Public Verification
+const METHODOLOGY_PIPELINE = [
+  {
+    step: '01',
+    id: 'learn',
+    title: 'LEARN',
+    subtitle: '100% Live Zoom Classes',
+    headline: 'Instructor-Led Live Interactive Lectures',
+    tagline: 'Strict 15-Student Limit • Mon–Sat 1.5h Cadence',
+    description:
+      'No pre-recorded 5-year-old videos. Learn live from seasoned engineering practitioners. With only 15 students per batch, instructors pause for doubts, inspect your screen in real time, and explain the why behind every line of code.',
+    bullets: [
+      'Mon to Sat daily 1.5-hour structured curriculum sessions',
+      'Small cohorts guarantee you are an active participant, not a spectator',
+      'Live architecture breakdowns, debugging walkthroughs, and code reviews'
+    ],
+    icon: Video
+  },
+  {
+    step: '02',
+    id: 'practice',
+    title: 'PRACTICE',
+    subtitle: 'Browser Sandboxed Lab',
+    headline: 'Hands-On Code Sandbox & Daily Lab Drills',
+    tagline: 'Isolated Linux Containers • 0 Local Setup Friction',
+    description:
+      'Immediately following each live lecture, solidify concepts in our cloud coding lab. Run real Python, Java, JavaScript, and SQL code in containerized environments with automated test cases and immediate execution feedback.',
+    bullets: [
+      'Zero installation hassles—open browser and start coding immediately',
+      'Step-by-step coding drills aligned with that day\'s lesson',
+      'Instant test-suite feedback and automated syntax linting'
+    ],
+    icon: Code2
+  },
+  {
+    step: '03',
+    id: 'project',
+    title: 'PROJECT',
+    subtitle: 'Production Capstones',
+    headline: 'End-to-End Industry-Grade Engineering Projects',
+    tagline: 'Real Architecture • Git Workflows • Cloud Deployments',
+    description:
+      'Move beyond toy tutorials. Build production-grade full-stack applications, security assessment labs, and AI vector pipelines that demonstrate genuine engineering ability to future employers.',
+    bullets: [
+      'Authentic architecture with relational databases, auth & microservices',
+      'Clean Git commit hygiene, PR reviews, and CI/CD pipelines',
+      'Public GitHub repositories that serve as your verifiable engineering portfolio'
+    ],
+    icon: Terminal
+  },
+  {
+    step: '04',
+    id: 'assessment',
+    title: 'ASSESSMENT',
+    subtitle: '1-on-1 Mock Defenses',
+    headline: 'Continuous Milestones & Private 1-to-1 Technical Mocks',
+    tagline: 'Never Group Interviews • Objective Rubric Scorecards',
+    description:
+      'Continuous weekly quizzes and coding evaluations keep learning on track. Finish with private 1-on-1 mock interviews where senior engineers test your system design, algorithm defense, and problem-solving under real pressure.',
+    bullets: [
+      'Strictly 1 student + 1 senior interviewer (Double-booking protected)',
+      '6-dimension rubric scorecard with granular technical feedback',
+      'Algorithmic defense, whiteboard architecture, and communication polish'
+    ],
+    icon: ShieldCheck
+  },
+  {
+    step: '05',
+    id: 'completion',
+    title: 'COMPLETION',
+    subtitle: 'Academic Milestones',
+    headline: '100% Curriculum Defense & Module Approvals',
+    tagline: 'Attendance Tracking • All Assignments Evaluated',
+    description:
+      'Completion is earned through discipline. Students must achieve at least 85% attendance, submit all hands-on assignments, and successfully defend their capstone architecture before our faculty review board.',
+    bullets: [
+      'Comprehensive module sign-offs by lead instructors',
+      'Transparent verification of code execution and project readiness',
+      'Personalized academic dossier documenting all completed competencies'
+    ],
+    icon: CheckCircle2
+  },
+  {
+    step: '06',
+    id: 'certificate',
+    title: 'CERTIFICATE',
+    subtitle: 'Tamper-Proof Credential',
+    headline: 'Cryptographically Unique & Verifiable Certificate',
+    tagline: 'Unique Certificate ID • QR Code • Anti-Forgery Watermark',
+    description:
+      'Upon passing capstone defense, students receive an official DP Skill Tech Certificate of Completion featuring a unique ID (e.g., DPSK-2026-000123), permanent issue timestamp, and embedded verification QR code.',
+    bullets: [
+      'Serialized ID registered permanently in the public registry',
+      'Official academic seal and verified skills taxonomy',
+      'Direct one-click export for LinkedIn and digital portfolios'
+    ],
+    icon: Award
+  },
+  {
+    step: '07',
+    id: 'verification',
+    title: 'PUBLIC VERIFICATION',
+    subtitle: 'Employer Trust Engine',
+    headline: 'Instant Public Verification for Employers & Universities',
+    tagline: 'Open Registry • Zero Student PII Leakage • Direct URL Lookup',
+    description:
+      'Anyone—HR managers, university admissions officers, or hiring directors—can verify student credentials at dpskilltech.in/#verify-certificate/:id. Displays verified skills, issue date, and authentic grade without exposing private phone numbers or emails.',
+    bullets: [
+      'Instant validation at https://www.dpskilltech.in/#verify-certificate/{id}',
+      'Protects student privacy—no phone numbers, emails, or personal addresses exposed',
+      'Guarantees 100% authentic credentials with zero possibility of forgery'
+    ],
+    icon: FileCheck2
+  }
+];
+
+// "Don't Just Learn. Build." Real Engineering Showcase Projects
+const SHOWCASE_PROJECTS = [
+  {
+    id: 'proj-1',
+    category: 'web',
+    categoryLabel: 'Web Development',
+    title: 'Full-Stack Multi-Tenant SaaS Platform',
+    desc: 'Production cloud application featuring role-based access control, subscription billing, relational PostgreSQL database, and responsive React frontend.',
+    stack: ['React 19', 'TypeScript', 'Node.js / Express', 'PostgreSQL', 'Docker', 'JWT Auth'],
+    deliverables: [
+      'Multi-tenant database schema with Prisma ORM',
+      'Secure session cookies with CSRF & rate limiting',
+      'Live deployment to cloud container with CI/CD'
+    ],
+    courseSlug: 'web-development'
+  },
+  {
+    id: 'proj-2',
+    category: 'web',
+    categoryLabel: 'Web Development',
+    title: 'High-Performance E-Commerce Engine',
+    desc: 'Scalable digital marketplace with real-time inventory management, Redis session caching, payment gateway webhooks, and search filtering.',
+    stack: ['Next.js / React', 'Tailwind / Vanilla CSS', 'Redis', 'Stripe API', 'PostgreSQL'],
+    deliverables: [
+      'Optimistic UI cart updates with local persistence',
+      'Atomic stock deduction transactions to prevent race conditions',
+      'Lighthouse 95+ performance score and SEO metadata'
+    ],
+    courseSlug: 'web-development'
+  },
+  {
+    id: 'proj-3',
+    category: 'cyber',
+    categoryLabel: 'Cyber Security',
+    title: 'Enterprise Vulnerability Scanner & Lab',
+    desc: 'Hands-on network reconnaissance and vulnerability assessment lab testing network services, port configurations, and defensive host hardening.',
+    stack: ['Kali Linux', 'Nmap', 'Wireshark', 'Python Scapy', 'Burp Suite', 'Snort IDS'],
+    deliverables: [
+      'Automated port scan script detecting service banners',
+      'Packet inspection capture and anomaly reporting',
+      'Hardening playbook mitigating discovered CVE vulnerabilities'
+    ],
+    courseSlug: 'cybersecurity-ethical-hacking'
+  },
+  {
+    id: 'proj-4',
+    category: 'cyber',
+    categoryLabel: 'Cyber Security',
+    title: 'OWASP Top 10 Attack & Defense Simulator',
+    desc: 'End-to-end web security lab demonstrating real SQL Injection, Cross-Site Scripting (XSS), Broken Access Control, and their modern defenses.',
+    stack: ['OWASP ZAP', 'PostgreSQL', 'Express.js', 'Content Security Policy', 'Bcrypt'],
+    deliverables: [
+      'Live demonstration of parameter tampering and XSS payload mitigation',
+      'Parameterized query refactoring eliminating SQL injection',
+      'Comprehensive penetration testing audit report'
+    ],
+    courseSlug: 'cybersecurity-ethical-hacking'
+  },
+  {
+    id: 'proj-5',
+    category: 'ai',
+    categoryLabel: 'Python & AI',
+    title: 'RAG Knowledge Assistant with Vector Search',
+    desc: 'Retrieval-Augmented Generation service querying custom enterprise documentation using vector embeddings, similarity search, and streaming responses.',
+    stack: ['Python 3.12', 'FastAPI', 'LangChain', 'pgvector / ChromaDB', 'OpenAI / Gemini API'],
+    deliverables: [
+      'Chunking and vector embedding pipeline for unstructured PDF/Docs',
+      'Cosine similarity retrieval with semantic re-ranking',
+      'Streaming token response API with sub-100ms latency'
+    ],
+    courseSlug: 'full-stack-python-ai'
+  },
+  {
+    id: 'proj-6',
+    category: 'ai',
+    categoryLabel: 'Python & AI',
+    title: 'High-Concurrency Data Pipeline & Bot',
+    desc: 'Asynchronous event pipeline processing financial data streams, calculating technical metrics, and executing automated notification triggers.',
+    stack: ['Python AsyncIO', 'Aiohttp', 'Pandas', 'PostgreSQL', 'Docker Compose'],
+    deliverables: [
+      'Concurrent async data ingestion handling 500+ requests/min',
+      'Automated data validation and anomaly detection triggers',
+      'Clean microservice architecture with containerized deployment'
+    ],
+    courseSlug: 'full-stack-python-ai'
+  }
+];
+
+// Why Parents Choose DP Skilltech
+const PARENT_VALUES = [
+  {
+    title: '15-Student Batch Cap',
+    desc: 'Your child will never be lost in a 200-person faceless webinar. Every instructor knows every student by name and monitors their daily participation.',
+    highlight: 'Personal Attention Guaranteed'
+  },
+  {
+    title: 'Mon–Sat Regular Timetable',
+    desc: 'Consistent 1.5-hour daily live classes instill true academic discipline, study routine, and structured progression rather than sporadic study bursts.',
+    highlight: 'Rigorous 6-Day Cadence'
+  },
+  {
+    title: 'Attendance & Progress Transparency',
+    desc: 'Real-time dashboards track attendance, lab completions, and quiz scores. Parents can request academic progress updates at any time.',
+    highlight: 'Transparent Tracking'
+  },
+  {
+    title: 'Real Practical Skills, No Gimmicks',
+    desc: 'We do not sell false 100% job guarantees. We teach authentic, rigorous computer science and engineering skills that employers actually hire for.',
+    highlight: '100% Honest Education'
+  },
+  {
+    title: 'Safe, Professional Online Learning',
+    desc: 'All classes and 1-on-1 mock interviews are conducted in supervised, authenticated environments with strict anti-harassment and code of conduct policies.',
+    highlight: 'Secure & Supervised'
+  },
+  {
+    title: 'Free Parent-Student Academic Counselling',
+    desc: 'Schedule a free 1-on-1 video call with our academic directors to understand career roadmaps, course prerequisites, and curriculum suitability.',
+    highlight: 'Open Dialogue'
+  }
+];
+
 export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal }) => {
   // Hero 3D Parallax Tilt State
   const [heroTilt, setHeroTilt] = useState({ x: 0, y: 0 });
@@ -442,14 +729,42 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
   // Technology Ecosystem State
   const [activeTech, setActiveTech] = useState<TechNode>(TECH_NODES[0]);
 
-  // Learning Journey Active Step
-  const [activeJourneyStep, setActiveJourneyStep] = useState(0);
+  // The 7-Stage Academic Methodology Pipeline Active Step
+  const [activePipelineStep, setActivePipelineStep] = useState(0);
+
+  // Projects Showcase Filter State
+  const [projectCategory, setProjectCategory] = useState<'all' | 'web' | 'cyber' | 'ai'>('all');
 
   // FAQ Accordion State
   const [openFaqId, setOpenFaqId] = useState<string | null>(FAQ_DATA[0].id);
 
-  // Testimonials Carousel State
+  const { role } = useAuth();
+
+  // Testimonials & Real-Time Community Reviews State
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [testiIndex, setTestiIndex] = useState(0);
+
+  useEffect(() => {
+    reviewService.fetchReviews().then((data) => {
+      if (data && data.length > 0) {
+        setReviews(data);
+      }
+    });
+  }, []);
+
+  const handleReviewSubmitted = (newReview: Review) => {
+    setReviews((prev) => [newReview, ...prev.filter((r) => r.id !== newReview.id)]);
+    setTestiIndex(0);
+  };
+
+  const handleDeleteReview = async (id: string, authorName: string) => {
+    if (window.confirm(`Admin Moderation: Delete review from "${authorName}"?`)) {
+      await reviewService.deleteReview(id);
+      setReviews((prev) => prev.filter((r) => r.id !== id));
+      setTestiIndex((prev) => (prev > 0 ? prev - 1 : 0));
+    }
+  };
 
   // Embedded Demo Form State
   const [demoFormData, setDemoFormData] = useState({
@@ -530,6 +845,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
           1. HERO SECTION — HIGH-CONVERTING EDTECH EXPERIENCE (Quality Thought / Byju's inspired)
           =================================================================== */}
       <section className="hero-editorial-section" onMouseMove={handleHeroMouseMove} onMouseLeave={handleHeroMouseLeave}>
+        <div className="hero-bg-tech-image" aria-hidden="true" />
         <div className="hero-ambient-glow" aria-hidden="true" />
         <div className="hero-grid-lines" aria-hidden="true" />
 
@@ -542,32 +858,30 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
             </div>
 
             <h1 className="hero-editorial-heading">
-              <span className="heading-line-tech">Master Real Tech.</span>
-              <span className="heading-line-systems">Build Production Systems.</span>
-              <span className="heading-line-career">Launch Your Engineering Career.</span>
+              <span className="heading-line-tech">Learn Real Technology Skills.</span>
+              <span className="heading-line-systems">Build Real Projects.</span>
+              <span className="heading-line-career">Build Your Future.</span>
             </h1>
 
-
             <p className="hero-editorial-description">
-              Industry-calibrated software engineering training across Full Stack Python + AI, Java Enterprise, Data Science, and Cybersecurity.
-              Experience daily 1.5-hour interactive live Zoom classes strictly capped at 15 students, sandboxed in-browser coding labs, and private 1-to-1 mock interviews.
+              DP Skill Tech provides practical, structured technology education for students. Master Coding, Cyber Security, Web Development, Software Engineering, and AI through instructor-led live classes, project-based building, and publicly verifiable certificates.
             </p>
 
             <div className="hero-editorial-cta-group">
               <button
                 className="btn-premium btn-premium-primary btn-lg btn-glow hero-primary-cta"
-                onClick={() => onOpenDemoModal()}
+                onClick={() => onNavigate('courses')}
               >
-                <Video size={19} />
-                <span>BOOK FREE LIVE DEMO</span>
+                <span>Explore Courses</span>
+                <ArrowRight size={18} />
               </button>
 
               <button
                 className="btn-premium btn-premium-secondary btn-lg hero-secondary-cta"
-                onClick={() => onNavigate('courses')}
+                onClick={() => onOpenDemoModal()}
               >
-                <span>EXPLORE 5 CURRICULA</span>
-                <ArrowRight size={18} />
+                <Video size={19} />
+                <span>Book a Free Counselling</span>
               </button>
             </div>
 
@@ -716,6 +1030,30 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
         </div>
       </section>
 
+
+      {/* ===================================================================
+          TRUTH TRUST BAR — 100% Real, Honest & Practical Pillars
+          =================================================================== */}
+      <section className="truth-trust-bar-section" aria-label="Trust & Verification Pillars">
+        <div className="container">
+          <div className="truth-trust-grid">
+            {TRUTH_TRUST_ITEMS.map((item, idx) => {
+              const IconComp = item.icon;
+              return (
+                <div key={idx} className="truth-trust-card">
+                  <div className="truth-trust-icon-box">
+                    <IconComp size={18} />
+                  </div>
+                  <div className="truth-trust-copy">
+                    <div className="truth-trust-title">{item.title}</div>
+                    <div className="truth-trust-desc">{item.desc}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
       {/* ===================================================================
           TRUST MARQUEE — Full-width scrolling social proof (edge-to-edge)
@@ -938,7 +1276,8 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
                   className="qt-card-cta"
                   onClick={() => onNavigate('course-detail', { slug: course.slug })}
                 >
-                  View Course Details <ArrowRight size={16} />
+                  <span>View Course</span>
+                  <ArrowRight size={16} />
                 </button>
               </div>
             ))}
@@ -952,7 +1291,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
       <section className="skills-master-section section-py">
         <div className="container">
           <div className="section-editorial-header">
-            <span className="qt-section-pill" style={{ background: '#fff3e8', color: '#c2440a', border: '1px solid #fcd8b0' }}>Our Curriculum</span>
+            <span className="qt-section-pill">Our Curriculum</span>
             <h2 className="qt-section-title">Skills You'll Master</h2>
             <p className="qt-section-sub">Comprehensive skill set covering every aspect of modern full-stack & AI development</p>
           </div>
@@ -996,6 +1335,101 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
                   {cat.skills.map((sk, si) => (
                     <span key={si} className="skill-pill">{sk}</span>
                   ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===================================================================
+          4c. "DON'T JUST LEARN. BUILD." — PROJECT-BASED LEARNING SHOWCASE
+          =================================================================== */}
+      <section className="projects-showcase-section section-py" id="projects-showcase">
+        <div className="container">
+          <div className="section-editorial-header">
+            <span className="editorial-tag">Hands-On Engineering</span>
+            <h2 className="editorial-title">Don't Just Learn. Build.</h2>
+            <p className="editorial-subtitle">
+              Theory is forgotten in weeks; software you deploy to production becomes your permanent portfolio. Every DP Skill Tech student builds, tests, and defends real-world software systems.
+            </p>
+          </div>
+
+          {/* Project Category Filter Tabs */}
+          <div className="project-category-tabs">
+            <button
+              type="button"
+              className={`project-tab-btn ${projectCategory === 'all' ? 'active' : ''}`}
+              onClick={() => setProjectCategory('all')}
+            >
+              All Engineering Projects
+            </button>
+            <button
+              type="button"
+              className={`project-tab-btn ${projectCategory === 'web' ? 'active' : ''}`}
+              onClick={() => setProjectCategory('web')}
+            >
+              Web Development
+            </button>
+            <button
+              type="button"
+              className={`project-tab-btn ${projectCategory === 'cyber' ? 'active' : ''}`}
+              onClick={() => setProjectCategory('cyber')}
+            >
+              Cyber Security
+            </button>
+            <button
+              type="button"
+              className={`project-tab-btn ${projectCategory === 'ai' ? 'active' : ''}`}
+              onClick={() => setProjectCategory('ai')}
+            >
+              Python &amp; AI
+            </button>
+          </div>
+
+          {/* Project Cards Grid */}
+          <div className="showcase-projects-grid">
+            {SHOWCASE_PROJECTS.filter((p) => projectCategory === 'all' || p.category === projectCategory).map((project) => (
+              <div key={project.id} className="showcase-project-card">
+                <div className="project-card-badge-row">
+                  <span className={`project-cat-badge badge-${project.category}`}>
+                    {project.categoryLabel}
+                  </span>
+                  <span className="project-verified-tag">
+                    <CheckCircle2 size={13} /> Production Capstone
+                  </span>
+                </div>
+
+                <h3 className="showcase-project-title">{project.title}</h3>
+                <p className="showcase-project-desc">{project.desc}</p>
+
+                <div className="project-stack-wrap">
+                  {project.stack.map((tech, i) => (
+                    <span key={i} className="project-tech-pill">{tech}</span>
+                  ))}
+                </div>
+
+                <div className="project-deliverables-box">
+                  <span className="deliverables-title">Key Engineering Deliverables:</span>
+                  <ul className="deliverables-list">
+                    {project.deliverables.map((item, idx) => (
+                      <li key={idx}>
+                        <CheckCircle2 size={14} className="text-emerald" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="project-card-footer">
+                  <button
+                    type="button"
+                    className="btn-project-explore"
+                    onClick={() => onNavigate('course-detail', { slug: project.courseSlug })}
+                  >
+                    <span>Learn in Curriculum</span>
+                    <ArrowRight size={15} />
+                  </button>
                 </div>
               </div>
             ))}
@@ -1372,157 +1806,101 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
       </section>
 
       {/* ===================================================================
-          8. THE 6-STEP LEARNING JOURNEY — STORYTELLING SECTION
+          8. THE 7-STAGE ACADEMIC PIPELINE
+          Learn → Practice → Project → Assessment → Completion → Certificate → Public Verification
           =================================================================== */}
-      <section className="learning-journey-section section-py">
+      <section className="learning-journey-section section-py" id="methodology">
         <div className="container">
           <div className="section-editorial-header">
-            <span className="editorial-tag">Structured Roadmap</span>
-            <h2 className="editorial-title">From First Line of Code to Interview Ready</h2>
+            <span className="editorial-tag">Core Academic Methodology</span>
+            <h2 className="editorial-title">
+              Learn &rarr; Practice &rarr; Project &rarr; Assessment &rarr; Completion &rarr; Certificate &rarr; Public Verification
+            </h2>
             <p className="editorial-subtitle">
-              Our 6-stage engineering roadmap ensures every concept is absorbed through live lectures, lab execution, portfolio building, and interview defense.
+              A rigorous, progressive engineering pipeline designed to transform ambitious learners into industry-ready engineers with publicly verifiable credentials.
             </p>
           </div>
 
           <div className="journey-interactive-flow">
             {/* Step Navigation Bar */}
-            <div className="journey-steps-nav">
-              {[
-                { step: '01', title: 'LEARN', desc: 'Live Zoom Lectures' },
-                { step: '02', title: 'PRACTICE', desc: 'Browser Sandbox Lab' },
-                { step: '03', title: 'BUILD', desc: 'Production Capstones' },
-                { step: '04', title: 'TEST', desc: 'Quizzes & Evaluations' },
-                { step: '05', title: 'INTERVIEW', desc: '1-on-1 Mock Sessions' },
-                { step: '06', title: 'CAREER', desc: 'Resume & Placement Ready' }
-              ].map((item, idx) => (
+            <div className="journey-steps-nav methodology-pipeline-nav">
+              {METHODOLOGY_PIPELINE.map((item, idx) => (
                 <button
-                  key={idx}
-                  className={`journey-step-btn ${activeJourneyStep === idx ? 'active' : ''}`}
-                  onClick={() => setActiveJourneyStep(idx)}
+                  key={item.id}
+                  className={`journey-step-btn pipeline-step-btn ${activePipelineStep === idx ? 'active' : ''}`}
+                  onClick={() => setActivePipelineStep(idx)}
                 >
                   <span className="step-num">{item.step}</span>
                   <span className="step-title">{item.title}</span>
-                  <span className="step-sub">{item.desc}</span>
+                  <span className="step-sub">{item.subtitle}</span>
                 </button>
               ))}
             </div>
 
-            {/* Active Step Showcase Card */}
-            <div className="journey-stage-detail-card">
-              {activeJourneyStep === 0 && (
-                <div className="stage-content">
-                  <div className="stage-meta">
-                    <span className="stage-badge">Stage 01 • Interactive Theory</span>
-                    <h3 className="stage-heading">1.5h Daily Live Classes with Capped Batches</h3>
-                    <p className="stage-desc">
-                      Every session starts with live code exploration. We cap every batch at 15 students so you can interrupt, ask questions, and share your screen when a concept doesn't compile.
-                    </p>
-                    <div className="stage-bullets">
-                      <div><CheckCircle2 size={16} className="text-cyan" /> Mon–Sat regular schedule for continuous momentum</div>
-                      <div><CheckCircle2 size={16} className="text-cyan" /> Direct screen sharing and personalized bug walkthroughs</div>
-                    </div>
-                  </div>
-                  <div className="stage-visual">
-                    <div className="stage-icon-halo"><Video size={48} /></div>
-                  </div>
-                </div>
-              )}
+            {/* Active Stage Detail Card */}
+            {(() => {
+              const currentStage = METHODOLOGY_PIPELINE[activePipelineStep] || METHODOLOGY_PIPELINE[0];
+              const IconComp = currentStage.icon;
+              return (
+                <div className="journey-stage-detail-card">
+                  <div className="stage-content">
+                    <div className="stage-meta">
+                      <div className="stage-badge-row">
+                        <span className="stage-badge">Stage {currentStage.step} • {currentStage.title}</span>
+                        <span className="stage-tagline">{currentStage.tagline}</span>
+                      </div>
+                      <h3 className="stage-heading">{currentStage.headline}</h3>
+                      <p className="stage-desc">{currentStage.description}</p>
+                      <div className="stage-bullets">
+                        {currentStage.bullets.map((bullet, bIdx) => (
+                          <div key={bIdx}>
+                            <CheckCircle2 size={16} className="text-cyan" />
+                            <span>{bullet}</span>
+                          </div>
+                        ))}
+                      </div>
 
-              {activeJourneyStep === 1 && (
-                <div className="stage-content">
-                  <div className="stage-meta">
-                    <span className="stage-badge">Stage 02 • Immediate Hands-On</span>
-                    <h3 className="stage-heading">Sandboxed In-Browser Coding Lab</h3>
-                    <p className="stage-desc">
-                      Within minutes of class finishing, open your lab challenge in your browser. Our isolated cloud containers run your code against automated unit tests and show instant feedback.
-                    </p>
-                    <div className="stage-bullets">
-                      <div><CheckCircle2 size={16} className="text-cyan" /> 0 configuration required; zero local environment errors</div>
-                      <div><CheckCircle2 size={16} className="text-cyan" /> Syntax highlighting, test runner output, and hints</div>
+                      <div className="stage-cta-row">
+                        {currentStage.id === 'verification' ? (
+                          <button
+                            type="button"
+                            className="btn-premium btn-premium-primary btn-sm"
+                            onClick={() => onNavigate('verify-certificate')}
+                          >
+                            <span>Open Public Certificate Registry</span>
+                            <ArrowRight size={15} />
+                          </button>
+                        ) : currentStage.id === 'certificate' ? (
+                          <button
+                            type="button"
+                            className="btn-premium btn-premium-primary btn-sm"
+                            onClick={() => onNavigate('certificates')}
+                          >
+                            <span>View Certificate Standards</span>
+                            <Award size={15} />
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className="btn-premium btn-premium-secondary btn-sm"
+                            onClick={() => onNavigate('courses')}
+                          >
+                            <span>Explore Applicable Courses</span>
+                            <ArrowRight size={15} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    <div className="stage-visual">
+                      <div className="stage-icon-halo">
+                        <IconComp size={56} />
+                      </div>
+                      <span className="stage-visual-step-label">Stage {currentStage.step} of 07</span>
                     </div>
                   </div>
-                  <div className="stage-visual">
-                    <div className="stage-icon-halo"><Code2 size={48} /></div>
-                  </div>
                 </div>
-              )}
-
-              {activeJourneyStep === 2 && (
-                <div className="stage-content">
-                  <div className="stage-meta">
-                    <span className="stage-badge">Stage 03 • Engineering Portfolios</span>
-                    <h3 className="stage-heading">End-to-End Enterprise Capstone Projects</h3>
-                    <p className="stage-desc">
-                      Build full-stack applications with authenticated APIs, database schemas, and AI integrations. Deploy them to real cloud infrastructure with GitHub version control.
-                    </p>
-                    <div className="stage-bullets">
-                      <div><CheckCircle2 size={16} className="text-cyan" /> Production repositories that demonstrate real competence to employers</div>
-                      <div><CheckCircle2 size={16} className="text-cyan" /> Code review checkpoints by experienced instructors</div>
-                    </div>
-                  </div>
-                  <div className="stage-visual">
-                    <div className="stage-icon-halo"><Terminal size={48} /></div>
-                  </div>
-                </div>
-              )}
-
-              {activeJourneyStep === 3 && (
-                <div className="stage-content">
-                  <div className="stage-meta">
-                    <span className="stage-badge">Stage 04 • Continuous Verification</span>
-                    <h3 className="stage-heading">Automated MCQs & Code Assessments</h3>
-                    <p className="stage-desc">
-                      Regular quizzes reinforce syntax and architectural tradeoffs. Objective rubric scoring pinpoints areas where your comprehension needs additional review.
-                    </p>
-                    <div className="stage-bullets">
-                      <div><CheckCircle2 size={16} className="text-cyan" /> Weekly checkpoint tests to catch misconceptions early</div>
-                      <div><CheckCircle2 size={16} className="text-cyan" /> Performance analytics tracking your progression</div>
-                    </div>
-                  </div>
-                  <div className="stage-visual">
-                    <div className="stage-icon-halo"><Award size={48} /></div>
-                  </div>
-                </div>
-              )}
-
-              {activeJourneyStep === 4 && (
-                <div className="stage-content">
-                  <div className="stage-meta">
-                    <span className="stage-badge">Stage 05 • Rigorous Simulation</span>
-                    <h3 className="stage-heading">Private 1-to-1 Live Mock Interviews</h3>
-                    <p className="stage-desc">
-                      Face tough technical questions, live whiteboard coding, and behavioral checks in a private 1-to-1 session. Receive detailed feedback on technical depth and communication.
-                    </p>
-                    <div className="stage-bullets">
-                      <div><CheckCircle2 size={16} className="text-cyan" /> Strict 1 interviewer to 1 student privacy guaranteed</div>
-                      <div><CheckCircle2 size={16} className="text-cyan" /> Objective scorecards across System Design, Code, and Logic</div>
-                    </div>
-                  </div>
-                  <div className="stage-visual">
-                    <div className="stage-icon-halo"><ShieldCheck size={48} /></div>
-                  </div>
-                </div>
-              )}
-
-              {activeJourneyStep === 5 && (
-                <div className="stage-content">
-                  <div className="stage-meta">
-                    <span className="stage-badge">Stage 06 • Career Transition</span>
-                    <h3 className="stage-heading">Interview Readiness & Cryptographic Certificate</h3>
-                    <p className="stage-desc">
-                      Graduate with a verifiable digital certificate, an optimized technical portfolio, and the muscle memory needed to clear technical rounds with confidence.
-                    </p>
-                    <div className="stage-bullets">
-                      <div><CheckCircle2 size={16} className="text-cyan" /> Verifiable credential shareable on LinkedIn and portfolios</div>
-                      <div><CheckCircle2 size={16} className="text-cyan" /> Career support with resume review and technical interview polish</div>
-                    </div>
-                  </div>
-                  <div className="stage-visual">
-                    <div className="stage-icon-halo"><UserCheck size={48} /></div>
-                  </div>
-                </div>
-              )}
-            </div>
+              );
+            })()}
           </div>
         </div>
       </section>
@@ -1606,6 +1984,54 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
       </section>
 
       {/* ===================================================================
+          9b. PARENT-FRIENDLY TRANSPARENCY SECTION
+          Structured, Safe, Accountable Learning for Serious Students
+          =================================================================== */}
+      <section className="parents-trust-section section-py" id="parents-guide">
+        <div className="container">
+          <div className="parents-trust-card">
+            <div className="parents-trust-header">
+              <span className="editorial-tag" style={{ background: '#ecfdf5', color: '#047857', borderColor: '#a7f3d0' }}>
+                Parent &amp; Guardian Assurance
+              </span>
+              <h2 className="editorial-title">Built on Accountability, Safety, and Genuine Skill</h2>
+              <p className="editorial-subtitle">
+                We understand that investing in your child's technology education is a critical decision. Here is how DP Skill Tech provides a transparent, disciplined, and pressure-free learning environment.
+              </p>
+            </div>
+
+            <div className="parents-values-grid">
+              {PARENT_VALUES.map((val, vIdx) => (
+                <div key={vIdx} className="parent-value-box">
+                  <div className="parent-value-top">
+                    <span className="parent-value-num">0{vIdx + 1}</span>
+                    <span className="parent-value-highlight">{val.highlight}</span>
+                  </div>
+                  <h4 className="parent-value-title">{val.title}</h4>
+                  <p className="parent-value-desc">{val.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="parents-trust-cta-banner">
+              <div className="cta-banner-text">
+                <h4>Have questions about our schedule, fees, or instructor qualifications?</h4>
+                <p>Speak directly with our academic guidance counsellors. No sales pressure—just honest advice.</p>
+              </div>
+              <button
+                type="button"
+                className="btn-premium btn-premium-primary btn-md"
+                onClick={() => onOpenDemoModal()}
+              >
+                <HeartHandshake size={18} />
+                <span>Book a Free Counselling Call</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===================================================================
           10. TRAINERS PREVIEW — LARGE PORTRAIT CARDS
           =================================================================== */}
       <section className="trainers-editorial-section section-py">
@@ -1652,60 +2078,152 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
       </section>
 
       {/* ===================================================================
-          11. TESTIMONIALS CAROUSEL — ZERO FAKE REVIEWS GUARANTEE
+          11. TESTIMONIALS CAROUSEL — ZERO FAKE REVIEWS GUARANTEE & REAL-TIME FEED
           =================================================================== */}
       <section className="testimonials-carousel-section section-py">
         <div className="container">
           <div className="section-editorial-header">
-            <span className="editorial-tag">Student Feedback & Integrity</span>
+            <span className="editorial-tag">Student Feedback &amp; Integrity</span>
             <h2 className="editorial-title">Our Zero-Fake-Review Guarantee</h2>
             <p className="editorial-subtitle">
-              We never fabricate student reviews, testimonials, or placement percentages. As our cohorts complete their capstone defenses, verified testimonials will be published here with student consent.
+              Under our strict integrity policy (Rule 22), we never fabricate student reviews, testimonials, or placement percentages. Authentic real-time reviews from enrolled learners and demo participants appear directly below.
             </p>
+            <div className="review-cta-toolbar mt-3">
+              <button
+                type="button"
+                className="btn-premium btn-premium-primary"
+                onClick={() => setIsReviewModalOpen(true)}
+              >
+                <Star size={16} fill="#ffffff" color="#ffffff" />
+                <span>Write a Real Review</span>
+              </button>
+              <button
+                type="button"
+                className="btn-premium btn-premium-secondary"
+                onClick={() => onNavigate('testimonials')}
+              >
+                <span>View Full Testimonials Portal &rarr;</span>
+              </button>
+            </div>
           </div>
 
           <div className="testimonial-carousel-panel">
-            <div className="carousel-quote-card">
-              <div className="carousel-top-badge">
-                <span className="badge-cat">{TESTIMONIALS_DATA[testiIndex].badge}</span>
-                <span className="badge-integrity">Verified Policy</span>
-              </div>
+            {reviews.length > 0 ? (
+              (() => {
+                const currentRev = reviews[testiIndex % reviews.length];
+                return (
+                  <div className="carousel-quote-card" key={currentRev.id}>
+                    <div className="carousel-top-badge">
+                      <div className="carousel-rating-stars">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <Star
+                            key={s}
+                            size={16}
+                            fill={s <= currentRev.rating ? '#f59e0b' : 'none'}
+                            color={s <= currentRev.rating ? '#f59e0b' : '#cbd5e1'}
+                          />
+                        ))}
+                        <span className="rating-num-label">{currentRev.rating}.0 / 5.0</span>
+                      </div>
 
-              <blockquote className="carousel-quote-body">
-                "{TESTIMONIALS_DATA[testiIndex].description}"
-              </blockquote>
+                      <div className="carousel-badge-group">
+                        <span className="badge-cat">
+                          {currentRev.batchOrCohort || 'Verified Learner'}
+                        </span>
+                        <span className="badge-integrity">
+                          <ShieldCheck size={13} /> Real-Time Verified
+                        </span>
 
-              <div className="carousel-author-strip">
-                <div className="author-details">
-                  <div className="author-name">{TESTIMONIALS_DATA[testiIndex].placeholderTitle}</div>
-                  <div className="author-sub">{TESTIMONIALS_DATA[testiIndex].statusNote}</div>
+                        {role === 'ADMIN' && (
+                          <button
+                            type="button"
+                            className="badge-admin-del"
+                            onClick={() => handleDeleteReview(currentRev.id, currentRev.authorName)}
+                            title="Admin Action: Delete Review"
+                          >
+                            <Trash2 size={13} />
+                            <span>Delete</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    <blockquote className="carousel-quote-body">
+                      "{currentRev.reviewText}"
+                    </blockquote>
+
+                    <div className="carousel-author-strip">
+                      <div className="author-details">
+                        <div className="author-name">{currentRev.authorName}</div>
+                        <div className="author-sub">
+                          {currentRev.roleOrCourse} •{' '}
+                          {new Date(currentRev.createdAt).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Carousel Arrows */}
+                      <div className="carousel-controls">
+                        <button
+                          type="button"
+                          className="carousel-btn"
+                          onClick={() =>
+                            setTestiIndex((prev) => (prev === 0 ? reviews.length - 1 : prev - 1))
+                          }
+                          aria-label="Previous review"
+                        >
+                          <ChevronLeft size={18} />
+                        </button>
+                        <span className="carousel-counter">
+                          {(testiIndex % reviews.length) + 1} / {reviews.length}
+                        </span>
+                        <button
+                          type="button"
+                          className="carousel-btn"
+                          onClick={() =>
+                            setTestiIndex((prev) => (prev === reviews.length - 1 ? 0 : prev + 1))
+                          }
+                          aria-label="Next review"
+                        >
+                          <ChevronRight size={18} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()
+            ) : (
+              <div className="carousel-quote-card">
+                <div className="carousel-top-badge">
+                  <span className="badge-cat">Batch #2026-A1 Ongoing</span>
+                  <span className="badge-integrity">Verified Policy</span>
                 </div>
-
-                {/* Carousel Arrows */}
-                <div className="carousel-controls">
-                  <button
-                    className="carousel-btn"
-                    onClick={() => setTestiIndex((prev) => (prev === 0 ? TESTIMONIALS_DATA.length - 1 : prev - 1))}
-                    aria-label="Previous testimonial"
-                  >
-                    <ChevronLeft size={18} />
-                  </button>
-                  <span className="carousel-counter">
-                    {testiIndex + 1} / {TESTIMONIALS_DATA.length}
-                  </span>
-                  <button
-                    className="carousel-btn"
-                    onClick={() => setTestiIndex((prev) => (prev === TESTIMONIALS_DATA.length - 1 ? 0 : prev + 1))}
-                    aria-label="Next testimonial"
-                  >
-                    <ChevronRight size={18} />
-                  </button>
+                <blockquote className="carousel-quote-body">
+                  "Under DP Skilltech integrity policy (Rule 22), authentic reviews will appear here in real-time as learners progress through their programs."
+                </blockquote>
+                <div className="carousel-author-strip">
+                  <div className="author-details">
+                    <div className="author-name">Awaiting First Community Review</div>
+                    <div className="author-sub">Be the first to share your experience!</div>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </section>
+
+      {/* Review Submission Modal */}
+      <ReviewModal
+        isOpen={isReviewModalOpen}
+        onClose={() => setIsReviewModalOpen(false)}
+        onReviewSubmitted={handleReviewSubmitted}
+      />
+
+
 
       {/* ===================================================================
           12. NUMBERED FAQ ACCORDION (01, 02, 03, 04)
@@ -1763,51 +2281,111 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
 
       {/* ===================================================================
           13. BOOK FREE DEMO FORM PANEL
-          "Ready to Start Building Your Future?"
+          "Experience It Live" — High-Converting EdTech Preview
           =================================================================== */}
       <section className="demo-booking-panel-section section-py" id="demo-booking">
         <div className="container">
           <div className="demo-panel-card">
             <div className="demo-panel-grid">
-              {/* Left Copy */}
+              {/* Left Copy: Value Proposition & Live Session Highlights */}
               <div className="demo-panel-copy">
-                <span className="editorial-tag text-cyan">Experience It Live</span>
+                <div className="demo-live-badge">
+                  <span className="live-pulse-dot" />
+                  <span>FREE LIVE ZOOM DEMO SESSION</span>
+                </div>
+
                 <h2 className="demo-panel-heading">
-                  Ready to Start Building Your Future?
+                  Experience It Live<br />
+                  <span className="heading-highlight">Before You Decide.</span>
                 </h2>
+
                 <p className="demo-panel-desc">
-                  Join a live Zoom classroom demo session. See how our 15-student capped cohorts interact, test our sandboxed coding lab, and speak with our lead faculty before enrolling.
+                  Sit in on an active live lecture. See firsthand how our instructors break down real code, answer every student question in real time, and guide hands-on cloud labs. Strictly capped at 15 students. No credit card, no pressure.
                 </p>
 
-                <div className="demo-feature-checks">
-                  <div className="check-line">
-                    <CheckCircle2 size={18} className="text-cyan" />
-                    <span>Free 45-minute interactive live preview session</span>
+                <div className="demo-feature-cards">
+                  <div className="demo-feature-card">
+                    <div className="feature-icon-box">
+                      <Video size={18} />
+                    </div>
+                    <div>
+                      <h4 className="feature-card-title">45-Minute Live Interactive Zoom</h4>
+                      <p className="feature-card-desc">Watch a live session, interact directly with the instructor, and experience our intimate 15-student cohort format.</p>
+                    </div>
                   </div>
-                  <div className="check-line">
-                    <CheckCircle2 size={18} className="text-cyan" />
-                    <span>Experience our in-browser coding sandbox first-hand</span>
+
+                  <div className="demo-feature-card">
+                    <div className="feature-icon-box">
+                      <Code2 size={18} />
+                    </div>
+                    <div>
+                      <h4 className="feature-card-title">In-Browser Cloud Sandbox Preview</h4>
+                      <p className="feature-card-desc">Write and run real code during the session in our isolated Linux containers with zero setup required.</p>
+                    </div>
                   </div>
-                  <div className="check-line">
-                    <CheckCircle2 size={18} className="text-cyan" />
-                    <span>No obligation, no aggressive sales pitches</span>
+
+                  <div className="demo-feature-card">
+                    <div className="feature-icon-box">
+                      <ShieldCheck size={18} />
+                    </div>
+                    <div>
+                      <h4 className="feature-card-title">Direct Lead Faculty Q&amp;A</h4>
+                      <p className="feature-card-desc">Ask lead instructors anything about curriculum roadmaps, prerequisites, and industry career outcomes.</p>
+                    </div>
                   </div>
+
+                  <div className="demo-feature-card">
+                    <div className="feature-icon-box">
+                      <HeartHandshake size={18} />
+                    </div>
+                    <div>
+                      <h4 className="feature-card-title">Zero Obligation Guarantee</h4>
+                      <p className="feature-card-desc">100% free academic guidance. We never engage in high-pressure or aggressive marketing calls.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="demo-cohort-banner">
+                  <span className="cohort-pulse-indicator" />
+                  <span className="cohort-banner-text">
+                    <strong>Upcoming Weekend Cohorts:</strong> Morning &amp; Evening slots available this Saturday &amp; Sunday.
+                  </span>
                 </div>
               </div>
 
-              {/* Right: Embedded Form Panel */}
+              {/* Right: Embedded Form Panel (Clean White Enterprise Card) */}
               <div className="demo-panel-form-container">
                 {demoSubmitted ? (
                   <div className="demo-form-success">
                     <div className="success-icon-wrap">
-                      <CheckCircle2 size={36} className="text-emerald" />
+                      <CheckCircle2 size={40} className="text-emerald" />
                     </div>
                     <h3 className="success-title">Demo Session Reserved!</h3>
                     <p className="success-desc">
-                      Thank you, <strong>{demoFormData.name}</strong>. We have received your request for <strong>{demoFormData.course}</strong>. Our admissions coordinator will reach out at <strong>{demoFormData.phone}</strong> and email the Zoom meeting access details to <strong>{demoFormData.email}</strong>.
+                      Thank you, <strong>{demoFormData.name}</strong>. We have reserved your seat for <strong>{demoFormData.course}</strong>.
+                    </p>
+                    <div className="success-details-card">
+                      <div className="detail-row">
+                        <span>Course:</span> <strong>{demoFormData.course}</strong>
+                      </div>
+                      <div className="detail-row">
+                        <span>Time Slot:</span> <strong>{demoFormData.preferredTime}</strong>
+                      </div>
+                      {demoFormData.preferredDate && (
+                        <div className="detail-row">
+                          <span>Date:</span> <strong>{demoFormData.preferredDate}</strong>
+                        </div>
+                      )}
+                      <div className="detail-row">
+                        <span>Zoom Invite Sent To:</span> <strong>{demoFormData.email}</strong>
+                      </div>
+                    </div>
+                    <p className="success-note">
+                      Our admissions coordinator will also send a calendar invite and confirmation to <strong>{demoFormData.phone}</strong>.
                     </p>
                     <button
-                      className="btn-premium btn-premium-secondary mt-3"
+                      type="button"
+                      className="btn-premium btn-premium-primary w-100 mt-3"
                       onClick={() => {
                         setDemoSubmitted(false);
                         setDemoFormData({
@@ -1825,103 +2403,143 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
                   </div>
                 ) : (
                   <form className="demo-form" onSubmit={handleDemoSubmit}>
-                    <h4 className="form-heading">Book Free Demo Session</h4>
+                    <div className="form-header-block">
+                      <span className="form-header-badge">LIMITED TO 15 STUDENTS</span>
+                      <h3 className="form-heading">Book Free Demo Session</h3>
+                      <p className="form-subheading">
+                        Fill in your details below to receive instant Zoom meeting access and orientation material.
+                      </p>
+                    </div>
 
                     {demoFormError && (
                       <div className="form-error-banner">{demoFormError}</div>
                     )}
 
                     <div className="form-field-group">
-                      <label htmlFor="demo-name">Full Name *</label>
-                      <input
-                        id="demo-name"
-                        type="text"
-                        placeholder="e.g. Anand Sharma"
-                        value={demoFormData.name}
-                        onChange={(e) => setDemoFormData({ ...demoFormData, name: e.target.value })}
-                        required
-                      />
+                      <label htmlFor="demo-name">
+                        Full Name <span className="req-star">*</span>
+                      </label>
+                      <div className="field-input-wrapper">
+                        <User size={16} className="field-icon" />
+                        <input
+                          id="demo-name"
+                          type="text"
+                          className="field-input"
+                          placeholder="e.g. Anand Sharma"
+                          value={demoFormData.name}
+                          onChange={(e) => setDemoFormData({ ...demoFormData, name: e.target.value })}
+                          required
+                        />
+                      </div>
                     </div>
 
                     <div className="form-row-2col">
                       <div className="form-field-group">
-                        <label htmlFor="demo-phone">Phone Number *</label>
-                        <input
-                          id="demo-phone"
-                          type="tel"
-                          placeholder="+91 98765 43210"
-                          value={demoFormData.phone}
-                          onChange={(e) => setDemoFormData({ ...demoFormData, phone: e.target.value })}
-                          required
-                        />
+                        <label htmlFor="demo-phone">
+                          Phone Number <span className="req-star">*</span>
+                        </label>
+                        <div className="field-input-wrapper">
+                          <Phone size={16} className="field-icon" />
+                          <input
+                            id="demo-phone"
+                            type="tel"
+                            className="field-input"
+                            placeholder="+91 98765 43210"
+                            value={demoFormData.phone}
+                            onChange={(e) => setDemoFormData({ ...demoFormData, phone: e.target.value })}
+                            required
+                          />
+                        </div>
                       </div>
 
                       <div className="form-field-group">
-                        <label htmlFor="demo-email">Email Address *</label>
-                        <input
-                          id="demo-email"
-                          type="email"
-                          placeholder="anand@example.com"
-                          value={demoFormData.email}
-                          onChange={(e) => setDemoFormData({ ...demoFormData, email: e.target.value })}
-                          required
-                        />
+                        <label htmlFor="demo-email">
+                          Email Address <span className="req-star">*</span>
+                        </label>
+                        <div className="field-input-wrapper">
+                          <Mail size={16} className="field-icon" />
+                          <input
+                            id="demo-email"
+                            type="email"
+                            className="field-input"
+                            placeholder="anand@example.com"
+                            value={demoFormData.email}
+                            onChange={(e) => setDemoFormData({ ...demoFormData, email: e.target.value })}
+                            required
+                          />
+                        </div>
                       </div>
                     </div>
 
                     <div className="form-field-group">
-                      <label htmlFor="demo-course">Course of Interest *</label>
-                      <select
-                        id="demo-course"
-                        value={demoFormData.course}
-                        onChange={(e) => setDemoFormData({ ...demoFormData, course: e.target.value })}
-                      >
-                        {COURSES_DATA.map((c) => (
-                          <option key={c.id} value={c.title}>
-                            {c.title}
-                          </option>
-                        ))}
-                      </select>
+                      <label htmlFor="demo-course">
+                        Course of Interest <span className="req-star">*</span>
+                      </label>
+                      <div className="field-input-wrapper">
+                        <BookOpen size={16} className="field-icon" />
+                        <select
+                          id="demo-course"
+                          className="field-input field-select"
+                          value={demoFormData.course}
+                          onChange={(e) => setDemoFormData({ ...demoFormData, course: e.target.value })}
+                        >
+                          {COURSES_DATA.map((c) => (
+                            <option key={c.id} value={c.title}>
+                              {c.title}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
 
                     <div className="form-row-2col">
                       <div className="form-field-group">
                         <label htmlFor="demo-date">Preferred Date</label>
-                        <input
-                          id="demo-date"
-                          type="date"
-                          value={demoFormData.preferredDate}
-                          onChange={(e) => setDemoFormData({ ...demoFormData, preferredDate: e.target.value })}
-                        />
+                        <div className="field-input-wrapper">
+                          <Calendar size={16} className="field-icon" />
+                          <input
+                            id="demo-date"
+                            type="date"
+                            className="field-input"
+                            value={demoFormData.preferredDate}
+                            onChange={(e) => setDemoFormData({ ...demoFormData, preferredDate: e.target.value })}
+                          />
+                        </div>
                       </div>
 
                       <div className="form-field-group">
                         <label htmlFor="demo-time">Preferred Time Slot</label>
-                        <select
-                          id="demo-time"
-                          value={demoFormData.preferredTime}
-                          onChange={(e) => setDemoFormData({ ...demoFormData, preferredTime: e.target.value })}
-                        >
-                          <option value="Morning (07:30 AM - 09:00 AM IST)">Morning (07:30 AM - 09:00 AM IST)</option>
-                          <option value="Morning (09:30 AM - 11:00 AM IST)">Morning (09:30 AM - 11:00 AM IST)</option>
-                          <option value="Afternoon (02:00 PM - 03:30 PM IST)">Afternoon (02:00 PM - 03:30 PM IST)</option>
-                          <option value="Evening (05:30 PM - 07:00 PM IST)">Evening (05:30 PM - 07:00 PM IST)</option>
-                          <option value="Evening (07:30 PM - 09:00 PM IST)">Evening (07:30 PM - 09:00 PM IST)</option>
-                          <option value="Night (09:00 PM - 10:30 PM IST)">Night (09:00 PM - 10:30 PM IST)</option>
-                          <option value="Weekend Saturday (11:00 AM - 12:30 PM IST)">Weekend Saturday (11:00 AM - 12:30 PM IST)</option>
-                          <option value="Weekend Sunday (10:00 AM - 11:30 AM IST)">Weekend Sunday (10:00 AM - 11:30 AM IST)</option>
-                        </select>
+                        <div className="field-input-wrapper">
+                          <Clock size={16} className="field-icon" />
+                          <select
+                            id="demo-time"
+                            className="field-input field-select"
+                            value={demoFormData.preferredTime}
+                            onChange={(e) => setDemoFormData({ ...demoFormData, preferredTime: e.target.value })}
+                          >
+                            <option value="Morning (07:30 AM - 09:00 AM IST)">Morning (07:30 AM - 09:00 AM IST)</option>
+                            <option value="Morning (09:30 AM - 11:00 AM IST)">Morning (09:30 AM - 11:00 AM IST)</option>
+                            <option value="Afternoon (02:00 PM - 03:30 PM IST)">Afternoon (02:00 PM - 03:30 PM IST)</option>
+                            <option value="Evening (05:30 PM - 07:00 PM IST)">Evening (05:30 PM - 07:00 PM IST)</option>
+                            <option value="Evening (07:30 PM - 09:00 PM IST)">Evening (07:30 PM - 09:00 PM IST)</option>
+                            <option value="Night (09:00 PM - 10:30 PM IST)">Night (09:00 PM - 10:30 PM IST)</option>
+                            <option value="Weekend Saturday (11:00 AM - 12:30 PM IST)">Weekend Saturday (11:00 AM - 12:30 PM IST)</option>
+                            <option value="Weekend Sunday (10:00 AM - 11:30 AM IST)">Weekend Sunday (10:00 AM - 11:30 AM IST)</option>
+                          </select>
+                        </div>
                       </div>
                     </div>
 
-                    <button type="submit" className="btn-premium btn-premium-primary btn-lg w-100 mt-2 btn-glow">
+                    <button type="submit" className="demo-submit-btn">
                       <Sparkles size={18} />
-                      <span>BOOK FREE DEMO</span>
+                      <span>CONFIRM FREE DEMO RESERVATION</span>
+                      <ArrowRight size={18} />
                     </button>
 
-                    <span className="form-privacy-note">
-                      🔒 Zero spam. We only contact you regarding your requested demo session.
-                    </span>
+                    <div className="form-privacy-guarantee">
+                      <Lock size={13} />
+                      <span>100% Privacy Protected • Zero Spam • No Aggressive Sales Calls</span>
+                    </div>
                   </form>
                 )}
               </div>
