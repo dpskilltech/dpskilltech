@@ -90,7 +90,7 @@ Last Updated:
 
 [x] Frontend Tests (Browser subagent end-to-end verification)
 [x] Backend Tests (Express service health check & JSON API verification)
-[x] Authentication Tests (JWT issuance, bcrypt hashing, invalid password rejection)
+[x] Authentication Tests (JWT issuance, bcrypt hashing, invalid password rejection, portal type import resolution)
 [x] Role Permission Tests (Student accessing admin routes returns 403 Forbidden)
 [ ] Booking Tests
 [ ] Coding Sandbox Tests
