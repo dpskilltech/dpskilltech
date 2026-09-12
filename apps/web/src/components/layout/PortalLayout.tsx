@@ -431,6 +431,8 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
                   </>
                 )}
               </button>
+
+              {!isSidebarCollapsed && <div className="nav-section-title">PEOPLE &amp; FACULTY</div>}
               <button
                 type="button"
                 className={`portal-nav-item ${activeTab === 'students' ? 'active' : ''}`}
@@ -449,15 +451,37 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
                 <Briefcase size={18} className="nav-icon" />
                 {!isSidebarCollapsed && <span>Coaches</span>}
               </button>
+
+              {!isSidebarCollapsed && <div className="nav-section-title">LEARNING OPERATIONS</div>}
               <button
                 type="button"
                 className={`portal-nav-item ${activeTab === 'classes' ? 'active' : ''}`}
                 onClick={() => handleTabClick('classes')}
                 title="Live Classes & Zoom Links"
               >
-                <Video size={18} className="nav-icon" />
+                <Video size={18} className="nav-icon text-orange" />
                 {!isSidebarCollapsed && <span>Live Classes</span>}
               </button>
+              <button
+                type="button"
+                className={`portal-nav-item ${activeTab === 'assignments' ? 'active' : ''}`}
+                onClick={() => handleTabClick('assignments')}
+                title="Assignments, Quizzes & Projects"
+              >
+                <FileCheck2 size={18} className="nav-icon" />
+                {!isSidebarCollapsed && <span>Assessments</span>}
+              </button>
+              <button
+                type="button"
+                className={`portal-nav-item ${activeTab === 'questions' ? 'active' : ''}`}
+                onClick={() => handleTabClick('questions')}
+                title="Questions & Announcements"
+              >
+                <MessageSquareQuote size={18} className="nav-icon text-yellow" />
+                {!isSidebarCollapsed && <span>Communication</span>}
+              </button>
+
+              {!isSidebarCollapsed && <div className="nav-section-title">CAREER &amp; METRICS</div>}
               <button
                 type="button"
                 className={`portal-nav-item ${activeTab === 'mock-interviews' ? 'active' : ''}`}
@@ -466,6 +490,15 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
               >
                 <CalendarCheck size={18} className="nav-icon" />
                 {!isSidebarCollapsed && <span>Mock Interviews</span>}
+              </button>
+              <button
+                type="button"
+                className={`portal-nav-item ${activeTab === 'certificates' ? 'active' : ''}`}
+                onClick={() => handleTabClick('certificates')}
+                title="Verified Certificate Issuance"
+              >
+                <Award size={18} className="nav-icon text-orange" />
+                {!isSidebarCollapsed && <span>Certificates</span>}
               </button>
               <button
                 type="button"
