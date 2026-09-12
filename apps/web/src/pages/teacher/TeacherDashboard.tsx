@@ -12,9 +12,9 @@ import { PortalLayout } from '../../components/layout/PortalLayout';
 import {
   COHORT_BATCHES,
   INITIAL_QUESTION_THREADS,
-  MOCK_INTERVIEW_SESSIONS,
-  type QuestionThread
+  MOCK_INTERVIEW_SESSIONS
 } from '../../data/portalMockData';
+import type { QuestionThread } from '../../data/portalMockData';
 import { api } from '../../services/api';
 import './TeacherDashboard.css';
 

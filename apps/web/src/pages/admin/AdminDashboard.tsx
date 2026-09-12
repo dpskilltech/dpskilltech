@@ -37,16 +37,18 @@ import {
   ADMIN_ANNOUNCEMENTS,
   ADMIN_ASSIGNMENTS,
   INITIAL_QUESTION_THREADS,
-  MOCK_INTERVIEW_SESSIONS,
-  type CohortBatch,
-  type AdminCourse,
-  type AdminLiveClass,
-  type AdminCoachProfile,
-  type AdminCertificate,
-  type AdminAnnouncement,
-  type AdminAssignment,
-  type QuestionThread,
-  type MockInterviewSlot
+  MOCK_INTERVIEW_SESSIONS
+} from '../../data/portalMockData';
+import type {
+  CohortBatch,
+  AdminCourse,
+  AdminLiveClass,
+  AdminCoachProfile,
+  AdminCertificate,
+  AdminAnnouncement,
+  AdminAssignment,
+  QuestionThread,
+  MockInterviewSlot
 } from '../../data/portalMockData';
 import { api } from '../../services/api';
 import './AdminDashboard.css';

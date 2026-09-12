@@ -30,7 +30,8 @@ import {
   Briefcase
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { PORTAL_NOTIFICATIONS, type PortalNotification } from '../../data/portalMockData';
+import { PORTAL_NOTIFICATIONS } from '../../data/portalMockData';
+import type { PortalNotification } from '../../data/portalMockData';
 import '../../styles/portal-tokens.css';
 import './PortalLayout.css';
 
