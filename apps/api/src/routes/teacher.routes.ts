@@ -54,12 +54,13 @@ router.get('/dashboard', async (req: Request, res: Response): Promise<void> => {
           }
         ],
         enrolledStudents: students.map((s) => ({
-          id: s.user.id,
-          name: s.user.fullName,
-          email: s.user.email,
-          attendance: s.profile?.attendanceRate || 100,
-          batch: s.profile?.batchName
+          id: s.id,
+          name: s.fullName,
+          email: s.email,
+          attendance: 100,
+          batch: 'Batch PY-2026-01'
         }))
+
       }
     });
   } catch (error: any) {

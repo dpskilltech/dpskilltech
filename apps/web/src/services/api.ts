@@ -167,6 +167,127 @@ class ApiService {
     });
     return await res.json();
   }
+
+  public async adminCreateStudent(data: {
+    email: string;
+    fullName: string;
+    password?: string;
+    phone?: string;
+    courseId?: string;
+    batchId?: string;
+    courseName?: string;
+    batchName?: string;
+    adminNotes?: string;
+    requiresPasswordChange?: boolean;
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE_URL}/admin/auth/students`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify(data)
+    });
+    return await res.json();
+  }
+
+  public async adminCreateCoach(data: {
+    email: string;
+    fullName: string;
+    password?: string;
+    phone?: string;
+    specialization?: string;
+    assignedCourses?: string[];
+    assignedBatches?: string[];
+    bio?: string;
+    requiresPasswordChange?: boolean;
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE_URL}/admin/auth/coaches`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify(data)
+    });
+    return await res.json();
+  }
+
+  public async adminAssignNextClass(
+    batchId: string,
+    data: {
+      topic: string;
+      scheduleDate?: string;
+      timeSlot?: string;
+      coachId?: string;
+      coachName?: string;
+      zoomJoinUrl?: string;
+    }
+  ): Promise<any> {
+    const res = await fetch(`${API_BASE_URL}/admin/batches/${batchId}/next-class`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify(data)
+    });
+    return await res.json();
+  }
+
+  public async adminResetStudentPassword(data: {
+    studentUserId?: string;
+    id?: string;
+    email?: string;
+    fullName?: string;
+    password?: string;
+    sendEmail?: boolean;
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE_URL}/admin/auth/students/reset-password`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify(data)
+    });
+    return await res.json();
+  }
+
+  public async adminResetCoachPassword(data: {
+    coachUserId?: string;
+    id?: string;
+    email?: string;
+    fullName?: string;
+    password?: string;
+    sendEmail?: boolean;
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE_URL}/admin/auth/coaches/reset-password`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify(data)
+    });
+    return await res.json();
+  }
+
+  public async adminResendCredentials(data: {
+    email: string;
+    role: 'STUDENT' | 'TEACHER';
+    fullName?: string;
+    password?: string;
+    courseOrBatch?: string;
+  }): Promise<any> {
+    const res = await fetch(`${API_BASE_URL}/admin/auth/resend-credentials`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify(data)
+    });
+    return await res.json();
+  }
+
+  public async adminTransferStudentBatch(
+    studentId: string,
+    data: {
+      targetBatchCode: string;
+      reason?: string;
+      effectiveDate?: string;
+    }
+  ): Promise<any> {
+    const res = await fetch(`${API_BASE_URL}/admin/students/${studentId}/transfer-batch`, {
+      method: 'POST',
+      headers: this.getHeaders(),
+      body: JSON.stringify(data)
+    });
+    return await res.json();
+  }
 }
 
 export const api = new ApiService();

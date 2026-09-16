@@ -2,6 +2,7 @@ import React from 'react';
 import { Mail, Phone, MapPin, ShieldCheck, Clock, Users, ArrowRight } from 'lucide-react';
 import './Footer.css';
 import { COURSES_DATA } from '../../data/coursesData';
+import brandLogoFull from '../../assets/dp-skilltech-logo-full.png';
 
 interface FooterProps {
   onNavigate: (page: string, params?: Record<string, string>) => void;
@@ -36,11 +37,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenDemoModal }) =
       <div className="container footer-main">
         {/* Col 1: Brand & Philosophy */}
         <div className="footer-col brand-col">
-          <div className="footer-logo" onClick={() => handleNav('home')}>
-            <div className="footer-logo-icon">DP</div>
-            <div>
-              <div className="footer-logo-title">DP Skilltech</div>
-              <div className="footer-logo-sub">Online IT Academy</div>
+          <div className="footer-logo" onClick={() => handleNav('home')} role="button" tabIndex={0} aria-label="DP SkillTech Home">
+            <div className="footer-logo-badge">
+              <img
+                src={brandLogoFull}
+                alt="DP SkillTech - Learn. Build. Grow."
+                className="footer-logo-img"
+              />
             </div>
           </div>
           <p className="footer-desc">

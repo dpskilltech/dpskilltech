@@ -14,6 +14,7 @@ import {
   FileCheck2
 } from 'lucide-react';
 import { findCertificateById, type VerifiableCertificate } from '../../data/certificatesData';
+import brandEmblem from '../../assets/dp-skilltech-emblem.png';
 import './VerifyCertificatePage.css';
 
 interface VerifyCertificatePageProps {
@@ -154,8 +155,15 @@ export const VerifyCertificatePage: React.FC<VerifyCertificatePageProps> = ({
               <div className="cert-inner-content">
                 <div className="cert-header-watermark">
                   <div className="academy-brand">
-                    <span className="brand-dot-verify"></span>
-                    <strong>DP SKILL TECH</strong>
+                    <img
+                      src={brandEmblem}
+                      alt="DP SkillTech Emblem"
+                      className="cert-brand-emblem-img"
+                    />
+                    <div>
+                      <strong>DP SKILL TECH</strong>
+                      <span className="academy-cert-tagline">LEARN. BUILD. GROW.</span>
+                    </div>
                   </div>
                   <span className="academy-sub">Official Registry Record</span>
                 </div>

@@ -36,6 +36,8 @@ const AppContent: React.FC = () => {
 
   // Hash-based URL synchronizer for seamless navigation and back/forward browser support
   useEffect(() => {
+    if (isLoading) return;
+
     const handleHashChange = () => {
       const hash = window.location.hash.replace(/^#\/?/, '');
       if (!hash) {
@@ -52,6 +54,16 @@ const AppContent: React.FC = () => {
         const id = hash.replace('verify-certificate/', '');
         setActivePage('verify-certificate');
         setPageParams({ id });
+      } else if (hash === 'admin' || hash.startsWith('admin/') || hash === 'admin-dashboard') {
+        navigate('admin-dashboard');
+      } else if (hash === 'super-admin' || hash.startsWith('super-admin/')) {
+        navigate('admin-dashboard', { mode: 'super-admin' });
+      } else if (hash === 'teacher' || hash.startsWith('teacher/') || hash === 'teacher-dashboard') {
+        navigate('teacher-dashboard');
+      } else if (hash === 'student' || hash.startsWith('student/') || hash === 'student-dashboard') {
+        navigate('student-dashboard');
+      } else if (hash === 'parent' || hash.startsWith('parent/') || hash === 'parent-dashboard') {
+        navigate('parent-dashboard');
       } else {
         setActivePage(hash);
         setPageParams({});
@@ -61,30 +73,52 @@ const AppContent: React.FC = () => {
     handleHashChange();
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
+  }, [isLoading, isAuthenticated, role]);
 
   const navigate = (page: string, params?: Record<string, string>) => {
-    // Role-Based Route Guard (Rule 15 & 16)
-    if (page === 'student-dashboard' && (!isAuthenticated || role !== 'STUDENT')) {
-      alert('Access Restricted: Please log in with a Student account to access this portal.');
+    // Immediate fallback to localStorage to avoid React state batching race conditions
+    let effectiveRole = role;
+    let effectiveAuth = isAuthenticated;
+    try {
+      const cachedProfile = localStorage.getItem('dpskilltech_user_profile');
+      const cachedToken = localStorage.getItem('dpskilltech_auth_token');
+      if (cachedProfile && cachedToken) {
+        const parsed = JSON.parse(cachedProfile);
+        if (parsed?.role) {
+          effectiveRole = parsed.role;
+          effectiveAuth = true;
+        }
+      }
+    } catch (_) {}
+
+    // Role-Based Route Guard (Rule 15, 16, 32: Server & Client-side Protection)
+    let nextParams = { ...(params || {}) };
+    if ((page === 'student-dashboard' || page === 'student') && (!effectiveAuth || effectiveRole !== 'STUDENT')) {
       page = 'login';
-    } else if (page === 'teacher-dashboard' && (!isAuthenticated || (role !== 'TEACHER' && role !== 'ADMIN'))) {
-      alert('Access Restricted: Instructor credentials required to enter this studio.');
+      nextParams = { ...nextParams, error: 'Access Restricted: Please sign in with an enrolled Student account to access this portal.' };
+    } else if ((page === 'teacher-dashboard' || page === 'teacher') && (!effectiveAuth || (effectiveRole !== 'TEACHER' && effectiveRole !== 'ADMIN' && effectiveRole !== 'SUPER_ADMIN'))) {
       page = 'login';
-    } else if (page === 'admin-dashboard' && (!isAuthenticated || role !== 'ADMIN')) {
-      alert('Access Restricted: Administrator credentials required for Academy Governance.');
+      nextParams = { ...nextParams, error: 'Access Restricted: Instructor credentials required to enter this studio.' };
+    } else if ((page === 'admin-dashboard' || page === 'admin') && (!effectiveAuth || (effectiveRole !== 'ADMIN' && effectiveRole !== 'SUPER_ADMIN'))) {
       page = 'login';
+      nextParams = { ...nextParams, error: 'Access Restricted: Administrator credentials required for Academy Governance.' };
+    } else if (page === 'super-admin' && (!effectiveAuth || effectiveRole !== 'SUPER_ADMIN')) {
+      page = 'login';
+      nextParams = { ...nextParams, error: 'Access Restricted: Super Administrator credentials required.' };
+    } else if (page === 'parent-dashboard' && (!effectiveAuth || effectiveRole !== 'PARENT')) {
+      page = 'login';
+      nextParams = { ...nextParams, error: 'Access Restricted: Please sign in with an authorized Parent account.' };
     }
 
     setActivePage(page);
-    setPageParams(params || {});
+    setPageParams(nextParams);
 
     if (page === 'home') {
       window.location.hash = '';
-    } else if (page === 'course-detail' && params?.slug) {
-      window.location.hash = `course/${params.slug}`;
-    } else if (page === 'verify-certificate' && params?.id) {
-      window.location.hash = `verify-certificate/${params.id}`;
+    } else if (page === 'course-detail' && nextParams?.slug) {
+      window.location.hash = `course/${nextParams.slug}`;
+    } else if (page === 'verify-certificate' && nextParams?.id) {
+      window.location.hash = `verify-certificate/${nextParams.id}`;
     } else {
       window.location.hash = page;
     }
@@ -178,7 +212,11 @@ const AppContent: React.FC = () => {
           <ContactPage onOpenDemoModal={openDemoModal} />
         )}
         {activePage === 'login' && (
-          <LoginPage onNavigate={navigate} onOpenDemoModal={openDemoModal} />
+          <LoginPage
+            onNavigate={navigate}
+            onOpenDemoModal={openDemoModal}
+            initialError={pageParams.error}
+          />
         )}
         {activePage === 'certificates' && (
           <CertificatesPage onNavigate={navigate} onOpenDemoModal={openDemoModal} />

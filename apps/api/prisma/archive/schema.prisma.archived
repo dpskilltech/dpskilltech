@@ -1,0 +1,158 @@
+// DP Skilltech - Prisma Schema
+// PostgreSQL Database Provider
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  TEACHER
+  ADMIN
+}
+
+enum BookingStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+model User {
+  id           String          @id @default(cuid())
+  email        String          @unique
+  passwordHash String
+  role         Role            @default(STUDENT)
+  fullName     String
+  phone        String?
+  avatarUrl    String?
+  bio          String?
+  isActive     Boolean         @default(true)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  studentProfile StudentProfile?
+  teacherProfile TeacherProfile?
+  adminProfile   AdminProfile?
+  payments       PaymentTransaction[]
+
+  @@map("users")
+}
+
+model StudentProfile {
+  id                      String   @id @default(cuid())
+  userId                  String   @unique
+  user                    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  batchId                 String?
+  batch                   Batch?   @relation(fields: [batchId], references: [id], onDelete: SetNull)
+  enrolledCourseId        String   @default("full-stack-python-ai")
+  enrolledCourseName      String   @default("Full Stack Python + AI Architecture")
+  attendanceRate          Float    @default(100.0)
+  completedLessons        Int      @default(0)
+  totalLessons            Int      @default(48)
+  submittedAssignments    Int      @default(0)
+  totalAssignments        Int      @default(8)
+  mockInterviewCredits    Int      @default(2)
+  mockInterviewsCompleted Int      @default(0)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  mockBookings            MockInterviewBooking[]
+
+  @@map("student_profiles")
+}
+
+model TeacherProfile {
+  id                          String   @id @default(cuid())
+  userId                      String   @unique
+  user                        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialization              String   @default("Python, Distributed Systems & AI")
+  totalStudentsMentored       Int      @default(0)
+  rating                      Float    @default(4.9)
+  mockInterviewSlotsAvailable Int      @default(4)
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+
+  batches                     Batch[]
+  interviewsConducted         MockInterviewBooking[]
+
+  @@map("teacher_profiles")
+}
+
+model AdminProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  department  String   @default("Academic Operations")
+  accessLevel String   @default("SUPERADMIN")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("admin_profiles")
+}
+
+model Batch {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  courseId    String
+  courseName  String
+  trainerId   String?
+  trainer     TeacherProfile? @relation(fields: [trainerId], references: [id], onDelete: SetNull)
+  maxCapacity Int      @default(15) // Strict DP Skilltech Rule: Max 15 students
+  studentCount Int     @default(0)
+  status      String   @default("ACTIVE") // ACTIVE, FULL, COMPLETED
+  schedule    String   @default("Mon - Sat | 07:00 PM IST")
+  nextTopic   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  students    StudentProfile[]
+
+  @@map("batches")
+}
+
+model MockInterviewBooking {
+  id             String         @id @default(cuid())
+  studentId      String
+  student        StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  interviewerId  String?
+  interviewer    TeacherProfile? @relation(fields: [interviewerId], references: [id], onDelete: SetNull)
+  track          String         @default("Full Stack Python + AI")
+  scheduledAt    DateTime
+  status         BookingStatus  @default(SCHEDULED)
+  zoomUrl        String?
+  score          Float?
+  feedbackRubric Json?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@map("mock_interview_bookings")
+}
+
+model PaymentTransaction {
+  id          String        @id @default(cuid())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderId     String        @unique // Razorpay Order ID (e.g., order_xxxx)
+  paymentId   String?       @unique // Razorpay Payment ID (e.g., pay_xxxx)
+  signature   String?
+  amount      Int           // Amount in Indian Paise (e.g. 2500000 = Rs 25,000)
+  currency    String        @default("INR")
+  status      PaymentStatus @default(PENDING)
+  purpose     String        @default("COURSE_ENROLLMENT")
+  rawPayload  Json?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("payment_transactions")
+}

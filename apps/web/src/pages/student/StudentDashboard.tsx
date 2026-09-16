@@ -26,6 +26,7 @@ import {
 } from '../../data/portalMockData';
 import type { QuestionThread } from '../../data/portalMockData';
 import { api } from '../../services/api';
+import brandEmblem from '../../assets/dp-skilltech-emblem.png';
 import './StudentDashboard.css';
 
 interface StudentDashboardProps {
@@ -983,7 +984,13 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({ onNavigateTo
 
         {activeTab === 'certificates' && (
           <div className="general-tab-card certificate-card">
-            <Award size={48} className="cert-big-icon icon-orange" />
+            <div className="cert-card-emblem-wrap">
+              <img
+                src={brandEmblem}
+                alt="DP Skilltech Emblem"
+                className="cert-card-emblem-img"
+              />
+            </div>
             <h3>DP Skilltech Verified Certificate of Completion</h3>
             <p className="cert-status-notice">
               Certificates are unlocked upon completing 100% of live cohort lectures, passing all module evaluations, and defending the production capstone.

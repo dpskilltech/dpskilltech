@@ -30,7 +30,7 @@ router.get('/dashboard', async (req: Request, res: Response): Promise<void> => {
           date: 'Today',
           time: '07:00 PM IST (1.5 Hours)',
           zoomJoinUrl: 'https://zoom.us/j/9876543210?pwd=dpskilltech_sample_secure',
-          batchName: userProfile.studentProfile?.batchName || 'Batch PY-2026-01',
+          batchName: (userProfile as any).studentProfile?.batchName || 'Batch PY-2026-01',
           isLive: true
         },
         recentRecordings: [

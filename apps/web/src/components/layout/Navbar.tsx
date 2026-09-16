@@ -12,6 +12,7 @@ import {
 import './Navbar.css';
 import { COURSES_DATA } from '../../data/coursesData';
 import { useAuth } from '../../context/AuthContext';
+import brandLogo from '../../assets/dp-skilltech-logo-transparent.png';
 
 interface NavbarProps {
   activePage: string;
@@ -86,16 +87,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => handleNavClick('home')}
             role="button"
             tabIndex={0}
+            aria-label="DP SkillTech Home"
           >
-            <div className="brand-monogram">
-              <span>DP</span>
-            </div>
-            <div className="brand-titles">
-              <span className="brand-title-main">
-                DP <span className="brand-title-accent">SKILLTECH</span>
-              </span>
-              <span className="brand-tagline">Learn. Build. Grow.</span>
-            </div>
+            <img
+              src={brandLogo}
+              alt="DP SkillTech - Learn. Build. Grow."
+              className="brand-logo-img"
+            />
           </div>
 
           {/* Desktop Navigation Links */}
@@ -247,16 +245,12 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="mobile-nav-overlay" onClick={() => setMobileMenuOpen(false)}>
           <div className="mobile-nav-drawer" onClick={(e) => e.stopPropagation()}>
             <div className="mobile-drawer-header">
-              <div className="brand-link" onClick={() => handleNavClick('home')}>
-                <div className="brand-monogram">
-                  <span>DP</span>
-                </div>
-                <div className="brand-titles">
-                  <span className="brand-title-main">
-                    DP <span className="brand-title-accent">SKILLTECH</span>
-                  </span>
-                  <span className="brand-badge-label">Technology Academy</span>
-                </div>
+              <div className="brand-link" onClick={() => handleNavClick('home')} role="button" tabIndex={0} aria-label="DP SkillTech Home">
+                <img
+                  src={brandLogo}
+                  alt="DP SkillTech - Learn. Build. Grow."
+                  className="brand-logo-img brand-logo-mobile"
+                />
               </div>
               <button className="mobile-close-btn" onClick={() => setMobileMenuOpen(false)}>
                 <X size={22} />

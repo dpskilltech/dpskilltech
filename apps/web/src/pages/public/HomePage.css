@@ -132,22 +132,23 @@
   inset: 0;
   background-image: url('/images/hero-tech-bg.jpg');
   background-size: cover;
-  background-position: center center;
+  background-position: 70% center;
   background-repeat: no-repeat;
-  opacity: 0.65;
-  filter: contrast(1.15) brightness(1);
+  opacity: 0.42;
+  filter: contrast(1.15) brightness(0.92);
   pointer-events: none;
   z-index: 0;
+  mask-image: radial-gradient(ellipse 85% 90% at 72% 50%, rgba(0,0,0,1) 0%, rgba(0,0,0,0.7) 45%, rgba(0,0,0,0.08) 85%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 90% at 72% 50%, rgba(0,0,0,1) 0%, rgba(0,0,0,0.7) 45%, rgba(0,0,0,0.08) 85%);
 }
 
 .hero-ambient-glow {
   position: absolute;
-  top: -100px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 900px;
-  height: 500px;
-  background: radial-gradient(ellipse, rgba(249, 115, 22, 0.12) 0%, rgba(37, 99, 235, 0.25) 50%, transparent 70%);
+  top: -80px;
+  right: 18%;
+  width: 750px;
+  height: 520px;
+  background: radial-gradient(ellipse, rgba(249, 115, 22, 0.16) 0%, rgba(37, 99, 235, 0.24) 50%, transparent 70%);
   filter: blur(80px);
   pointer-events: none;
   z-index: 0;
@@ -156,8 +157,8 @@
 .hero-grid-lines {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 40% 45%, transparent 0%, rgba(6, 14, 32, 0.35) 50%, rgba(6, 14, 32, 0.9) 100%),
-              linear-gradient(180deg, rgba(6, 14, 32, 0.2) 0%, transparent 40%, rgba(6, 14, 32, 0.8) 100%);
+  background: linear-gradient(90deg, #060e20 0%, rgba(6, 14, 32, 0.96) 38%, rgba(6, 14, 32, 0.35) 68%, rgba(6, 14, 32, 0.88) 100%),
+              radial-gradient(circle at 72% 48%, transparent 0%, rgba(6, 14, 32, 0.25) 55%, rgba(6, 14, 32, 0.95) 100%);
   pointer-events: none;
   z-index: 0;
 }
@@ -221,34 +222,34 @@
   margin-bottom: 0.5rem;
 }
 
-/* Line 1: Master Real Tech. (Diamond White to Electric Blue) */
+/* Line 1: Learn Real Technology Skills. */
 .heading-line-tech {
   background: linear-gradient(135deg, #ffffff 20%, #bae6fd 55%, #60a5fa 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   display: inline-block;
-  filter: drop-shadow(0 2px 14px rgba(96, 165, 250, 0.3));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
 }
 
-/* Line 2: Build Production Systems. (Electric Royal Cobalt Blue) */
+/* Line 2: Build Real Projects. (Clean crisp gradient, no heavy glow) */
 .heading-line-systems {
   background: linear-gradient(135deg, #bfdbfe 0%, #60a5fa 40%, #3b82f6 75%, #1d4ed8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   display: inline-block;
-  filter: drop-shadow(0 2px 16px rgba(59, 130, 246, 0.4));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
 }
 
-/* Line 3: Launch Your Engineering Career. (Vibrant Sunburst Orange Flame) */
+/* Line 3: Build Your Future. (Warm orange gradient, clean without haze) */
 .heading-line-career {
   background: linear-gradient(135deg, #fed7aa 0%, #fb923c 35%, #ff6b00 70%, #ea580c 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   display: inline-block;
-  filter: drop-shadow(0 3px 22px rgba(255, 107, 0, 0.5));
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
 }
 
 /* Legacy alias fallback */
@@ -266,17 +267,34 @@
 
 .hero-editorial-description {
   font-size: 1.05rem;
-  color: #cbd5e1;
+  color: #e2e8f0;
   line-height: 1.7;
   max-width: 580px;
+  text-shadow: 0 2px 8px rgba(6, 14, 32, 0.7);
 }
-
 
 .hero-editorial-cta-group {
   display: flex;
   align-items: center;
   gap: 1rem;
   margin-top: 0.5rem;
+}
+
+.hero-secondary-cta {
+  background: rgba(15, 23, 42, 0.75) !important;
+  color: #38bdf8 !important;
+  border: 1.5px solid rgba(56, 189, 248, 0.45) !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  transition: all 0.25s ease;
+}
+
+.hero-secondary-cta:hover {
+  background: rgba(56, 189, 248, 0.18) !important;
+  border-color: #38bdf8 !important;
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
 }
 
 .hero-guarantees-row {

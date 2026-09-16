@@ -1,33 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   ShieldCheck,
-  GraduationCap,
-  Layers,
   Award,
-  Clock,
   CheckCircle2,
   UserPlus,
-  Search,
-  Filter,
-  BarChart3,
-  Lock,
-  BookOpen,
-  Video,
-  FileCheck2,
-  MessageSquareQuote,
-  CalendarCheck,
-  Briefcase,
-  Plus,
   X,
   Check,
-  Send,
   Eye,
-  Zap,
-  Server,
-  Radio,
-  ExternalLink,
-  Star,
-  Trash2
+  EyeOff,
+  Copy,
+  Key,
+  RefreshCw,
+  ArrowRightLeft,
+  Video
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { reviewService, type Review } from '../../services/reviewService';
@@ -55,7 +40,26 @@ import type {
   MockInterviewSlot
 } from '../../data/portalMockData';
 import { api } from '../../services/api';
+import {
+  courseManagementService,
+  type Course as LiveCourse,
+  type CourseModule as LiveModule,
+  type Lesson as LiveLesson,
+} from '../../services/courseManagementService';
 import './AdminDashboard.css';
+import { OverviewTab } from './tabs/OverviewTab';
+import { CoursesTab } from './tabs/CoursesTab';
+import { BatchesTab } from './tabs/BatchesTab';
+import { StudentsTab } from './tabs/StudentsTab';
+import { CoachesTab } from './tabs/CoachesTab';
+import { LiveClassesTab } from './tabs/LiveClassesTab';
+import { AssessmentsTab } from './tabs/AssessmentsTab';
+import { CommunicationTab } from './tabs/CommunicationTab';
+import { MockInterviewsTab } from './tabs/MockInterviewsTab';
+import { CertificatesTab } from './tabs/CertificatesTab';
+import { ReviewsTab } from './tabs/ReviewsTab';
+import { AnalyticsTab } from './tabs/AnalyticsTab';
+import { SettingsTab } from './tabs/SettingsTab';
 
 interface AdminDashboardProps {
   onNavigateToPublic: (page: string, params?: Record<string, string>) => void;
@@ -241,7 +245,81 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToPubl
 
   const [newCoachName, setNewCoachName] = useState('');
   const [newCoachEmail, setNewCoachEmail] = useState('');
+  const [newCoachPassword, setNewCoachPassword] = useState('DPSkill@2026!');
+  const [showCoachPassword, setShowCoachPassword] = useState(false);
+  const [newCoachPhone, setNewCoachPhone] = useState('');
   const [newCoachSpecialization, setNewCoachSpecialization] = useState('');
+  const [isCreatingCoach, setIsCreatingCoach] = useState(false);
+
+  // Student Account Creation State
+  const [showCreateStudentModal, setShowCreateStudentModal] = useState<boolean>(false);
+  const [newStudentName, setNewStudentName] = useState('');
+  const [newStudentEmail, setNewStudentEmail] = useState('');
+  const [newStudentPassword, setNewStudentPassword] = useState('DPSkill@2026!');
+  const [showStudentPassword, setShowStudentPassword] = useState(false);
+  const [newStudentPhone, setNewStudentPhone] = useState('');
+  const [newStudentCourse, setNewStudentCourse] = useState('Full Stack Python + AI Architecture');
+  const [newStudentBatch, setNewStudentBatch] = useState('PY-FS-01');
+  const [isCreatingStudent, setIsCreatingStudent] = useState(false);
+
+  // Assign Next Class State
+  const [showAssignNextClassModal, setShowAssignNextClassModal] = useState<boolean>(false);
+  const [assignClassBatch, setAssignClassBatch] = useState<CohortBatch | null>(null);
+  const [nextClassTopic, setNextClassTopic] = useState('');
+  const [nextClassDate, setNextClassDate] = useState('Tomorrow');
+  const [nextClassTime, setNextClassTime] = useState('07:00 PM – 08:30 PM IST');
+  const [nextClassCoach, setNextClassCoach] = useState('Dr. Rajesh Verma');
+  const [nextClassZoomUrl, setNextClassZoomUrl] = useState('https://zoom.us/j/9876543299');
+  const [isAssigningClass, setIsAssigningClass] = useState(false);
+
+  // Created Credentials Modal Card State
+  const [createdCredentialsModal, setCreatedCredentialsModal] = useState<{
+    role: 'STUDENT' | 'TEACHER';
+    fullName: string;
+    email: string;
+    password: string;
+    idCode?: string;
+    courseOrSpecialization?: string;
+    batch?: string;
+  } | null>(null);
+  const [copiedNotification, setCopiedNotification] = useState(false);
+  const [feedbackToast, setFeedbackToast] = useState<string | null>(null);
+
+  // Password Reset Modal State
+  const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
+  const [resetTarget, setResetTarget] = useState<{
+    role: 'STUDENT' | 'TEACHER';
+    id: string;
+    name: string;
+    email: string;
+    courseOrBatch?: string;
+  } | null>(null);
+  const [resetNewPassword, setResetNewPassword] = useState('DPSkill@2026!');
+  const [showResetPassword, setShowResetPassword] = useState(false);
+  const [resetSendEmail, setResetSendEmail] = useState(true);
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
+
+  // Student Cohort Transfer Modal State
+  const [showTransferModal, setShowTransferModal] = useState(false);
+  const [transferStudent, setTransferStudent] = useState<StudentRecord | null>(null);
+  const [transferTargetBatch, setTransferTargetBatch] = useState('PY-FS-01');
+  const [transferReason, setTransferReason] = useState('Academic schedule alignment');
+  const [isTransferring, setIsTransferring] = useState(false);
+
+  // Live Classes View Mode & Interactive Calendar State
+  const [liveClassesViewMode, setLiveClassesViewMode] = useState<'list' | 'calendar'>('list');
+  const [calendarMonth, setCalendarMonth] = useState(new Date().getMonth());
+  const [calendarYear, setCalendarYear] = useState(new Date().getFullYear());
+  const [selectedCalendarClass, setSelectedCalendarClass] = useState<AdminLiveClass | null>(null);
+
+  const generateStrongPassword = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%&*';
+    let pass = 'DPSkill@';
+    for (let i = 0; i < 6; i++) {
+      pass += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return pass + '!';
+  };
 
   const [newAnnTitle, setNewAnnTitle] = useState('');
   const [newAnnContent, setNewAnnContent] = useState('');
@@ -250,6 +328,62 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToPubl
   const [newCertStudentName, setNewCertStudentName] = useState('');
   const [newCertCourse, setNewCertCourse] = useState('Full Stack Python + AI Architecture');
   const [newCertGrade, setNewCertGrade] = useState('Distinction (92%)');
+
+  // ── LIVE COURSE MANAGEMENT STATE (Phase 3) ──────────────────────────────────
+  const [liveCourses, setLiveCourses] = useState<LiveCourse[]>([]);
+  const [liveCoursesLoading, setLiveCoursesLoading] = useState(false);
+  const [liveCoursesError, setLiveCoursesError] = useState<string | null>(null);
+  const [selectedLiveCourse, setSelectedLiveCourse] = useState<LiveCourse | null>(null);
+  const [liveModules, setLiveModules] = useState<LiveModule[]>([]);
+  const [liveModulesLoading, setLiveModulesLoading] = useState(false);
+  const [expandedModuleId, setExpandedModuleId] = useState<string | null>(null);
+  const [moduleLessonsMap, setModuleLessonsMap] = useState<Record<string, LiveLesson[]>>({});
+  const [showLiveCourseForm, setShowLiveCourseForm] = useState(false);
+  const [showLiveModuleForm, setShowLiveModuleForm] = useState(false);
+  const [showLiveLessonForm, setShowLiveLessonForm] = useState<string | null>(null); // moduleId
+  const [liveCourseFormData, setLiveCourseFormData] = useState({
+    slug: '', title: '', subtitle: '', category: 'Software Engineering',
+    level: 'Beginner to Advanced', duration: '12 Weeks',
+    short_description: '', full_description: '', thumbnail_url: ''
+  });
+  const [liveModuleFormData, setLiveModuleFormData] = useState({ title: '', description: '', order_index: 1 });
+  const [liveLessonFormData, setLiveLessonFormData] = useState({ title: '', description: '', order_index: 1, lesson_type: 'VIDEO' as const, duration_minutes: 60, is_required: true, is_preview: false });
+  const [liveCourseFormError, setLiveCourseFormError] = useState<string | null>(null);
+  const [liveCourseFormLoading, setLiveCourseFormLoading] = useState(false);
+
+  const fetchLiveCourses = useCallback(async () => {
+    setLiveCoursesLoading(true);
+    setLiveCoursesError(null);
+    try {
+      const data = await courseManagementService.listCourses();
+      setLiveCourses(data);
+    } catch (err: any) {
+      setLiveCoursesError(err.message || 'Failed to load courses from database.');
+    } finally {
+      setLiveCoursesLoading(false);
+    }
+  }, []);
+
+  const fetchLiveModules = useCallback(async (courseId: string) => {
+    setLiveModulesLoading(true);
+    try {
+      const data = await courseManagementService.listModules(courseId);
+      setLiveModules(data);
+    } catch (err: any) {
+      console.error('Failed to load modules:', err);
+    } finally {
+      setLiveModulesLoading(false);
+    }
+  }, []);
+
+  const fetchLiveLessons = useCallback(async (courseId: string, moduleId: string) => {
+    try {
+      const data = await courseManagementService.listLessons(courseId, moduleId);
+      setModuleLessonsMap(prev => ({ ...prev, [moduleId]: data }));
+    } catch (err: any) {
+      console.error('Failed to load lessons:', err);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchDashboard = async () => {
@@ -268,6 +402,129 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToPubl
       if (revs) setAdminReviews(revs);
     });
   }, []);
+
+  // Load live courses when courses tab is activated
+  useEffect(() => {
+    if (activeTab === 'courses') {
+      fetchLiveCourses();
+    }
+  }, [activeTab, fetchLiveCourses]);
+
+  // Load modules when a live course is selected
+  useEffect(() => {
+    if (selectedLiveCourse) {
+      setLiveModules([]);
+      setModuleLessonsMap({});
+      setExpandedModuleId(null);
+      fetchLiveModules(selectedLiveCourse.id);
+    }
+  }, [selectedLiveCourse, fetchLiveModules]);
+
+  const handleLiveCourseCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!liveCourseFormData.slug || !liveCourseFormData.title || !liveCourseFormData.category) {
+      setLiveCourseFormError('Slug, title, and category are required.');
+      return;
+    }
+    setLiveCourseFormLoading(true);
+    setLiveCourseFormError(null);
+    try {
+      await courseManagementService.createCourse(liveCourseFormData);
+      setShowLiveCourseForm(false);
+      setLiveCourseFormData({ slug: '', title: '', subtitle: '', category: 'Software Engineering', level: 'Beginner to Advanced', duration: '12 Weeks', short_description: '', full_description: '', thumbnail_url: '' });
+      await fetchLiveCourses();
+    } catch (err: any) {
+      setLiveCourseFormError(err.message || 'Failed to create course.');
+    } finally {
+      setLiveCourseFormLoading(false);
+    }
+  };
+
+  const handleLiveCoursePublish = async (courseId: string) => {
+    try {
+      await courseManagementService.publishCourse(courseId);
+      await fetchLiveCourses();
+    } catch (err: any) {
+      alert('Failed to publish: ' + err.message);
+    }
+  };
+
+  const handleLiveCourseArchive = async (courseId: string, title: string) => {
+    if (!window.confirm(`Archive course "${title}"? It will no longer be visible to students.`)) return;
+    try {
+      await courseManagementService.archiveCourse(courseId);
+      if (selectedLiveCourse?.id === courseId) setSelectedLiveCourse(null);
+      await fetchLiveCourses();
+    } catch (err: any) {
+      alert('Failed to archive: ' + err.message);
+    }
+  };
+
+  const handleLiveCourseStatusToggle = async (course: LiveCourse) => {
+    if (course.status === 'PUBLISHED') {
+      await handleLiveCourseArchive(course.id, course.title);
+    } else {
+      await handleLiveCoursePublish(course.id);
+    }
+  };
+
+  const handleLiveModuleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedLiveCourse || !liveModuleFormData.title) return;
+    try {
+      await courseManagementService.createModule(selectedLiveCourse.id, liveModuleFormData);
+      setShowLiveModuleForm(false);
+      setLiveModuleFormData({ title: '', description: '', order_index: (liveModules.length + 1) });
+      await fetchLiveModules(selectedLiveCourse.id);
+    } catch (err: any) {
+      alert('Failed to create module: ' + err.message);
+    }
+  };
+
+  const handleLiveModuleArchive = async (moduleId: string) => {
+    if (!selectedLiveCourse) return;
+    if (!window.confirm('Archive this module? Lessons will be hidden from students.')) return;
+    try {
+      await courseManagementService.archiveModule(selectedLiveCourse.id, moduleId);
+      await fetchLiveModules(selectedLiveCourse.id);
+    } catch (err: any) {
+      alert('Failed to archive module: ' + err.message);
+    }
+  };
+
+  const handleLiveLessonCreate = async (e: React.FormEvent, moduleId: string) => {
+    e.preventDefault();
+    if (!selectedLiveCourse || !liveLessonFormData.title) return;
+    try {
+      await courseManagementService.createLesson(selectedLiveCourse.id, moduleId, liveLessonFormData);
+      setShowLiveLessonForm(null);
+      setLiveLessonFormData({ title: '', description: '', order_index: 1, lesson_type: 'VIDEO', duration_minutes: 60, is_required: true, is_preview: false });
+      await fetchLiveLessons(selectedLiveCourse.id, moduleId);
+    } catch (err: any) {
+      alert('Failed to create lesson: ' + err.message);
+    }
+  };
+
+  const handleLiveLessonPublish = async (moduleId: string, lessonId: string) => {
+    if (!selectedLiveCourse) return;
+    try {
+      await courseManagementService.publishLesson(selectedLiveCourse.id, moduleId, lessonId);
+      await fetchLiveLessons(selectedLiveCourse.id, moduleId);
+    } catch (err: any) {
+      alert('Failed to publish lesson: ' + err.message);
+    }
+  };
+
+  const handleLiveLessonArchive = async (moduleId: string, lessonId: string, title: string) => {
+    if (!selectedLiveCourse) return;
+    if (!window.confirm(`Unpublish/archive lesson "${title}"?`)) return;
+    try {
+      await courseManagementService.archiveLesson(selectedLiveCourse.id, moduleId, lessonId);
+      await fetchLiveLessons(selectedLiveCourse.id, moduleId);
+    } catch (err: any) {
+      alert('Failed to archive lesson: ' + err.message);
+    }
+  };
 
   const handleDeleteAdminReview = async (id: string, authorName: string) => {
     if (window.confirm(`Admin Moderation: Permanently delete review by "${authorName}"?`)) {
@@ -361,30 +618,283 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToPubl
     setShowCreateBatchModal(false);
   };
 
-  const handleAddCoach = (e: React.FormEvent) => {
+  const handleCreateStudent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newStudentName || !newStudentEmail) return;
+    const studentPass = newStudentPassword || generateStrongPassword();
+    setIsCreatingStudent(true);
+
+    try {
+      const res = await api.adminCreateStudent({
+        fullName: newStudentName,
+        email: newStudentEmail,
+        password: studentPass,
+        phone: newStudentPhone || '+91 98765 43210',
+        courseName: newStudentCourse,
+        batchName: newStudentBatch
+      });
+
+      const studentCode = res?.student?.studentId || `STU-${Math.floor(1000 + Math.random() * 9000)}`;
+
+      const newStudent: StudentRecord = {
+        id: studentCode,
+        name: newStudentName,
+        email: newStudentEmail,
+        phone: newStudentPhone || '+91 98765 43210',
+        course: newStudentCourse,
+        batch: newStudentBatch,
+        progress: 0,
+        attendance: 100,
+        lastActive: 'Just registered',
+        status: 'active',
+        enrolledDate: 'Today',
+        assignmentsSubmitted: 0,
+        totalAssignments: 8,
+        quizScoreAvg: 0,
+        codingSubmissions: 0,
+        capstoneStatus: 'In Progress',
+        questionsAsked: 0,
+        mockInterviewScore: null,
+        certificateIssued: false
+      };
+      setStudentsList([newStudent, ...studentsList]);
+
+      setCreatedCredentialsModal({
+        role: 'STUDENT',
+        fullName: newStudentName,
+        email: newStudentEmail,
+        password: studentPass,
+        idCode: studentCode,
+        courseOrSpecialization: newStudentCourse,
+        batch: newStudentBatch
+      });
+
+      setNewStudentName('');
+      setNewStudentEmail('');
+      setNewStudentPassword('DPSkill@2026!');
+      setNewStudentPhone('');
+      setShowCreateStudentModal(false);
+    } catch (err: any) {
+      alert('Error creating student account: ' + (err.message || 'Check server connection'));
+    } finally {
+      setIsCreatingStudent(false);
+    }
+  };
+
+  const handleAddCoach = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCoachName) return;
-    const newCoach: AdminCoachProfile = {
-      id: `cch-${Date.now()}`,
-      name: newCoachName,
-      email: newCoachEmail || `${newCoachName.toLowerCase().replace(/\s+/g, '.')}@dpskilltech.in`,
-      phone: '+91 98765 00000',
-      specialization: newCoachSpecialization || 'Full Stack Software Engineering',
-      assignedCourses: ['Full Stack Python + AI Architecture'],
-      assignedBatches: [],
-      upcomingClassesCount: 0,
-      completedClassesCount: 0,
-      questionsAnswered: 0,
-      assignmentsReviewed: 0,
-      mockInterviewsConducted: 0,
-      rating: 5.0,
-      status: 'active'
-    };
-    setCoachesList([...coachesList, newCoach]);
-    setNewCoachName('');
-    setNewCoachEmail('');
-    setNewCoachSpecialization('');
-    setShowAddCoachModal(false);
+    const coachEmail = newCoachEmail || `${newCoachName.toLowerCase().replace(/\s+/g, '.')}@dpskilltech.in`;
+    const coachPass = newCoachPassword || generateStrongPassword();
+    setIsCreatingCoach(true);
+
+    try {
+      const res = await api.adminCreateCoach({
+        fullName: newCoachName,
+        email: coachEmail,
+        password: coachPass,
+        phone: newCoachPhone || '+91 98765 00000',
+        specialization: newCoachSpecialization || 'Full Stack Software Engineering',
+        assignedCourses: ['Full Stack Python + AI Architecture']
+      });
+
+      const newCoach: AdminCoachProfile = {
+        id: res?.coach?.userId || `cch-${Date.now()}`,
+        name: newCoachName,
+        email: coachEmail,
+        phone: newCoachPhone || '+91 98765 00000',
+        specialization: newCoachSpecialization || 'Full Stack Software Engineering',
+        assignedCourses: ['Full Stack Python + AI Architecture'],
+        assignedBatches: [],
+        upcomingClassesCount: 0,
+        completedClassesCount: 0,
+        questionsAnswered: 0,
+        assignmentsReviewed: 0,
+        mockInterviewsConducted: 0,
+        rating: 5.0,
+        status: 'active'
+      };
+      setCoachesList([newCoach, ...coachesList]);
+
+      setCreatedCredentialsModal({
+        role: 'TEACHER',
+        fullName: newCoachName,
+        email: coachEmail,
+        password: coachPass,
+        courseOrSpecialization: newCoachSpecialization || 'Full Stack Software Engineering'
+      });
+
+      setNewCoachName('');
+      setNewCoachEmail('');
+      setNewCoachPassword('DPSkill@2026!');
+      setNewCoachPhone('');
+      setNewCoachSpecialization('');
+      setShowAddCoachModal(false);
+    } catch (err: any) {
+      alert('Error provisioning coach: ' + (err.message || 'Check server connection'));
+    } finally {
+      setIsCreatingCoach(false);
+    }
+  };
+
+  const handleAssignNextClass = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!assignClassBatch || !nextClassTopic) return;
+    setIsAssigningClass(true);
+
+    try {
+      await api.adminAssignNextClass(assignClassBatch.id, {
+        topic: nextClassTopic,
+        scheduleDate: nextClassDate,
+        timeSlot: nextClassTime,
+        coachName: nextClassCoach,
+        zoomJoinUrl: nextClassZoomUrl
+      });
+
+      // Update matching batch
+      setBatchesList(prev => prev.map(b => {
+        if (b.id === assignClassBatch.id) {
+          return {
+            ...b,
+            nextTopic: nextClassTopic,
+            timeSlot: nextClassTime,
+            coachName: nextClassCoach,
+            zoomJoinUrl: nextClassZoomUrl
+          };
+        }
+        return b;
+      }));
+
+      const newLiveClass: AdminLiveClass = {
+        id: `live-${Date.now()}`,
+        courseTitle: assignClassBatch.courseTitle,
+        batchCode: assignClassBatch.code,
+        moduleName: 'Core Curriculum',
+        lessonTitle: nextClassTopic,
+        coachName: nextClassCoach,
+        date: nextClassDate,
+        time: nextClassTime,
+        status: 'Scheduled',
+        zoomJoinUrl: nextClassZoomUrl,
+        recordingAvailable: false,
+        attendancePresent: 0,
+        attendanceTotal: assignClassBatch.enrolledCount || 14
+      };
+      setClassesList(prev => [newLiveClass, ...prev]);
+
+      setShowAssignNextClassModal(false);
+      setAssignClassBatch(null);
+      setNextClassTopic('');
+    } catch (err: any) {
+      alert('Error assigning class: ' + (err.message || 'Internal error'));
+    } finally {
+      setIsAssigningClass(false);
+    }
+  };
+
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetTarget || !resetNewPassword) return;
+    setIsResettingPassword(true);
+    try {
+      if (resetTarget.role === 'STUDENT') {
+        await api.adminResetStudentPassword({
+          studentUserId: resetTarget.id,
+          id: resetTarget.id,
+          email: resetTarget.email,
+          fullName: resetTarget.name,
+          password: resetNewPassword,
+          sendEmail: resetSendEmail
+        });
+      } else {
+        await api.adminResetCoachPassword({
+          coachUserId: resetTarget.id,
+          id: resetTarget.id,
+          email: resetTarget.email,
+          fullName: resetTarget.name,
+          password: resetNewPassword,
+          sendEmail: resetSendEmail
+        });
+      }
+
+      setShowResetPasswordModal(false);
+      setCreatedCredentialsModal({
+        role: resetTarget.role,
+        fullName: resetTarget.name,
+        email: resetTarget.email,
+        password: resetNewPassword,
+        courseOrSpecialization: resetTarget.courseOrBatch
+      });
+
+      setFeedbackToast(`Password updated successfully for ${resetTarget.name}!`);
+      setTimeout(() => setFeedbackToast(null), 4000);
+    } catch (err: any) {
+      alert('Error resetting password: ' + (err.message || 'Check server connection'));
+    } finally {
+      setIsResettingPassword(false);
+    }
+  };
+
+  const handleResendCredentials = async (target: {
+    role: 'STUDENT' | 'TEACHER';
+    name: string;
+    email: string;
+    courseOrBatch?: string;
+  }) => {
+    try {
+      const res = await api.adminResendCredentials({
+        email: target.email,
+        role: target.role,
+        fullName: target.name,
+        courseOrBatch: target.courseOrBatch
+      });
+      if (res?.success) {
+        setFeedbackToast(`Credentials email dispatched to ${target.email}`);
+      } else {
+        setFeedbackToast(`Credentials notification logged for ${target.email}`);
+      }
+      setTimeout(() => setFeedbackToast(null), 4000);
+    } catch (err: any) {
+      alert('Failed to resend credentials: ' + (err.message || 'Check server'));
+    }
+  };
+
+  const handleTransferBatch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!transferStudent || !transferTargetBatch) return;
+
+    // Strict 15-capacity check
+    const targetBatchObj = batchesList.find(b => b.code === transferTargetBatch);
+    if (targetBatchObj && targetBatchObj.enrolledCount >= 15) {
+      alert(`Cannot transfer: Batch ${transferTargetBatch} is at full capacity (15 students maximum) per DP Skilltech educational policy.`);
+      return;
+    }
+
+    setIsTransferring(true);
+    try {
+      await api.adminTransferStudentBatch(transferStudent.id, {
+        targetBatchCode: transferTargetBatch,
+        reason: transferReason
+      });
+
+      const oldBatchCode = transferStudent.batch;
+
+      setStudentsList(prev => prev.map(s => s.id === transferStudent.id ? { ...s, batch: transferTargetBatch } : s));
+
+      setBatchesList(prev => prev.map(b => {
+        if (b.code === transferTargetBatch) return { ...b, enrolledCount: Math.min(15, b.enrolledCount + 1) };
+        if (b.code === oldBatchCode) return { ...b, enrolledCount: Math.max(0, b.enrolledCount - 1) };
+        return b;
+      }));
+
+      setShowTransferModal(false);
+      setFeedbackToast(`Student ${transferStudent.name} successfully transferred to ${transferTargetBatch}`);
+      setTimeout(() => setFeedbackToast(null), 4000);
+    } catch (err: any) {
+      alert('Transfer failed: ' + (err.message || 'Check server connection'));
+    } finally {
+      setIsTransferring(false);
+    }
   };
 
   const handlePublishAnnouncement = (e: React.FormEvent) => {
@@ -462,1315 +972,224 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToPubl
       subtitle="Academy-wide governance: Audit cohort caps (15-student rule), monitor faculty, and review platform performance."
     >
       <div className="admin-portal-stack">
+        {feedbackToast && (
+          <div className="admin-floating-toast">
+            <CheckCircle2 size={16} style={{ color: '#10b981' }} />
+            <span>{feedbackToast}</span>
+          </div>
+        )}
         {/* ==================================================================
             TAB 1: EXECUTIVE DASHBOARD
             ================================================================== */}
         {activeTab === 'dashboard' && (
-          <div className="admin-view-stack">
-            {/* Top Primary Statistics */}
-            <section className="admin-kpi-grid">
-              <div className="admin-kpi-card">
-                <div className="kpi-header">
-                  <span className="kpi-label">Total Enrolled Students</span>
-                  <GraduationCap size={20} className="kpi-icon icon-blue" />
-                </div>
-                <div className="kpi-value">{studentsList.length * 8 + 1}</div>
-                <span className="kpi-subtext">Across 3 active engineering cohorts</span>
-              </div>
-
-              <div className="admin-kpi-card">
-                <div className="kpi-header">
-                  <span className="kpi-label">Active Verified Coaches</span>
-                  <Briefcase size={20} className="kpi-icon icon-orange" />
-                </div>
-                <div className="kpi-value">{coachesList.length}</div>
-                <span className="kpi-subtext">Zero fake instructors • 100% practitioner staff</span>
-              </div>
-
-              <div className="admin-kpi-card">
-                <div className="kpi-header">
-                  <span className="kpi-label">Published Courses</span>
-                  <BookOpen size={20} className="kpi-icon icon-blue" />
-                </div>
-                <div className="kpi-value">
-                  {coursesList.filter((c) => c.status === 'Published').length}
-                </div>
-                <span className="kpi-subtext">+1 Draft syllabus currently in review</span>
-              </div>
-
-              <div className="admin-kpi-card">
-                <div className="kpi-header">
-                  <span className="kpi-label">Strict Batch Cap Compliance</span>
-                  <ShieldCheck size={20} className="kpi-icon icon-green" />
-                </div>
-                <div className="kpi-value">100%</div>
-                <span className="kpi-subtext">Max 15 students strictly enforced on all cohorts</span>
-              </div>
-            </section>
-
-            {/* Secondary Operational Metrics */}
-            <section className="admin-secondary-metrics">
-              <div className="sec-metric-item">
-                <div className="sec-metric-icon">
-                  <Video size={18} className="icon-orange" />
-                </div>
-                <div className="sec-metric-text">
-                  <strong>2 Live Sessions Today</strong>
-                  <span>FastAPI (07:00 PM) &amp; Spring Cloud (07:30 PM)</span>
-                </div>
-              </div>
-
-              <div className="sec-metric-item">
-                <div className="sec-metric-icon">
-                  <MessageSquareQuote size={18} className="icon-yellow" />
-                </div>
-                <div className="sec-metric-text">
-                  <strong>{questionThreads.filter((q) => q.status === 'unanswered').length} Pending Questions</strong>
-                  <span>Avg response turnaround: 1.8 hrs</span>
-                </div>
-              </div>
-
-              <div className="sec-metric-item">
-                <div className="sec-metric-icon">
-                  <FileCheck2 size={18} className="icon-blue" />
-                </div>
-                <div className="sec-metric-text">
-                  <strong>{assignmentsList.length} Active Assignments</strong>
-                  <span>32 submissions awaiting coach evaluation</span>
-                </div>
-              </div>
-
-              <div className="sec-metric-item">
-                <div className="sec-metric-icon">
-                  <CalendarCheck size={18} className="icon-green" />
-                </div>
-                <div className="sec-metric-text">
-                  <strong>{mockSessions.filter((m) => m.status === 'booked').length} Upcoming 1:1 Mocks</strong>
-                  <span>Private defense sessions scheduled this week</span>
-                </div>
-              </div>
-            </section>
-
-            {/* Cohort Cap Monitoring Table */}
-            <section className="admin-panel">
-              <div className="admin-panel-header">
-                <div>
-                  <h3 className="admin-panel-title">
-                    <Clock size={18} className="icon-orange" />
-                    <span>Cohort Capacity &amp; 15-Student Rule Monitor</span>
-                  </h3>
-                  <p className="admin-panel-subtitle">
-                    Prevents mass-lecture dilution. Any cohort reaching 15 students is automatically locked against new admissions.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  className="btn-admin-primary"
-                  onClick={() => setShowCreateBatchModal(true)}
-                >
-                  <Plus size={16} />
-                  <span>Create Cohort</span>
-                </button>
-              </div>
-
-              <div className="cohort-table-responsive">
-                <table className="admin-table">
-                  <thead>
-                    <tr>
-                      <th>Cohort Code</th>
-                      <th>Course Curriculum</th>
-                      <th>Lead Coach</th>
-                      <th>Capacity Status</th>
-                      <th>Enrolled / Cap</th>
-                      <th>Class Cadence</th>
-                      <th>Policy Audit</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {batchesList.map((batch) => {
-                      const isFull = batch.enrolledCount >= batch.capacity;
-                      return (
-                        <tr key={batch.id}>
-                          <td><span className="code-badge">{batch.code}</span></td>
-                          <td><strong>{batch.courseTitle}</strong></td>
-                          <td>{batch.coachName}</td>
-                          <td>
-                            {isFull ? (
-                              <span className="status-badge badge-full">
-                                <Lock size={12} /> FULL (LOCKED)
-                              </span>
-                            ) : (
-                              <span className="status-badge badge-available">
-                                {batch.capacity - batch.enrolledCount} Seats Open
-                              </span>
-                            )}
-                          </td>
-                          <td>
-                            <div className="cap-progress-wrap">
-                              <div className="cap-progress-bar">
-                                <div
-                                  className={`cap-fill ${isFull ? 'fill-full' : 'fill-active'}`}
-                                  style={{ width: `${(batch.enrolledCount / batch.capacity) * 100}%` }}
-                                ></div>
-                              </div>
-                              <span className="cap-text">{batch.enrolledCount}/{batch.capacity}</span>
-                            </div>
-                          </td>
-                          <td>{batch.scheduleDays} • {batch.timeSlot}</td>
-                          <td>
-                            <span className="verified-badge">
-                              <ShieldCheck size={13} /> Strict Cap Compliant
-                            </span>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </section>
-
-            {/* Quick Activity Alert & Integrity Banner */}
-            <div className="admin-integrity-callout">
-              <div className="integrity-icon-col">
-                <ShieldCheck size={28} className="icon-orange" />
-              </div>
-              <div className="integrity-text-col">
-                <h4>Commercial Academy Integrity Standards Active</h4>
-                <p>
-                  All metrics, attendance logs, and mock interview scorecards are grounded in authentic learner interaction.
-                  Zero fake student testimonials, zero unverified placement numbers, and strictly enforced 15-student cohort limits.
-                </p>
-              </div>
-            </div>
-          </div>
+          <OverviewTab
+            studentsList={studentsList}
+            coachesList={coachesList}
+            coursesList={coursesList}
+            batchesList={batchesList}
+            questionThreads={questionThreads}
+            assignmentsList={assignmentsList}
+            mockSessions={mockSessions}
+            onCreateCohort={() => setShowCreateBatchModal(true)}
+            onEnrollStudent={() => setShowCreateStudentModal(true)}
+            onAddCoach={() => setShowAddCoachModal(true)}
+            onScheduleClass={() => setShowScheduleClassModal(true)}
+            onIssueCertificate={() => setShowIssueCertModal(true)}
+            onSelectBatch={(batch) => {
+              setFilterBatch(batch.code);
+              setActiveTab('students');
+            }}
+          />
         )}
 
         {/* ==================================================================
-            TAB 2: COURSE & CURRICULUM MANAGEMENT
+            TAB 2: COURSES & CURRICULUM
             ================================================================== */}
         {activeTab === 'courses' && (
-          <div className="admin-panel">
-            <div className="admin-panel-header">
-              <div>
-                <h3 className="admin-panel-title">Course Architecture &amp; Syllabus Manager</h3>
-                <p className="admin-panel-subtitle">
-                  Design complete course hierarchies: Course &rarr; Module &rarr; Lesson &rarr; Live Class &rarr; Recording &rarr; Material &rarr; Coding Practice &rarr; Assignment &rarr; Quiz &rarr; Project.
-                </p>
-              </div>
-              <button
-                type="button"
-                className="btn-admin-primary"
-                onClick={() => setShowCreateCourseModal(true)}
-              >
-                <Plus size={16} />
-                <span>Create New Course</span>
-              </button>
-            </div>
-
-            {/* Course Filter Pill Row */}
-            <div className="admin-filter-strip">
-              <div className="filter-pill-group">
-                <button
-                  type="button"
-                  className={`filter-pill ${filterCourseStatus === 'all' ? 'active' : ''}`}
-                  onClick={() => setFilterCourseStatus('all')}
-                >
-                  All Programs ({coursesList.length})
-                </button>
-                <button
-                  type="button"
-                  className={`filter-pill ${filterCourseStatus === 'published' ? 'active' : ''}`}
-                  onClick={() => setFilterCourseStatus('published')}
-                >
-                  Published ({coursesList.filter((c) => c.status === 'Published').length})
-                </button>
-                <button
-                  type="button"
-                  className={`filter-pill ${filterCourseStatus === 'draft' ? 'active' : ''}`}
-                  onClick={() => setFilterCourseStatus('draft')}
-                >
-                  Draft ({coursesList.filter((c) => c.status === 'Draft').length})
-                </button>
-              </div>
-            </div>
-
-            {/* Course Grid */}
-            <div className="admin-courses-grid">
-              {filteredCourses.map((course) => (
-                <div key={course.id} className="admin-course-card">
-                  <div className="course-card-thumb-wrap">
-                    <img src={course.thumbnail} alt={course.title} className="course-thumb-img" />
-                    <span className={`course-status-tag status-${course.status.toLowerCase()}`}>
-                      {course.status}
-                    </span>
-                  </div>
-
-                  <div className="course-card-body">
-                    <div className="course-meta-top">
-                      <span className="course-level-tag">{course.level}</span>
-                      <span className="course-duration">{course.durationWeeks} Weeks</span>
-                    </div>
-
-                    <h4 className="course-card-title">{course.title}</h4>
-                    <p className="course-card-desc">{course.description}</p>
-
-                    <div className="course-card-stats">
-                      <div>
-                        <strong>{course.modulesCount}</strong>
-                        <span>Modules</span>
-                      </div>
-                      <div>
-                        <strong>{course.lessonsCount}</strong>
-                        <span>Lessons</span>
-                      </div>
-                      <div>
-                        <strong>{course.enrolledStudents}</strong>
-                        <span>Students</span>
-                      </div>
-                      <div>
-                        <strong>{course.activeBatchesCount}</strong>
-                        <span>Batches</span>
-                      </div>
-                    </div>
-
-                    <div className="course-card-actions">
-                      <button
-                        type="button"
-                        className="btn-card-view-curriculum"
-                        onClick={() => setSelectedCourseCurriculum(course)}
-                      >
-                        <Layers size={15} />
-                        <span>Inspect Syllabus &amp; Modules</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <CoursesTab
+            liveCourses={liveCourses}
+            liveCoursesLoading={liveCoursesLoading}
+            liveCoursesError={liveCoursesError}
+            selectedLiveCourse={selectedLiveCourse}
+            setSelectedLiveCourse={setSelectedLiveCourse}
+            liveModules={liveModules}
+            liveModulesLoading={liveModulesLoading}
+            expandedModuleId={expandedModuleId}
+            setExpandedModuleId={setExpandedModuleId}
+            moduleLessonsMap={moduleLessonsMap}
+            fetchLiveLessons={fetchLiveLessons}
+            showLiveCourseForm={showLiveCourseForm}
+            setShowLiveCourseForm={setShowLiveCourseForm}
+            showLiveModuleForm={showLiveModuleForm}
+            setShowLiveModuleForm={setShowLiveModuleForm}
+            showLiveLessonForm={showLiveLessonForm}
+            setShowLiveLessonForm={setShowLiveLessonForm}
+            liveCourseFormData={liveCourseFormData}
+            setLiveCourseFormData={setLiveCourseFormData}
+            liveModuleFormData={liveModuleFormData}
+            setLiveModuleFormData={setLiveModuleFormData}
+            liveLessonFormData={liveLessonFormData}
+            setLiveLessonFormData={setLiveLessonFormData}
+            liveCourseFormError={liveCourseFormError}
+            setLiveCourseFormError={setLiveCourseFormError}
+            liveCourseFormLoading={liveCourseFormLoading}
+            handleLiveCourseCreate={handleLiveCourseCreate}
+            handleLiveCourseStatusToggle={handleLiveCourseStatusToggle}
+            handleLiveModuleCreate={handleLiveModuleCreate}
+            handleLiveModuleArchive={handleLiveModuleArchive}
+            handleLiveLessonCreate={handleLiveLessonCreate}
+            handleLiveLessonPublish={handleLiveLessonPublish}
+            handleLiveLessonArchive={handleLiveLessonArchive}
+            coursesList={coursesList}
+            filteredCourses={filteredCourses}
+            filterCourseStatus={filterCourseStatus}
+            setFilterCourseStatus={setFilterCourseStatus}
+            setShowCreateCourseModal={setShowCreateCourseModal}
+            setSelectedCourseCurriculum={setSelectedCourseCurriculum}
+          />
         )}
 
         {/* ==================================================================
-            TAB 3: BATCH CAPACITY MANAGEMENT
+            TAB 3: BATCH CAPACITY (15-CAP STRICT GOVERNANCE)
             ================================================================== */}
         {activeTab === 'batches' && (
-          <div className="admin-panel">
-            <div className="admin-panel-header">
-              <div>
-                <h3 className="admin-panel-title">Batch Capacity Governance (Strict 15-Student Rule)</h3>
-                <p className="admin-panel-subtitle">
-                  Rule 10 &amp; 18: Every batch is hard-capped at 15 students. When full, admission closes automatically to preserve personalized attention.
-                </p>
-              </div>
-              <button
-                type="button"
-                className="btn-admin-primary"
-                onClick={() => setShowCreateBatchModal(true)}
-              >
-                <Plus size={16} />
-                <span>Create New Cohort</span>
-              </button>
-            </div>
-
-            <div className="cohort-cards-grid">
-              {batchesList.map((b) => {
-                const isFull = b.enrolledCount >= b.capacity;
-                return (
-                  <div key={b.id} className="admin-cohort-box">
-                    <div className="box-top">
-                      <span className="code-badge">{b.code}</span>
-                      <span className={isFull ? 'badge-full' : 'badge-available'}>
-                        {isFull ? <><Lock size={12} /> LOCKED (15/15 FULL)</> : `${b.capacity - b.enrolledCount} Seats Open`}
-                      </span>
-                    </div>
-                    <h4 className="batch-box-title">{b.courseTitle}</h4>
-                    <p className="batch-box-coach">Lead Coach: <strong>{b.coachName}</strong></p>
-
-                    <div className="cap-progress-wrap">
-                      <div className="cap-progress-bar">
-                        <div
-                          className={`cap-fill ${isFull ? 'fill-full' : 'fill-active'}`}
-                          style={{ width: `${(b.enrolledCount / b.capacity) * 100}%` }}
-                        ></div>
-                      </div>
-                      <span className="cap-text">{b.enrolledCount} / {b.capacity} Students Enrolled</span>
-                    </div>
-
-                    <div className="box-meta">
-                      <span><strong>Days:</strong> {b.scheduleDays}</span>
-                      <span><strong>Timing:</strong> {b.timeSlot}</span>
-                    </div>
-
-                    <div className="box-footer-row">
-                      <span className="batch-status-chip status-active">Live Cohort</span>
-                      <button
-                        type="button"
-                        className="btn-tbl-action"
-                        onClick={() => {
-                          setFilterBatch(b.code);
-                          setActiveTab('students');
-                        }}
-                      >
-                        View {b.enrolledCount} Students &rarr;
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+          <BatchesTab
+            batchesList={batchesList}
+            setShowCreateBatchModal={setShowCreateBatchModal}
+            setAssignClassBatch={setAssignClassBatch}
+            setNextClassTopic={setNextClassTopic}
+            setNextClassCoach={setNextClassCoach}
+            setNextClassTime={setNextClassTime}
+            setShowAssignNextClassModal={setShowAssignNextClassModal}
+            setFilterBatch={setFilterBatch}
+            setActiveTab={setActiveTab}
+          />
         )}
 
         {/* ==================================================================
-            TAB 4: STUDENT ROSTER & PROFILE MANAGEMENT
+            TAB 4: STUDENTS DIRECTORY
             ================================================================== */}
         {activeTab === 'students' && (
-          <div className="admin-panel">
-            <div className="admin-panel-header">
-              <div>
-                <h3 className="admin-panel-title">Student Directory &amp; Academic Records</h3>
-                <p className="admin-panel-subtitle">
-                  Search students, audit attendance cadence, verify assignments and quiz marks, and inspect full student dossiers.
-                </p>
-              </div>
-              <button
-                type="button"
-                className="btn-admin-primary"
-                onClick={() => alert('Student enrollment is governed by batch capacity limits. Click a batch in Batches tab to admit new learners.')}
-              >
-                <UserPlus size={16} />
-                <span>Admissions Portal</span>
-              </button>
-            </div>
-
-            {/* Filter Bar */}
-            <div className="roster-filter-bar">
-              <div className="search-input-wrap">
-                <Search size={16} className="search-icon" />
-                <input
-                  type="text"
-                  placeholder="Search by student name, email, or student ID..."
-                  value={searchStudent}
-                  onChange={(e) => setSearchStudent(e.target.value)}
-                  className="roster-search-field"
-                />
-              </div>
-
-              <div className="filter-select-wrap">
-                <Filter size={15} />
-                <select
-                  value={filterBatch}
-                  onChange={(e) => setFilterBatch(e.target.value)}
-                  className="roster-select"
-                >
-                  <option value="all">All Batches</option>
-                  <option value="PY-FS-01">Batch PY-FS-01 (Python + AI)</option>
-                  <option value="JV-FS-01">Batch JV-FS-01 (Java Microservices)</option>
-                  <option value="DS-AI-01">Batch DS-AI-01 (Data Science)</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Students Table */}
-            <div className="cohort-table-responsive">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Student ID</th>
-                    <th>Full Name</th>
-                    <th>Enrolled Course</th>
-                    <th>Batch</th>
-                    <th>Progress</th>
-                    <th>Attendance</th>
-                    <th>Last Active</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredStudents.map((s) => (
-                    <tr key={s.id}>
-                      <td><span className="code-badge">{s.id}</span></td>
-                      <td>
-                        <strong>{s.name}</strong>
-                        <div className="student-email">{s.email}</div>
-                      </td>
-                      <td>{s.course}</td>
-                      <td><span className="batch-pill">{s.batch}</span></td>
-                      <td>
-                        <div className="table-progress">
-                          <div className="table-bar" style={{ width: `${s.progress}%` }}></div>
-                          <span>{s.progress}%</span>
-                        </div>
-                      </td>
-                      <td>
-                        <strong className={s.attendance >= 90 ? 'text-green' : 'text-orange'}>
-                          {s.attendance}%
-                        </strong>
-                      </td>
-                      <td>{s.lastActive}</td>
-                      <td>
-                        <span className={`status-pill pill-${s.status}`}>
-                          {s.status.toUpperCase()}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="action-buttons-row">
-                          <button
-                            type="button"
-                            className="btn-tbl-action"
-                            onClick={() => setSelectedStudentProfile(s)}
-                          >
-                            <Eye size={13} />
-                            <span>Profile</span>
-                          </button>
-                          <button
-                            type="button"
-                            className={`btn-tbl-action ${s.status === 'active' ? 'btn-warn' : 'btn-success'}`}
-                            onClick={() => toggleStudentStatus(s.id)}
-                          >
-                            {s.status === 'active' ? 'Suspend' : 'Activate'}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <StudentsTab
+            studentsList={studentsList}
+            filteredStudents={filteredStudents}
+            batchesList={batchesList}
+            searchStudent={searchStudent}
+            setSearchStudent={setSearchStudent}
+            filterBatch={filterBatch}
+            setFilterBatch={setFilterBatch}
+            setShowCreateStudentModal={setShowCreateStudentModal}
+            setSelectedStudentProfile={setSelectedStudentProfile}
+            setResetTarget={setResetTarget}
+            setResetNewPassword={setResetNewPassword}
+            setShowResetPasswordModal={setShowResetPasswordModal}
+            generateStrongPassword={generateStrongPassword}
+            setTransferStudent={setTransferStudent}
+            setTransferTargetBatch={setTransferTargetBatch}
+            setShowTransferModal={setShowTransferModal}
+            handleResendCredentials={handleResendCredentials}
+            toggleStudentStatus={toggleStudentStatus}
+          />
         )}
 
         {/* ==================================================================
-            TAB 5: COACHES MANAGEMENT
+            TAB 5: COACHES DIRECTORY
             ================================================================== */}
         {activeTab === 'coaches' && (
-          <div className="admin-panel">
-            <div className="admin-panel-header">
-              <div>
-                <h3 className="admin-panel-title">Faculty &amp; Engineering Coaches Directory</h3>
-                <p className="admin-panel-subtitle">
-                  Rule 22: Lead instructors are active software practitioners. Zero fabricated credentials or artificial profiles.
-                </p>
-              </div>
-              <button
-                type="button"
-                className="btn-admin-primary"
-                onClick={() => setShowAddCoachModal(true)}
-              >
-                <Plus size={16} />
-                <span>Add Faculty Coach</span>
-              </button>
-            </div>
-
-            <div className="coaches-cards-grid">
-              {coachesList.map((coach) => (
-                <div key={coach.id} className="coach-profile-card">
-                  <div className="coach-card-header">
-                    <div className="coach-avatar-badge">
-                      {coach.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}
-                    </div>
-                    <div>
-                      <h4>{coach.name}</h4>
-                      <span className="coach-spec-label">{coach.specialization}</span>
-                    </div>
-                  </div>
-
-                  <div className="coach-contact-snippet">
-                    <span>{coach.email}</span> • <span>{coach.phone}</span>
-                  </div>
-
-                  <div className="coach-stats-row">
-                    <div>
-                      <strong>{coach.assignedBatches.join(', ') || 'Unassigned'}</strong>
-                      <span>Assigned Batch</span>
-                    </div>
-                    <div>
-                      <strong>{coach.completedClassesCount}</strong>
-                      <span>Classes Held</span>
-                    </div>
-                    <div>
-                      <strong>{coach.questionsAnswered}</strong>
-                      <span>Q&amp;A Answers</span>
-                    </div>
-                    <div>
-                      <strong>{coach.rating}/5.0</strong>
-                      <span>Rating</span>
-                    </div>
-                  </div>
-
-                  <div className="coach-extra-metrics">
-                    <div className="metric-chip">
-                      <FileCheck2 size={13} />
-                      <span>{coach.assignmentsReviewed} Assignments Reviewed</span>
-                    </div>
-                    <div className="metric-chip">
-                      <Award size={13} />
-                      <span>{coach.mockInterviewsConducted} Mock 1:1 Defenses</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <CoachesTab
+            coachesList={coachesList}
+            setShowAddCoachModal={setShowAddCoachModal}
+            setResetTarget={setResetTarget}
+            setResetNewPassword={setResetNewPassword}
+            setShowResetPasswordModal={setShowResetPasswordModal}
+            generateStrongPassword={generateStrongPassword}
+            handleResendCredentials={handleResendCredentials}
+          />
         )}
 
         {/* ==================================================================
-            TAB 6: LIVE CLASSES & ZOOM OPERATIONS
+            TAB 6: LIVE CLASSES & ZOOM SESSIONS
             ================================================================== */}
         {activeTab === 'classes' && (
-          <div className="admin-panel">
-            <div className="admin-panel-header">
-              <div>
-                <h3 className="admin-panel-title">Live Class Operations &amp; Zoom Dispatch</h3>
-                <p className="admin-panel-subtitle">
-                  Monitor live cohorts, verify attendance rates, ensure meeting links are generated, and check recording attachments.
-                </p>
-              </div>
-              <button
-                type="button"
-                className="btn-admin-primary"
-                onClick={() => setShowScheduleClassModal(true)}
-              >
-                <Plus size={16} />
-                <span>Schedule Live Class</span>
-              </button>
-            </div>
-
-            {/* Class Status Filter */}
-            <div className="admin-filter-strip">
-              <div className="filter-pill-group">
-                <button
-                  type="button"
-                  className={`filter-pill ${filterClassStatus === 'all' ? 'active' : ''}`}
-                  onClick={() => setFilterClassStatus('all')}
-                >
-                  All Sessions ({classesList.length})
-                </button>
-                <button
-                  type="button"
-                  className={`filter-pill ${filterClassStatus === 'scheduled' ? 'active' : ''}`}
-                  onClick={() => setFilterClassStatus('scheduled')}
-                >
-                  Scheduled ({classesList.filter((c) => c.status === 'Scheduled').length})
-                </button>
-                <button
-                  type="button"
-                  className={`filter-pill ${filterClassStatus === 'completed' ? 'active' : ''}`}
-                  onClick={() => setFilterClassStatus('completed')}
-                >
-                  Completed ({classesList.filter((c) => c.status === 'Completed').length})
-                </button>
-              </div>
-            </div>
-
-            {/* Classes Table */}
-            <div className="cohort-table-responsive">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Batch</th>
-                    <th>Curriculum Module &amp; Lesson</th>
-                    <th>Lead Coach</th>
-                    <th>Date &amp; Time Slot</th>
-                    <th>Attendance</th>
-                    <th>Status</th>
-                    <th>Zoom Link &amp; Recording</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredClasses.map((cls) => (
-                    <tr key={cls.id}>
-                      <td><span className="code-badge">{cls.batchCode}</span></td>
-                      <td>
-                        <strong>{cls.lessonTitle}</strong>
-                        <div className="lesson-module-sub">{cls.moduleName}</div>
-                      </td>
-                      <td>{cls.coachName}</td>
-                      <td>
-                        <div><strong>{cls.date}</strong></div>
-                        <div className="text-secondary">{cls.time}</div>
-                      </td>
-                      <td>
-                        {cls.status === 'Completed' ? (
-                          <span className="text-green font-semibold">
-                            {cls.attendancePresent} / {cls.attendanceTotal} Present ({Math.round((cls.attendancePresent / cls.attendanceTotal) * 100)}%)
-                          </span>
-                        ) : (
-                          <span className="text-secondary">Enrolled: {cls.attendanceTotal}</span>
-                        )}
-                      </td>
-                      <td>
-                        <span className={`status-pill pill-${cls.status.toLowerCase()}`}>
-                          {cls.status}
-                        </span>
-                      </td>
-                      <td>
-                        <div className="action-buttons-row">
-                          <a
-                            href={cls.zoomJoinUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn-tbl-action btn-zoom-launch"
-                          >
-                            <Video size={13} />
-                            <span>Zoom Session</span>
-                          </a>
-                          {cls.recordingAvailable && (
-                            <span className="badge-recording-tag">
-                              <Check size={12} /> Recording Saved
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <LiveClassesTab
+            classesList={classesList}
+            filteredClasses={filteredClasses}
+            filterClassStatus={filterClassStatus}
+            setFilterClassStatus={setFilterClassStatus}
+            liveClassesViewMode={liveClassesViewMode}
+            setLiveClassesViewMode={setLiveClassesViewMode}
+            calendarMonth={calendarMonth}
+            setCalendarMonth={setCalendarMonth}
+            calendarYear={calendarYear}
+            setCalendarYear={setCalendarYear}
+            selectedCalendarClass={selectedCalendarClass}
+            setSelectedCalendarClass={setSelectedCalendarClass}
+            setShowScheduleClassModal={setShowScheduleClassModal}
+          />
         )}
 
         {/* ==================================================================
-            TAB 7: ASSIGNMENTS & CAPSTONES
+            TAB 7: ASSIGNMENTS & ASSESSMENTS
             ================================================================== */}
         {activeTab === 'assignments' && (
-          <div className="admin-panel">
-            <div className="admin-panel-header">
-              <div>
-                <h3 className="admin-panel-title">Academic Assessments &amp; Capstone Defenses</h3>
-                <p className="admin-panel-subtitle">
-                  Review student submission volume, turnaround rates, and capstone repository evaluations.
-                </p>
-              </div>
-            </div>
-
-            <div className="cohort-table-responsive">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Assignment Title</th>
-                    <th>Target Course</th>
-                    <th>Batch</th>
-                    <th>Deadline</th>
-                    <th>Submissions</th>
-                    <th>Reviewed</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {assignmentsList.map((asg) => (
-                    <tr key={asg.id}>
-                      <td><strong>{asg.title}</strong></td>
-                      <td>{asg.courseTitle}</td>
-                      <td><span className="code-badge">{asg.batchCode}</span></td>
-                      <td>{asg.deadline}</td>
-                      <td>
-                        <span className="font-semibold">{asg.submissionsCount} / {asg.totalStudents}</span>
-                      </td>
-                      <td>
-                        <span className="text-green">{asg.reviewedCount} Evaluated</span>
-                      </td>
-                      <td>
-                        <span className={`status-pill pill-${asg.status.toLowerCase().replace(/\s+/g, '-')}`}>
-                          {asg.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <AssessmentsTab assignmentsList={assignmentsList} />
         )}
 
         {/* ==================================================================
-            TAB 8: COMMUNICATION (QUESTIONS & ANNOUNCEMENTS)
+            TAB 8: COMMUNICATION & Q&A
             ================================================================== */}
         {activeTab === 'questions' && (
-          <div className="admin-view-stack">
-            {/* Announcements Panel */}
-            <div className="admin-panel">
-              <div className="admin-panel-header">
-                <div>
-                  <h3 className="admin-panel-title">Academy Announcements &amp; Broadcasts</h3>
-                  <p className="admin-panel-subtitle">Send urgent notifications and operational updates to student cohorts.</p>
-                </div>
-                <button
-                  type="button"
-                  className="btn-admin-primary"
-                  onClick={() => setShowAnnouncementModal(true)}
-                >
-                  <Send size={15} />
-                  <span>Broadcast Announcement</span>
-                </button>
-              </div>
-
-              <div className="announcements-admin-list">
-                {announcementsList.map((ann) => (
-                  <div key={ann.id} className="announcement-admin-card">
-                    <div className="ann-card-header">
-                      <div>
-                        <h4>{ann.title}</h4>
-                        <span className="ann-author-meta">{ann.authorName} • {ann.date} • Target: <strong>{ann.targetBatch}</strong></span>
-                      </div>
-                      <span className={`ann-priority-pill priority-${ann.priority.toLowerCase()}`}>
-                        {ann.priority}
-                      </span>
-                    </div>
-                    <p className="ann-card-text">{ann.content}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Questions Thread Audit */}
-            <div className="admin-panel">
-              <div className="admin-panel-header">
-                <div>
-                  <h3 className="admin-panel-title">Student Q&amp;A Audit Log</h3>
-                  <p className="admin-panel-subtitle">Audit student questions and verify coach response quality and turnaround.</p>
-                </div>
-              </div>
-
-              <div className="questions-audit-list">
-                {questionThreads.map((q) => (
-                  <div key={q.id} className="question-audit-card">
-                    <div className="q-audit-header">
-                      <div>
-                        <strong>{q.studentName} ({q.studentId})</strong>
-                        <span className="text-secondary"> &bull; {q.courseTitle} &bull; {q.moduleName}</span>
-                      </div>
-                      <span className={`status-pill pill-${q.status}`}>
-                        {q.status.toUpperCase()}
-                      </span>
-                    </div>
-                    <h4 className="q-audit-title">{q.title}</h4>
-                    <p className="q-audit-preview">{q.messages[0]?.content}</p>
-                    <div className="q-audit-footer">
-                      <span>{q.messages.length} Message(s) in Thread</span>
-                      <span className="text-secondary">{q.createdAt}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          <CommunicationTab
+            announcementsList={announcementsList}
+            questionThreads={questionThreads}
+            setShowAnnouncementModal={setShowAnnouncementModal}
+          />
         )}
 
         {/* ==================================================================
-            TAB 9: MOCK INTERVIEW AUDITING
+            TAB 9: 1-ON-1 PRIVATE MOCK INTERVIEWS
             ================================================================== */}
         {activeTab === 'mock-interviews' && (
-          <div className="admin-panel">
-            <div className="admin-panel-header">
-              <div>
-                <h3 className="admin-panel-title">1-on-1 Private Mock Interview Governance</h3>
-                <p className="admin-panel-subtitle">
-                  Rule 17 &amp; 18: Strictly 1 Coach + 1 Student. Double-booking prevention enforced across all faculty schedules.
-                </p>
-              </div>
-            </div>
-
-            <div className="cohort-table-responsive">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Track / Category</th>
-                    <th>Lead Interviewer</th>
-                    <th>Slot Date &amp; Timing</th>
-                    <th>Booked Student</th>
-                    <th>Session Status</th>
-                    <th>Scorecard Rubric</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {mockSessions.map((session) => (
-                    <tr key={session.id}>
-                      <td><strong>{session.category}</strong></td>
-                      <td>{session.interviewerName}</td>
-                      <td>{session.date} • {session.time}</td>
-                      <td>
-                        {session.bookedStudentName ? (
-                          <strong>{session.bookedStudentName}</strong>
-                        ) : (
-                          <span className="text-secondary">Available Slot</span>
-                        )}
-                      </td>
-                      <td>
-                        <span className={`status-pill pill-${session.status}`}>
-                          {session.status.toUpperCase()}
-                        </span>
-                      </td>
-                      <td>
-                        {session.score ? (
-                          <div className="score-cell">
-                            <Award size={15} className="icon-yellow" />
-                            <strong>{session.score} / 10</strong>
-                            <span className="rubric-pass-tag">Passed Defense</span>
-                          </div>
-                        ) : (
-                          <span className="text-secondary">—</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <MockInterviewsTab mockSessions={mockSessions} />
         )}
 
         {/* ==================================================================
-            TAB 10: CERTIFICATES MANAGEMENT
+            TAB 10: CERTIFICATES REGISTRY
             ================================================================== */}
         {activeTab === 'certificates' && (
-          <div className="admin-panel">
-            <div className="admin-panel-header">
-              <div>
-                <h3 className="admin-panel-title">Verified Certificate Registry</h3>
-                <p className="admin-panel-subtitle">
-                  Certificates are awarded only upon 100% curriculum completion, all assignments submitted, and passing mock defense.
-                </p>
-              </div>
-              <button
-                type="button"
-                className="btn-admin-primary"
-                onClick={() => setShowIssueCertModal(true)}
-              >
-                <Award size={16} />
-                <span>Issue Certificate</span>
-              </button>
-            </div>
-
-            <div className="cohort-table-responsive">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Certificate ID</th>
-                    <th>Student Name</th>
-                    <th>Course Curriculum</th>
-                    <th>Issue Date</th>
-                    <th>Verification Hash</th>
-                    <th>Academic Grade</th>
-                    <th>Status</th>
-                    <th>Public Verification</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {certificatesList.map((cert) => (
-                    <tr key={cert.id}>
-                      <td><span className="code-badge">{cert.certificateId}</span></td>
-                      <td><strong>{cert.studentName}</strong></td>
-                      <td>{cert.courseTitle}</td>
-                      <td>{cert.issueDate}</td>
-                      <td><code>{cert.verificationCode}</code></td>
-                      <td><strong>{cert.grade}</strong></td>
-                      <td>
-                        <span className="verified-badge">
-                          <CheckCircle2 size={13} /> {cert.status}
-                        </span>
-                      </td>
-                      <td>
-                        <button
-                          type="button"
-                          className="btn-admin-secondary btn-xs"
-                          onClick={() => onNavigateToPublic('verify-certificate', { id: cert.certificateId })}
-                          title={`Open Public Verification Page for ${cert.certificateId}`}
-                        >
-                          <ExternalLink size={13} />
-                          <span>Verify</span>
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <CertificatesTab
+            certificatesList={certificatesList}
+            setShowIssueCertModal={setShowIssueCertModal}
+            onNavigateToPublic={onNavigateToPublic}
+          />
         )}
 
         {/* ==================================================================
-            TAB 11: ANALYTICS & AUDITS
-            ================================================================== */}
-        {activeTab === 'analytics' && (
-          <div className="admin-view-stack">
-            <div className="admin-panel">
-              <div className="admin-panel-header">
-                <div>
-                  <h3 className="admin-panel-title">Academy Telemetry &amp; Learning Analytics</h3>
-                  <p className="admin-panel-subtitle">
-                    Real-time operational indicators across cohort attendance, curriculum completion, and sandbox code executions.
-                  </p>
-                </div>
-              </div>
-
-              <div className="analytics-metrics-grid">
-                <div className="analytics-card">
-                  <BarChart3 size={24} className="icon-blue" />
-                  <h4>Average Attendance Rate</h4>
-                  <div className="analytics-num">94.8%</div>
-                  <p>Consistent 6-day attendance cadence across all 3 active cohorts.</p>
-                </div>
-
-                <div className="analytics-card">
-                  <Clock size={24} className="icon-orange" />
-                  <h4>Average Question Turnaround</h4>
-                  <div className="analytics-num">1.8 Hours</div>
-                  <p>Lead coaches answer student inquiries within 2 hours during cohort days.</p>
-                </div>
-
-                <div className="analytics-card">
-                  <Award size={24} className="icon-yellow" />
-                  <h4>Mock Interview Pass Rate</h4>
-                  <div className="analytics-num">88.2%</div>
-                  <p>Based on 42 completed private 1:1 defense sessions across 6 rubric dimensions.</p>
-                </div>
-
-                <div className="analytics-card">
-                  <Zap size={24} className="icon-orange" />
-                  <h4>Sandbox Code Runs</h4>
-                  <div className="analytics-num">1,420+</div>
-                  <p>Isolated Docker container executions across Python, Java, Node.js and SQL.</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Language Breakdown Card */}
-            <div className="admin-panel">
-              <h4 className="admin-subhead">Coding Sandbox Language Utilization</h4>
-              <div className="lang-bar-container">
-                <div className="lang-bar-segment segment-python" style={{ width: '48%' }}>
-                  <span>Python 3.12 (48%)</span>
-                </div>
-                <div className="lang-bar-segment segment-java" style={{ width: '26%' }}>
-                  <span>Java 21 (26%)</span>
-                </div>
-                <div className="lang-bar-segment segment-node" style={{ width: '16%' }}>
-                  <span>Node.js (16%)</span>
-                </div>
-                <div className="lang-bar-segment segment-sql" style={{ width: '10%' }}>
-                  <span>SQL (10%)</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================================================================
-            TAB 12: SETTINGS & RBAC
-            ================================================================== */}
-        {activeTab === 'settings' && (
-          <div className="admin-view-stack">
-            <div className="admin-panel">
-              <div className="admin-panel-header">
-                <div>
-                  <h3 className="admin-panel-title">Academy Platform Configuration &amp; RBAC</h3>
-                  <p className="admin-panel-subtitle">Role-Based Access Control and core infrastructure telemetry.</p>
-                </div>
-              </div>
-
-              <div className="settings-grid">
-                <div className="settings-box">
-                  <h4>Role Permissions Matrix</h4>
-                  <div className="rbac-table-wrap">
-                    <table className="admin-table">
-                      <thead>
-                        <tr>
-                          <th>Capability</th>
-                          <th>Student</th>
-                          <th>Coach</th>
-                          <th>Admin</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Join Live Zoom Classes</td>
-                          <td><Check className="text-green" size={16} /></td>
-                          <td><Check className="text-green" size={16} /> (Host)</td>
-                          <td><Check className="text-green" size={16} /></td>
-                        </tr>
-                        <tr>
-                          <td>Sandboxed Code Lab</td>
-                          <td><Check className="text-green" size={16} /></td>
-                          <td><Check className="text-green" size={16} /></td>
-                          <td><Check className="text-green" size={16} /></td>
-                        </tr>
-                        <tr>
-                          <td>Evaluate Assignments</td>
-                          <td>&mdash;</td>
-                          <td><Check className="text-green" size={16} /></td>
-                          <td><Check className="text-green" size={16} /></td>
-                        </tr>
-                        <tr>
-                          <td>1:1 Mock Interview Conducting</td>
-                          <td>&mdash;</td>
-                          <td><Check className="text-green" size={16} /></td>
-                          <td><Check className="text-green" size={16} /></td>
-                        </tr>
-                        <tr>
-                          <td>Manage Batches &amp; Caps</td>
-                          <td>&mdash;</td>
-                          <td>&mdash;</td>
-                          <td><Check className="text-green" size={16} /></td>
-                        </tr>
-                        <tr>
-                          <td>Issue Certificates</td>
-                          <td>&mdash;</td>
-                          <td>&mdash;</td>
-                          <td><Check className="text-green" size={16} /></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                <div className="settings-box">
-                  <h4>Infrastructure &amp; Integrations Health</h4>
-                  <div className="infra-health-list">
-                    <div className="infra-item">
-                      <div className="infra-label">
-                        <Radio size={16} className="text-green" />
-                        <span>Zoom Video API</span>
-                      </div>
-                      <span className="status-badge badge-available">Operational (Deep Link Mode)</span>
-                    </div>
-
-                    <div className="infra-item">
-                      <div className="infra-label">
-                        <Server size={16} className="text-green" />
-                        <span>Sandboxed Code Execution Engine</span>
-                      </div>
-                      <span className="status-badge badge-available">Container Cluster Healthy</span>
-                    </div>
-
-                    <div className="infra-item">
-                      <div className="infra-label">
-                        <ShieldCheck size={16} className="text-green" />
-                        <span>Database &amp; RBAC Auth Daemon</span>
-                      </div>
-                      <span className="status-badge badge-available">Encrypted &bull; 0 Anomalies</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ==================================================================
-            TAB: STUDENT REVIEWS & COMMUNITY FEEDBACK MODERATION
+            TAB 11: REVIEWS MODERATION
             ================================================================== */}
         {activeTab === 'reviews' && (
-          <div className="admin-view-stack">
-            {/* Reviews Summary KPIs */}
-            <section className="admin-kpi-grid">
-              <div className="admin-kpi-card">
-                <div className="kpi-header">
-                  <span className="kpi-label">Total Published Reviews</span>
-                  <MessageSquareQuote size={20} className="kpi-icon icon-blue" />
-                </div>
-                <div className="kpi-value">{adminReviews.length}</div>
-                <span className="kpi-subtext">Real-time public learner feedback</span>
-              </div>
-
-              <div className="admin-kpi-card">
-                <div className="kpi-header">
-                  <span className="kpi-label">Average Community Rating</span>
-                  <Star size={20} className="kpi-icon icon-yellow" />
-                </div>
-                <div className="kpi-value">
-                  {adminReviews.length > 0
-                    ? (adminReviews.reduce((acc, r) => acc + r.rating, 0) / adminReviews.length).toFixed(1)
-                    : '5.0'}{' '}
-                  / 5.0
-                </div>
-                <span className="kpi-subtext">Based on 100% genuine submissions</span>
-              </div>
-
-              <div className="admin-kpi-card">
-                <div className="kpi-header">
-                  <span className="kpi-label">5-Star Excellence Ratio</span>
-                  <Award size={20} className="kpi-icon icon-green" />
-                </div>
-                <div className="kpi-value">
-                  {adminReviews.length > 0
-                    ? Math.round(
-                        (adminReviews.filter((r) => r.rating === 5).length / adminReviews.length) * 100
-                      )
-                    : 100}
-                  %
-                </div>
-                <span className="kpi-subtext">Verified learner satisfaction</span>
-              </div>
-
-              <div className="admin-kpi-card">
-                <div className="kpi-header">
-                  <span className="kpi-label">Integrity Policy Guard</span>
-                  <ShieldCheck size={20} className="kpi-icon icon-green" />
-                </div>
-                <div className="kpi-value">Rule 22</div>
-                <span className="kpi-subtext">Zero fake reviews or bots</span>
-              </div>
-            </section>
-
-            {/* Moderation Panel & Table */}
-            <section className="admin-panel">
-              <div className="admin-panel-header">
-                <div>
-                  <h3 className="admin-panel-title">
-                    <MessageSquareQuote size={18} className="icon-blue" />
-                    <span>Real-Time Reviews &amp; Testimonials Governance</span>
-                  </h3>
-                  <p className="admin-panel-subtitle">
-                    Audit all student feedback published across the website. Delete any spam, inappropriate, or non-authentic submissions.
-                  </p>
-                </div>
-              </div>
-
-              {/* Filter & Search Bar */}
-              <div className="admin-filters-bar">
-                <div className="filter-search-wrap">
-                  <Search size={16} className="search-icon" />
-                  <input
-                    type="text"
-                    className="filter-search-input"
-                    placeholder="Search by student name, course, or text..."
-                    value={searchReview}
-                    onChange={(e) => setSearchReview(e.target.value)}
-                  />
-                </div>
-
-                <div className="filter-selects-row">
-                  <div className="filter-item">
-                    <Filter size={14} />
-                    <select
-                      className="filter-select"
-                      value={filterRating}
-                      onChange={(e) => setFilterRating(e.target.value)}
-                    >
-                      <option value="all">All Star Ratings</option>
-                      <option value="5">5 Stars Only</option>
-                      <option value="4">4 Stars Only</option>
-                      <option value="3">3 Stars &amp; Below</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              {/* Reviews Table */}
-              <div className="cohort-table-responsive">
-                <table className="admin-table">
-                  <thead>
-                    <tr>
-                      <th>Rating</th>
-                      <th>Student / Author</th>
-                      <th>Course / Discipline</th>
-                      <th>Batch / Status</th>
-                      <th style={{ minWidth: '280px' }}>Review Feedback</th>
-                      <th>Date</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {adminReviews
-                      .filter((rev) => {
-                        const matchSearch =
-                          rev.authorName.toLowerCase().includes(searchReview.toLowerCase()) ||
-                          rev.roleOrCourse.toLowerCase().includes(searchReview.toLowerCase()) ||
-                          rev.reviewText.toLowerCase().includes(searchReview.toLowerCase());
-                        const matchRating =
-                          filterRating === 'all'
-                            ? true
-                            : filterRating === '3'
-                            ? rev.rating <= 3
-                            : rev.rating === parseInt(filterRating);
-                        return matchSearch && matchRating;
-                      })
-                      .map((rev) => (
-                        <tr key={rev.id}>
-                          <td>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
-                              {[1, 2, 3, 4, 5].map((s) => (
-                                <Star
-                                  key={s}
-                                  size={13}
-                                  fill={s <= rev.rating ? '#f59e0b' : 'none'}
-                                  color={s <= rev.rating ? '#f59e0b' : '#cbd5e1'}
-                                />
-                              ))}
-                              <strong style={{ marginLeft: '4px', fontSize: '0.8rem', color: '#b45309' }}>
-                                {rev.rating}.0
-                              </strong>
-                            </div>
-                          </td>
-                          <td>
-                            <strong style={{ color: '#0f172a' }}>{rev.authorName}</strong>
-                          </td>
-                          <td>
-                            <span style={{ fontSize: '0.85rem', color: '#334155' }}>
-                              {rev.roleOrCourse}
-                            </span>
-                          </td>
-                          <td>
-                            <span className="status-badge badge-active">
-                              {rev.batchOrCohort || 'Verified'}
-                            </span>
-                          </td>
-                          <td>
-                            <p style={{ margin: 0, fontSize: '0.85rem', color: '#475569', lineHeight: 1.4 }}>
-                              "{rev.reviewText}"
-                            </p>
-                          </td>
-                          <td>
-                            <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
-                              {new Date(rev.createdAt).toLocaleDateString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                year: 'numeric'
-                              })}
-                            </span>
-                          </td>
-                          <td>
-                            <button
-                              type="button"
-                              className="btn-action-del"
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '4px',
-                                padding: '4px 10px',
-                                background: '#fee2e2',
-                                color: '#b91c1c',
-                                border: '1px solid #fca5a5',
-                                borderRadius: '6px',
-                                cursor: 'pointer',
-                                fontSize: '0.75rem',
-                                fontWeight: 700
-                              }}
-                              onClick={() => handleDeleteAdminReview(rev.id, rev.authorName)}
-                              title="Delete Review"
-                            >
-                              <Trash2 size={13} />
-                              <span>Delete</span>
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    {adminReviews.length === 0 && (
-                      <tr>
-                        <td colSpan={7} style={{ textAlign: 'center', padding: '2rem', color: '#64748b' }}>
-                          No reviews currently submitted.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </section>
-          </div>
+          <ReviewsTab
+            adminReviews={adminReviews}
+            searchReview={searchReview}
+            setSearchReview={setSearchReview}
+            filterRating={filterRating}
+            setFilterRating={setFilterRating}
+            handleDeleteReview={async (reviewId) => {
+              const r = adminReviews.find(x => x.id === reviewId);
+              await handleDeleteAdminReview(reviewId, r ? r.authorName : 'Author');
+            }}
+          />
         )}
+
+        {/* ==================================================================
+            TAB 12: ANALYTICS & TELEMETRY
+            ================================================================== */}
+        {activeTab === 'analytics' && <AnalyticsTab />}
+
+        {/* ==================================================================
+            TAB 13: SETTINGS & RBAC
+            ================================================================== */}
+        {activeTab === 'settings' && <SettingsTab />}
 
         {/* ==================================================================
             STUDENT PROFILE DRAWER / MODAL (SECTION 7 REQUIREMENTS)
@@ -2134,13 +1553,162 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToPubl
         )}
 
         {/* ==================================================================
+            CREATE STUDENT MODAL
+            ================================================================== */}
+        {showCreateStudentModal && (
+          <div className="admin-modal-backdrop" onClick={() => setShowCreateStudentModal(false)}>
+            <div className="admin-modal-dialog" onClick={(e) => e.stopPropagation()}>
+              <div className="dialog-header">
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <UserPlus size={18} style={{ color: 'var(--brand-orange)' }} />
+                    <h3 style={{ margin: 0 }}>Provision Student Account</h3>
+                  </div>
+                  <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.8rem', color: 'var(--gray-500)' }}>
+                    Create login credentials (Email & Password) for immediate LMS portal access.
+                  </p>
+                </div>
+                <button type="button" onClick={() => setShowCreateStudentModal(false)}>
+                  <X size={18} />
+                </button>
+              </div>
+
+              <form onSubmit={handleCreateStudent}>
+                <div className="dialog-body">
+                  <div className="form-group">
+                    <label className="form-label">Student Full Name *</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      required
+                      placeholder="e.g. Ananya Deshmukh"
+                      value={newStudentName}
+                      onChange={(e) => setNewStudentName(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="form-row-2">
+                    <div className="form-group">
+                      <label className="form-label">Student Login Email *</label>
+                      <input
+                        type="email"
+                        className="form-input"
+                        required
+                        placeholder="student@example.com"
+                        value={newStudentEmail}
+                        onChange={(e) => setNewStudentEmail(e.target.value)}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Phone Number</label>
+                      <input
+                        type="tel"
+                        className="form-input"
+                        placeholder="+91 98765 43210"
+                        value={newStudentPhone}
+                        onChange={(e) => setNewStudentPhone(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-row-2">
+                    <div className="form-group">
+                      <label className="form-label">Enrolled Course</label>
+                      <select
+                        className="form-input"
+                        value={newStudentCourse}
+                        onChange={(e) => setNewStudentCourse(e.target.value)}
+                      >
+                        {coursesList.map((c) => (
+                          <option key={c.id} value={c.title}>{c.title}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Assigned Cohort / Batch</label>
+                      <select
+                        className="form-input"
+                        value={newStudentBatch}
+                        onChange={(e) => setNewStudentBatch(e.target.value)}
+                      >
+                        {batchesList.map((b) => (
+                          <option key={b.id} value={b.code}>{b.code} ({b.courseTitle})</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Login Password *</label>
+                    <div className="input-with-action-row">
+                      <input
+                        type={showStudentPassword ? 'text' : 'password'}
+                        className="form-input"
+                        required
+                        placeholder="Minimum 6 characters"
+                        value={newStudentPassword}
+                        onChange={(e) => setNewStudentPassword(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        className="btn-toggle-eye"
+                        onClick={() => setShowStudentPassword(!showStudentPassword)}
+                        title={showStudentPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showStudentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-generate-pass"
+                        onClick={() => setNewStudentPassword(generateStrongPassword())}
+                        title="Generate strong password"
+                      >
+                        <RefreshCw size={13} />
+                        <span>Generate</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="rule-warning-box">
+                    <Key size={16} className="icon-green" />
+                    <span>The student will log in at <code>/#login</code> using this email and password immediately.</span>
+                  </div>
+                </div>
+
+                <div className="dialog-footer">
+                  <button
+                    type="button"
+                    className="btn-admin-secondary"
+                    onClick={() => setShowCreateStudentModal(false)}
+                    disabled={isCreatingStudent}
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn-admin-primary" disabled={isCreatingStudent}>
+                    {isCreatingStudent ? 'Creating Account...' : 'Create Student Account'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* ==================================================================
             ADD COACH MODAL
             ================================================================== */}
         {showAddCoachModal && (
           <div className="admin-modal-backdrop" onClick={() => setShowAddCoachModal(false)}>
             <div className="admin-modal-dialog" onClick={(e) => e.stopPropagation()}>
               <div className="dialog-header">
-                <h3>Add Verified Faculty Member</h3>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <ShieldCheck size={18} style={{ color: 'var(--brand-orange)' }} />
+                    <h3 style={{ margin: 0 }}>Register Faculty / Coach</h3>
+                  </div>
+                  <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.8rem', color: 'var(--gray-500)' }}>
+                    Provision teacher credentials (Email & Password) for classroom and mock interview access.
+                  </p>
+                </div>
                 <button type="button" onClick={() => setShowAddCoachModal(false)}>
                   <X size={18} />
                 </button>
@@ -2160,26 +1728,76 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToPubl
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label className="form-label">Email Address</label>
-                    <input
-                      type="email"
-                      className="form-input"
-                      placeholder="name@dpskilltech.in"
-                      value={newCoachEmail}
-                      onChange={(e) => setNewCoachEmail(e.target.value)}
-                    />
+                  <div className="form-row-2">
+                    <div className="form-group">
+                      <label className="form-label">Coach Email Address *</label>
+                      <input
+                        type="email"
+                        className="form-input"
+                        required
+                        placeholder="name@dpskilltech.in"
+                        value={newCoachEmail}
+                        onChange={(e) => setNewCoachEmail(e.target.value)}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Phone Number</label>
+                      <input
+                        type="tel"
+                        className="form-input"
+                        placeholder="+91 98765 00000"
+                        value={newCoachPhone}
+                        onChange={(e) => setNewCoachPhone(e.target.value)}
+                      />
+                    </div>
                   </div>
 
                   <div className="form-group">
-                    <label className="form-label">Technical Specialization</label>
+                    <label className="form-label">Technical Specialization *</label>
                     <input
                       type="text"
                       className="form-input"
+                      required
                       placeholder="e.g. Distributed Systems, Kafka & Spring Cloud"
                       value={newCoachSpecialization}
                       onChange={(e) => setNewCoachSpecialization(e.target.value)}
                     />
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Coach Login Password *</label>
+                    <div className="input-with-action-row">
+                      <input
+                        type={showCoachPassword ? 'text' : 'password'}
+                        className="form-input"
+                        required
+                        placeholder="Minimum 6 characters"
+                        value={newCoachPassword}
+                        onChange={(e) => setNewCoachPassword(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        className="btn-toggle-eye"
+                        onClick={() => setShowCoachPassword(!showCoachPassword)}
+                        title={showCoachPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showCoachPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-generate-pass"
+                        onClick={() => setNewCoachPassword(generateStrongPassword())}
+                        title="Generate strong password"
+                      >
+                        <RefreshCw size={13} />
+                        <span>Generate</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="rule-warning-box">
+                    <Key size={16} className="icon-green" />
+                    <span>Coach will receive full TEACHER role permissions to host live sessions and evaluate code.</span>
                   </div>
                 </div>
 
@@ -2188,14 +1806,496 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigateToPubl
                     type="button"
                     className="btn-admin-secondary"
                     onClick={() => setShowAddCoachModal(false)}
+                    disabled={isCreatingCoach}
                   >
                     Cancel
                   </button>
-                  <button type="submit" className="btn-admin-primary">
-                    Register Coach
+                  <button type="submit" className="btn-admin-primary" disabled={isCreatingCoach}>
+                    {isCreatingCoach ? 'Registering Coach...' : 'Register Coach'}
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+
+        {/* ==================================================================
+            ASSIGN NEXT CLASS MODAL
+            ================================================================== */}
+        {showAssignNextClassModal && assignClassBatch && (
+          <div className="admin-modal-backdrop" onClick={() => setShowAssignNextClassModal(false)}>
+            <div className="admin-modal-dialog" onClick={(e) => e.stopPropagation()}>
+              <div className="dialog-header">
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Video size={18} style={{ color: 'var(--brand-orange)' }} />
+                    <h3 style={{ margin: 0 }}>Assign Next Class: {assignClassBatch.code}</h3>
+                  </div>
+                  <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.8rem', color: 'var(--gray-500)' }}>
+                    Schedule next lesson topic, assigned faculty, and live session link for {assignClassBatch.courseTitle}.
+                  </p>
+                </div>
+                <button type="button" onClick={() => setShowAssignNextClassModal(false)}>
+                  <X size={18} />
+                </button>
+              </div>
+
+              <form onSubmit={handleAssignNextClass}>
+                <div className="dialog-body">
+                  <div className="form-group">
+                    <label className="form-label">Next Class Topic / Subject *</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      required
+                      placeholder="e.g. Distributed Database Sharding & CockroachDB"
+                      value={nextClassTopic}
+                      onChange={(e) => setNextClassTopic(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="form-row-2">
+                    <div className="form-group">
+                      <label className="form-label">Scheduled Date / Day *</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        required
+                        placeholder="e.g. Tomorrow or Wednesday, 18 Mar"
+                        value={nextClassDate}
+                        onChange={(e) => setNextClassDate(e.target.value)}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Daily Time Slot (IST) *</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        required
+                        placeholder="e.g. 07:00 PM – 08:30 PM IST"
+                        value={nextClassTime}
+                        onChange={(e) => setNextClassTime(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Assigned Faculty / Coach *</label>
+                    <select
+                      className="form-input"
+                      value={nextClassCoach}
+                      onChange={(e) => setNextClassCoach(e.target.value)}
+                    >
+                      {coachesList.map((c) => (
+                        <option key={c.id} value={c.name}>{c.name} ({c.specialization})</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Live Session Join URL (Zoom / Meet) *</label>
+                    <input
+                      type="url"
+                      className="form-input"
+                      required
+                      placeholder="https://zoom.us/j/9876543299"
+                      value={nextClassZoomUrl}
+                      onChange={(e) => setNextClassZoomUrl(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="dialog-footer">
+                  <button
+                    type="button"
+                    className="btn-admin-secondary"
+                    onClick={() => setShowAssignNextClassModal(false)}
+                    disabled={isAssigningClass}
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn-admin-primary" disabled={isAssigningClass}>
+                    {isAssigningClass ? 'Saving & Notifying...' : 'Confirm & Notify Cohort'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* ==================================================================
+            CREATED CREDENTIALS CONFIRMATION MODAL
+            ================================================================== */}
+        {createdCredentialsModal && (
+          <div className="admin-modal-backdrop" onClick={() => setCreatedCredentialsModal(null)}>
+            <div className="admin-modal-dialog" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '520px' }}>
+              <div className="dialog-header">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <div style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    background: 'rgba(16, 185, 129, 0.15)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#10b981'
+                  }}>
+                    <CheckCircle2 size={20} />
+                  </div>
+                  <div>
+                    <h3 style={{ margin: 0 }}>Account Provisioned Successfully</h3>
+                    <p style={{ margin: '0.2rem 0 0 0', fontSize: '0.8rem', color: 'var(--gray-500)' }}>
+                      New {createdCredentialsModal.role === 'STUDENT' ? 'Student' : 'Faculty / Coach'} credentials created.
+                    </p>
+                  </div>
+                </div>
+                <button type="button" onClick={() => setCreatedCredentialsModal(null)}>
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="dialog-body">
+                <div className="credentials-display-card">
+                  <div className="credentials-row">
+                    <strong>Role:</strong>
+                    <span className="credentials-val">
+                      {createdCredentialsModal.role === 'STUDENT' ? 'Student Account' : 'Faculty / Coach'}
+                    </span>
+                  </div>
+                  <div className="credentials-row">
+                    <strong>Full Name:</strong>
+                    <span className="credentials-val">{createdCredentialsModal.fullName}</span>
+                  </div>
+                  <div className="credentials-row">
+                    <strong>Login Email:</strong>
+                    <span className="credentials-val" style={{ color: '#2563eb' }}>{createdCredentialsModal.email}</span>
+                  </div>
+                  <div className="credentials-row">
+                    <strong>Login Password:</strong>
+                    <span className="credentials-val" style={{ color: '#16a34a' }}>{createdCredentialsModal.password}</span>
+                  </div>
+                  {createdCredentialsModal.idCode && (
+                    <div className="credentials-row">
+                      <strong>Student ID:</strong>
+                      <span className="credentials-val">{createdCredentialsModal.idCode}</span>
+                    </div>
+                  )}
+                  {createdCredentialsModal.courseOrSpecialization && (
+                    <div className="credentials-row">
+                      <strong>{createdCredentialsModal.role === 'STUDENT' ? 'Course:' : 'Specialization:'}</strong>
+                      <span className="credentials-val">{createdCredentialsModal.courseOrSpecialization}</span>
+                    </div>
+                  )}
+                  {createdCredentialsModal.batch && (
+                    <div className="credentials-row">
+                      <strong>Cohort Batch:</strong>
+                      <span className="credentials-val">{createdCredentialsModal.batch}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="credentials-copy-banner">
+                  <span>Ready for login at <code>/#login</code></span>
+                  <button
+                    type="button"
+                    className="btn-copy-creds"
+                    onClick={() => {
+                      const text = `DP Skilltech Portal Credentials:\nRole: ${createdCredentialsModal.role}\nName: ${createdCredentialsModal.fullName}\nEmail: ${createdCredentialsModal.email}\nPassword: ${createdCredentialsModal.password}\nLogin URL: http://localhost:5173/#login`;
+                      navigator.clipboard.writeText(text);
+                      setCopiedNotification(true);
+                      setTimeout(() => setCopiedNotification(false), 3000);
+                    }}
+                  >
+                    {copiedNotification ? (
+                      <>
+                        <Check size={14} />
+                        <span>Copied to Clipboard!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={14} />
+                        <span>Copy All Credentials</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="rule-warning-box" style={{ marginTop: '0.85rem' }}>
+                  <ShieldCheck size={16} className="icon-green" />
+                  <span>The user can immediately log in on the platform using these credentials.</span>
+                </div>
+              </div>
+
+              <div className="dialog-footer">
+                <button
+                  type="button"
+                  className="btn-admin-primary"
+                  style={{ width: '100%' }}
+                  onClick={() => setCreatedCredentialsModal(null)}
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ==================================================================
+            RESET PASSWORD MODAL (STUDENT / COACH)
+            ================================================================== */}
+        {showResetPasswordModal && resetTarget && (
+          <div className="admin-modal-backdrop" onClick={() => setShowResetPasswordModal(false)}>
+            <div className="admin-modal-dialog" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '480px' }}>
+              <div className="dialog-header">
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Key size={18} style={{ color: 'var(--brand-orange)' }} />
+                    <h3 style={{ margin: 0 }}>Reset Login Password</h3>
+                  </div>
+                  <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.8rem', color: 'var(--gray-500)' }}>
+                    Provision a new secure password for {resetTarget.role === 'STUDENT' ? 'Student' : 'Faculty Member'}.
+                  </p>
+                </div>
+                <button type="button" onClick={() => setShowResetPasswordModal(false)}>
+                  <X size={18} />
+                </button>
+              </div>
+
+              <form onSubmit={handleResetPassword}>
+                <div className="dialog-body">
+                  <div className="admin-target-summary-box">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <strong>{resetTarget.name}</strong>
+                      <span className="code-badge">{resetTarget.role}</span>
+                    </div>
+                    <div style={{ fontSize: '0.82rem', color: '#2563eb', marginTop: '0.2rem' }}>{resetTarget.email}</div>
+                    {resetTarget.courseOrBatch && (
+                      <div style={{ fontSize: '0.78rem', color: 'var(--gray-500)', marginTop: '0.15rem' }}>{resetTarget.courseOrBatch}</div>
+                    )}
+                  </div>
+
+                  <div className="form-group" style={{ marginTop: '1rem' }}>
+                    <label className="form-label">New Password *</label>
+                    <div className="input-with-action-row">
+                      <input
+                        type={showResetPassword ? 'text' : 'password'}
+                        className="form-input"
+                        required
+                        placeholder="Minimum 6 characters"
+                        value={resetNewPassword}
+                        onChange={(e) => setResetNewPassword(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        className="btn-toggle-eye"
+                        onClick={() => setShowResetPassword(!showResetPassword)}
+                        title={showResetPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showResetPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-generate-pass"
+                        onClick={() => setResetNewPassword(generateStrongPassword())}
+                        title="Generate strong password"
+                      >
+                        <RefreshCw size={13} />
+                        <span>Generate</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="form-group" style={{ marginTop: '0.85rem' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.82rem', color: 'var(--gray-700)' }}>
+                      <input
+                        type="checkbox"
+                        checked={resetSendEmail}
+                        onChange={(e) => setResetSendEmail(e.target.checked)}
+                      />
+                      <span>Send updated password confirmation to <strong>{resetTarget.email}</strong></span>
+                    </label>
+                  </div>
+
+                  <div className="rule-warning-box" style={{ marginTop: '0.75rem' }}>
+                    <ShieldCheck size={16} className="icon-green" />
+                    <span>Password update is recorded in the academic security audit trail.</span>
+                  </div>
+                </div>
+
+                <div className="dialog-footer">
+                  <button
+                    type="button"
+                    className="btn-admin-secondary"
+                    onClick={() => setShowResetPasswordModal(false)}
+                    disabled={isResettingPassword}
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn-admin-primary" disabled={isResettingPassword}>
+                    {isResettingPassword ? 'Updating Password...' : 'Save & Provision Password'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* ==================================================================
+            STUDENT BATCH TRANSFER MODAL
+            ================================================================== */}
+        {showTransferModal && transferStudent && (
+          <div className="admin-modal-backdrop" onClick={() => setShowTransferModal(false)}>
+            <div className="admin-modal-dialog" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+              <div className="dialog-header">
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <ArrowRightLeft size={18} style={{ color: 'var(--brand-orange)' }} />
+                    <h3 style={{ margin: 0 }}>Transfer Cohort Batch</h3>
+                  </div>
+                  <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.8rem', color: 'var(--gray-500)' }}>
+                    Reassign student to another cohort batch. Max 15-student cap is strictly validated.
+                  </p>
+                </div>
+                <button type="button" onClick={() => setShowTransferModal(false)}>
+                  <X size={18} />
+                </button>
+              </div>
+
+              <form onSubmit={handleTransferBatch}>
+                <div className="dialog-body">
+                  <div className="admin-target-summary-box">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <strong>{transferStudent.name}</strong>
+                      <span className="code-badge">{transferStudent.id}</span>
+                    </div>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--gray-600)', marginTop: '0.25rem' }}>
+                      Current Cohort: <strong style={{ color: '#ea580c' }}>{transferStudent.batch}</strong> ({transferStudent.course})
+                    </div>
+                  </div>
+
+                  <div className="form-group" style={{ marginTop: '1rem' }}>
+                    <label className="form-label">Target Cohort Batch *</label>
+                    <select
+                      className="form-input"
+                      value={transferTargetBatch}
+                      onChange={(e) => setTransferTargetBatch(e.target.value)}
+                    >
+                      {batchesList.map(b => (
+                        <option
+                          key={b.id}
+                          value={b.code}
+                          disabled={b.code === transferStudent.batch || b.enrolledCount >= 15}
+                        >
+                          {b.code} ({b.courseTitle}) — {b.enrolledCount}/15 enrolled {b.enrolledCount >= 15 ? '[FULL]' : ''} {b.code === transferStudent.batch ? '[CURRENT]' : ''}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label className="form-label">Reason for Transfer</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      placeholder="e.g. Schedule conflict, academic pacing, or student request"
+                      value={transferReason}
+                      onChange={(e) => setTransferReason(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="rule-warning-box">
+                    <ShieldCheck size={16} className="icon-green" />
+                    <span>Rule 19: Batch size strictly capped at 15 students. Over-enrollment is blocked.</span>
+                  </div>
+                </div>
+
+                <div className="dialog-footer">
+                  <button
+                    type="button"
+                    className="btn-admin-secondary"
+                    onClick={() => setShowTransferModal(false)}
+                    disabled={isTransferring}
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn-admin-primary" disabled={isTransferring}>
+                    {isTransferring ? 'Transferring...' : 'Confirm Cohort Transfer'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* ==================================================================
+            CALENDAR CLASS SESSION INSPECTOR MODAL
+            ================================================================== */}
+        {selectedCalendarClass && (
+          <div className="admin-modal-backdrop" onClick={() => setSelectedCalendarClass(null)}>
+            <div className="admin-modal-dialog" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '480px' }}>
+              <div className="dialog-header">
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Video size={18} style={{ color: 'var(--brand-orange)' }} />
+                    <h3 style={{ margin: 0 }}>Class Session Details</h3>
+                  </div>
+                  <span className="code-badge" style={{ marginTop: '0.2rem', display: 'inline-block' }}>{selectedCalendarClass.batchCode}</span>
+                </div>
+                <button type="button" onClick={() => setSelectedCalendarClass(null)}>
+                  <X size={18} />
+                </button>
+              </div>
+
+              <div className="dialog-body">
+                <div style={{ marginBottom: '1rem' }}>
+                  <h4 style={{ margin: '0 0 0.35rem 0', fontSize: '1.05rem', color: '#0f172a' }}>{selectedCalendarClass.lessonTitle}</h4>
+                  <div style={{ fontSize: '0.82rem', color: 'var(--gray-500)' }}>{selectedCalendarClass.moduleName} • {selectedCalendarClass.courseTitle}</div>
+                </div>
+
+                <div className="admin-credentials-card" style={{ background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <div className="credentials-row">
+                    <strong>Scheduled Date:</strong>
+                    <span className="credentials-val">{selectedCalendarClass.date}</span>
+                  </div>
+                  <div className="credentials-row">
+                    <strong>Time Slot:</strong>
+                    <span className="credentials-val">{selectedCalendarClass.time}</span>
+                  </div>
+                  <div className="credentials-row">
+                    <strong>Lead Coach:</strong>
+                    <span className="credentials-val">{selectedCalendarClass.coachName}</span>
+                  </div>
+                  <div className="credentials-row">
+                    <strong>Status:</strong>
+                    <span className={`status-pill pill-${selectedCalendarClass.status.toLowerCase()}`}>{selectedCalendarClass.status}</span>
+                  </div>
+                </div>
+
+                <div style={{ marginTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <a
+                    href={selectedCalendarClass.zoomJoinUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-admin-primary"
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', textDecoration: 'none' }}
+                  >
+                    <Video size={16} />
+                    <span>Launch Live Zoom Classroom</span>
+                  </a>
+                </div>
+              </div>
+
+              <div className="dialog-footer">
+                <button
+                  type="button"
+                  className="btn-admin-secondary"
+                  style={{ width: '100%' }}
+                  onClick={() => setSelectedCalendarClass(null)}
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         )}

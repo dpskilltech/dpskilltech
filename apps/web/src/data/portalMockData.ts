@@ -26,6 +26,8 @@ export interface CohortBatch {
   timeSlot: string;
   status: 'active' | 'upcoming' | 'completed';
   zoomJoinUrl: string;
+  nextTopic?: string;
+  nextSessionDate?: string;
 }
 
 export interface QuestionThreadMessage {

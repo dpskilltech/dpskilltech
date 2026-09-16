@@ -1,50 +1,54 @@
-import { PrismaClient } from '@prisma/client';
+/**
+ * Database Connection Diagnostic Utility
+ * Single Source of Truth: Supabase PostgreSQL
+ * Prisma has been decommissioned in Phase 1.
+ */
 
-declare global {
-  // Prevent multiple PrismaClient instances during hot-reloading in dev
-  // eslint-disable-next-line no-var
-  var __dpPrismaClient: PrismaClient | undefined;
-}
+import { supabaseAdmin, isSupabaseConfigured } from '../lib/supabase';
 
-export const prisma =
-  global.__dpPrismaClient ||
-  new PrismaClient({
-    log:
-      process.env.NODE_ENV === 'development'
-        ? ['error', 'warn']
-        : ['error']
-  });
-
-if (process.env.NODE_ENV !== 'production') {
-  global.__dpPrismaClient = prisma;
-}
+export const prisma = null;
 
 export interface DbConnectionStatus {
   isConnected: boolean;
   message: string;
   timestamp: string;
   error?: string;
+  singleSourceOfTruth?: string;
 }
 
 /**
- * Validates connectivity to the PostgreSQL database
+ * Validates connectivity to the PostgreSQL database (Supabase is single source of truth)
  */
 export async function checkDatabaseConnection(): Promise<DbConnectionStatus> {
   const timestamp = new Date().toISOString();
-  try {
-    // Perform lightweight query check
-    await prisma.$queryRaw`SELECT 1`;
-    return {
-      isConnected: true,
-      message: 'PostgreSQL database connection verified and operational',
-      timestamp
-    };
-  } catch (err: any) {
-    return {
-      isConnected: false,
-      message: 'Database connection failed or database server is currently offline',
-      timestamp,
-      error: err?.message || String(err)
-    };
+
+  // Primary: Check Supabase PostgreSQL
+  if (isSupabaseConfigured() && supabaseAdmin) {
+    try {
+      const { error } = await supabaseAdmin.from('roles').select('id').limit(1);
+      if (!error) {
+        return {
+          isConnected: true,
+          message: 'Supabase PostgreSQL connection verified and active (Single Source of Truth)',
+          singleSourceOfTruth: 'Supabase PostgreSQL',
+          timestamp
+        };
+      }
+    } catch (err: any) {
+      return {
+        isConnected: false,
+        message: 'Supabase PostgreSQL connection failed',
+        singleSourceOfTruth: 'Supabase PostgreSQL',
+        timestamp,
+        error: err?.message || String(err)
+      };
+    }
   }
+
+  return {
+    isConnected: false,
+    message: 'Supabase PostgreSQL is the academy database authority. Configure SUPABASE_URL & SUPABASE_SERVICE_ROLE_KEY to connect live database.',
+    singleSourceOfTruth: 'Supabase PostgreSQL',
+    timestamp
+  };
 }

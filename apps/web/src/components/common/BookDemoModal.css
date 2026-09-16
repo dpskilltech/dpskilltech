@@ -74,6 +74,23 @@
   text-align: left;
 }
 
+.demo-modal-logo-wrap {
+  margin-bottom: 1rem;
+  display: flex;
+}
+
+.demo-modal-logo-wrap.text-center {
+  justify-content: center;
+}
+
+.demo-modal-logo-img {
+  height: 44px;
+  width: auto;
+  max-width: 170px;
+  object-fit: contain;
+  display: block;
+}
+
 .demo-pill-tag {
   display: inline-flex;
   align-items: center;

@@ -1,7 +1,8 @@
 # DP SKILLTECH DEVELOPMENT STATUS
 
 Last Updated:
-2026-09-13
+2026-09-13 (Phase 1 Live Supabase Deployment Verified — 29/29 Tables Active)
+
 
 ## PUBLIC WEBSITE (PHASE 1 - COMPLETE & PREMIUM REDESIGN)
 
@@ -30,13 +31,53 @@ Last Updated:
 [x] Book Free Demo (Overhauled "Experience It Live" section with architectural navy container, 4 value-prop tiles, live pulse badge, and high-converting crisp white card with embedded field icons)
 [x] Student Login Portal (Virtual Academy gateway completely redesigned in Blue · Orange · White high-contrast theme; 1-click test credential chips for Student, Teacher, and Admin; authenticated role tabs; and animated developer TerminalLoader with blinking cursor and typing animation for all loading screens)
 [x] Employer & Parent Assurance (Integrated official 3D verified certificate showcase graphic into /#certificates portal with live credential verification CTA)
+[x] Official DP Skilltech Brand Logo Integration (Integrated official crimson red stylized circuit DP emblem and "SkillTech - LEARN. BUILD. GROW" logo across all platform touchpoints: Public Navbar, Footer, Authenticated Portal Sidebar & Header, Student Login Gateway, Book Demo Modal, Certificate Verification Watermark, Favicon SVG/PNG, and OpenGraph/Schema.org metadata; converted all logo assets to direct ESM imports bundled by Vite with zero broken icons or 404s; redesigned authenticated portal sidebar header into a two-row structure with unclipped role badges and spacious breadcrumbs)
 
-## AUTHENTICATION
+## AUTHENTICATION & PHASE 1 BACKEND FOUNDATION (COMPLETE — ARCHITECTURE CORRECTIONS APPLIED)
 
-[x] Student authentication (JWT token + bcrypt password verification)
-[x] Teacher authentication (JWT token + instructor profile resolution)
-[x] Admin authentication (JWT token + administrative privilege verification)
-[x] Role-based access (Server-side requireRole middleware + frontend route guards)
+[x] Supabase & PostgreSQL Migration Architecture (29 normalized tables — corrected from 26 — in supabase/migrations/20260913000001_phase1_schema.sql as Single Source of Truth)
+[x] Fine-Grained Custom RBAC (5 base roles: SUPER_ADMIN, ADMIN, TEACHER, STUDENT, PARENT; 30 granular permissions; dynamic mapping via role_permissions)
+[x] PostgreSQL Row Level Security (RLS enabled on all 29 tables including certificate_signatures; 20260913000002_phase1_rbac_rls.sql)
+[x] Supabase Auth as Sole Authentication Authority (Email + password, Phone + password, Bearer token validation → permission resolution from PostgreSQL)
+[x] Non-Self-Registration Student Model (Admin provisions student accounts with auto-generated secure temporary passwords)
+[x] Admin-Only Student Password Reset (Prevents unverified self-service account takeover; sets requires_password_change=TRUE in DB — not metadata)
+[x] Super Admin Multi-Factor Authentication (MFA readiness & enforcement verification)
+[x] Academy Profile Architecture (Decoupled auth.users identity from academic profiles, students, teachers, and parents)
+[x] Parent-Student Isolation (Optional parent accounts restricted strictly to linked student data; no cross-family leakage)
+[x] FK Integrity Fix (course_progress and lesson_completions: removed redundant student_profile_id + course_id; enrollment_id is sole FK — prevents inconsistent data)
+[x] Course, Module & Lesson Progression Engine (course_progress, lesson_completions; RLS rewritten to resolve student identity via enrollment_id join)
+[x] Cohort Batch & Schedule Engine (Admin-configurable batch capacity, Monday–Saturday active cadence, Sunday holiday, single-session overrides)
+[x] Multi-Course Enrollment Model (11 lifecycle states: INQUIRY to COMPLETED/ARCHIVED; no course_id hardcoded in student record)
+[x] Course-Specific Demo Booking Engine (POST /api/admissions/demo-booking with teacher assignment & admissions status pipeline)
+[x] General Inquiries Architecture (POST /api/admissions/inquiry decoupled from academic enrollments)
+[x] UPI-Only Payment & Configurable EMI Architecture (Strictly UPI, manual UTR & screenshot verification, configurable installments)
+[x] Tamper-Proof Certificate Registry with Reissue History (Multi-version certificate lineage; certificate_signatures table as 29th table)
+[x] Multi-Channel Notification Engine (In-app/dashboard & transactional email architecture)
+[x] Immutable Audit Logging (Hardened: SECURITY DEFINER trigger functions in migration 000003; NO client INSERT RLS policy; service-role only)
+[x] Multi-Cloud Storage Abstraction Layer (Decoupled IStorageService interface; Cloudflare R2 for docs & Cloudflare Stream for video)
+[x] Soft-Delete & Archiving Policy (ACTIVE, ARCHIVED, DISABLED, REVOKED states; no hard deletes on critical records)
+[x] Fail-Safe Production Guard (In-memory mock fallback strictly forbidden in production; truthful empty states)
+[x] Zero Fake Production Data Guarantee (Dev seed: roles + permissions + course catalog only; zero fake students/payments/reviews)
+[x] Multi-Role Route Guards (/admin, /super-admin, /teacher, /student, /parent protected client & server-side)
+[x] DB-Source-of-Truth Password Change Flow (profiles.requires_password_change is authoritative; frontend reads via API, clears via PATCH /api/student/password-changed; RLS blocks self-modification)
+[x] Supabase Access Boundary Enforced (Frontend uses Supabase JS SDK for safe RLS-gated reads; privileged ops through Express API with service-role key)
+[x] Public Admissions Connection (Connected existing Book Demo modal & Contact page without design or brand alterations)
+[x] Zero TypeScript / Build Regressions (100% clean build on apps/web & apps/api after all Phase 1 corrections)
+
+## PHASE 2 — ACADEMY OPERATIONS IMPLEMENTATION (IN PROGRESS)
+
+[x] Step 1: Phase 2 Architecture & Schema Specification (Approved with 11 tables #30-#40, multi-attempt submission history, attendance database integrity triggers, Asia/Kolkata timezone, exam attempt snapshots, and 5-step service-role authorization)
+[x] Step 2: Database Migration SQL & RLS Specification (supabase/migrations/20260914000001_phase2_schema_and_rls.sql prepared with 11 operational tables, performance indexes, RLS policies, and deterministic progress recalculation procedure)
+[ ] Step 3: Course, Module & Lesson Management (Syllabus authoring, quizzes, prerequisites)
+[ ] Step 4: Cohort Batches & Live Class Scheduling (Mon–Sat calendar, session overrides, meeting links)
+[ ] Step 5: Attendance System (Hybrid join recording, teacher roster marking)
+[ ] Step 6: Assignment Submissions & Grading (Multi-attempt history, revision loops)
+[ ] Step 7: Capstone Projects & Milestone Stepper (Sequential checkpoints, rubric scoring)
+[ ] Step 8: Assessment Engine (Frozen snapshot, autosave, timer, exam/quiz evaluation workflow)
+[ ] Step 9: Progression Engine (Per-enrollment weighted scoring derived from authoritative tables)
+[ ] Step 10: Role Dashboards Integration (Student, Teacher, Parent, Admin portals)
+[ ] Step 11: Targeted Notifications & Final Phase 2 Verification
+
 
 ## STUDENT PLATFORM
 
@@ -71,14 +112,25 @@ Last Updated:
 ## ADMIN PLATFORM
 
 [x] Executive Dashboard (Cohort cap compliance 100%, 15-student rule monitor, academy-wide metrics)
+[x] Executive Admin Dashboard Modularization & User-Friendly Overhaul (Refactored ~4,200 line monolithic dashboard into 13 dedicated tab modules in apps/web/src/pages/admin/tabs/ with zero loss of state or features)
+[x] Quick Action Command Center (AdminQuickActionBar with 1-click single-action launchpad: + New Cohort, + Enroll Student, Onboard Coach, Schedule Class, Issue Certificate)
+[x] Unified Table Search & Filter Toolbar (AdminTableToolbar with live keyword search, clear button, batch/status filter dropdowns, and dynamic count badges across Students and Reviews)
+[x] User-Friendly Empty States Engine (AdminEmptyState component providing clean, truthful empty states with contextual action buttons when no records match filters)
+[x] Accessible Slide-Over Detail Drawer (AdminDetailDrawer with backdrop blur, smooth slide-in animation, and Escape key dismissal for student dossiers)
+[x] Visual 15-Student Capacity Governance (Strict Rule 18 & 19 compliance: progress meters with color-coded states — Active [Green], Near Cap [Amber], and Locked/Full [Red] at 15 students)
 [x] Student Management (Student directory with batch assignment, status controls, and progress tracking)
-[x] Teacher Management (Faculty roster, course assignments, and cohort allocation)
-[x] Course Management (Curriculum catalog with draft/published status)
+[x] Direct Student Provisioning (Admin creates student Email & custom Password with 1-click clipboard copy; students immediately log in at /#login)
+[x] Teacher & Faculty Management (Faculty roster, course assignments, and cohort allocation)
+[x] Direct Coach Provisioning (Admin creates verified Coach account with custom credentials and TEACHER privileges for classroom & mock interviews)
+[x] Cohort Next Class Scheduler (Admin assigns next lesson topic, date, daily time slot, coach, and Zoom link directly to active batches)
+[x] Course Management (Curriculum catalog with draft/published status and live Supabase module/lesson authoring)
 [x] Batch Management (Strict 15-student cap enforcement, enrollment locking)
+[x] Portal Sidebar & Layout Polish (Eliminated header text overlap into topbar title; fixed navigation slider bar overlap with thin WebKit scrollbar)
 [x] Reports & Telemetry (Active learners, course completion velocity, interview stats)
 [x] Website Content (Separation maintained between marketing and portal)
 [x] Certificates (Academy credential issuance oversight)
 [x] Notifications (Academy-wide announcements and targeted alerts)
+[x] Reviews Moderation (Real-time student and community review moderation with star rating filters and 1-click delete)
 
 ## INTEGRATIONS
 

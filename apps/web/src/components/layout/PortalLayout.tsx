@@ -32,6 +32,7 @@ import {
 import { useAuth } from '../../context/AuthContext';
 import { PORTAL_NOTIFICATIONS } from '../../data/portalMockData';
 import type { PortalNotification } from '../../data/portalMockData';
+import brandEmblem from '../../assets/dp-skilltech-emblem.png';
 import '../../styles/portal-tokens.css';
 import './PortalLayout.css';
 
@@ -104,10 +105,10 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
 
   const roleBadgeLabel =
     role === 'STUDENT'
-      ? 'Student Portal'
+      ? 'Student'
       : role === 'TEACHER'
-      ? 'Instructor Studio'
-      : 'Admin Governance';
+      ? 'Faculty'
+      : 'Admin';
 
   return (
     <div className={`portal-shell ${isSidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
@@ -122,37 +123,60 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
       <aside className={`portal-sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
         {/* Sidebar Header */}
         <div className="portal-sidebar-header">
-          <div className="portal-brand-block" onClick={() => onNavigateToPublic('home')}>
-            <span className="brand-dot-pulse"></span>
-            {!isSidebarCollapsed && <span className="brand-title-text">DP SKILLTECH</span>}
+          <div className="portal-header-top-row">
+            <div
+              className="portal-brand-block"
+              onClick={() => onNavigateToPublic('home')}
+              role="button"
+              tabIndex={0}
+              aria-label="DP SkillTech Academy Home"
+            >
+              <div className="portal-brand-emblem-wrap">
+                <img
+                  src={brandEmblem}
+                  alt="DP Emblem"
+                  className="portal-brand-emblem-img"
+                />
+              </div>
+              {!isSidebarCollapsed && (
+                <div className="portal-brand-titles">
+                  <span className="brand-title-text">DP SKILLTECH</span>
+                  <span className="brand-sub-tagline">LEARN. BUILD. GROW.</span>
+                </div>
+              )}
+            </div>
+
+            <div className="header-toggle-actions">
+              <button
+                type="button"
+                className="sidebar-collapse-btn desktop-only"
+                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                title={isSidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+                aria-label="Toggle sidebar"
+              >
+                {isSidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+              </button>
+              <button
+                type="button"
+                className="mobile-close-btn mobile-only"
+                onClick={() => setIsMobileMenuOpen(false)}
+                aria-label="Close menu"
+              >
+                <X size={18} />
+              </button>
+            </div>
           </div>
 
-          <div className="header-toggle-actions">
-            {!isSidebarCollapsed && (
+          {!isSidebarCollapsed && (
+            <div className="portal-header-role-strip">
               <span className={`portal-role-pill role-${role?.toLowerCase()}`}>
-                {role === 'STUDENT' && <GraduationCap size={11} />}
-                {role === 'TEACHER' && <Layers size={11} />}
-                {role === 'ADMIN' && <ShieldCheck size={11} />}
-                <span>{roleBadgeLabel}</span>
+                {role === 'STUDENT' && <GraduationCap size={12} />}
+                {role === 'TEACHER' && <Layers size={12} />}
+                {role === 'ADMIN' && <ShieldCheck size={12} />}
+                <span>{roleBadgeLabel} Console</span>
               </span>
-            )}
-            <button
-              type="button"
-              className="sidebar-collapse-btn desktop-only"
-              onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-              title={isSidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
-              aria-label="Toggle sidebar"
-            >
-              {isSidebarCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-            </button>
-            <button
-              type="button"
-              className="mobile-close-btn mobile-only"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <X size={18} />
-            </button>
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Navigation Items per Role */}
@@ -564,6 +588,7 @@ export const PortalLayout: React.FC<PortalLayoutProps> = ({
 
             <div className="topbar-page-info">
               <div className="topbar-breadcrumbs">
+                <img src={brandEmblem} alt="DP" className="topbar-crumb-emblem" />
                 <span>DP Skilltech</span>
                 <ChevronRight size={13} className="crumb-arrow" />
                 <span className="active-crumb-text">{roleBadgeLabel}</span>

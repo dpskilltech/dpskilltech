@@ -46,6 +46,13 @@
   margin-bottom: 1.25rem;
 }
 
+.login-page .login-brand-tag-emblem {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+}
+
 .login-page .brand-dot {
   width: 8px;
   height: 8px;
@@ -210,6 +217,20 @@
   margin-bottom: 1.75rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #f1f5f9;
+}
+
+.login-page .login-card-logo-wrap {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.login-page .login-card-logo-img {
+  height: 52px;
+  width: auto;
+  max-width: 210px;
+  object-fit: contain;
+  display: block;
 }
 
 .login-page .login-card-header h2 {

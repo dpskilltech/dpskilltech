@@ -459,3 +459,76 @@ export function getTestEmailTemplate(data: { recipientEmail: string; timestamp: 
     text: `DP Skilltech Notification Engine Diagnostic Test.\nRecipient: ${data.recipientEmail}\nTimestamp: ${data.timestamp}\nStatus: OPERATIONAL`
   };
 }
+
+/**
+ * 6. Account Credentials Notification (Student or Teacher)
+ */
+export function getAccountCredentialsTemplate(data: {
+  name: string;
+  role: 'STUDENT' | 'TEACHER';
+  email: string;
+  password: string;
+  loginUrl: string;
+  courseOrBatch?: string;
+  isPasswordReset?: boolean;
+}) {
+  const roleLabel = data.role === 'STUDENT' ? 'Student' : 'Faculty / Coach';
+  const actionTitle = data.isPasswordReset
+    ? 'Your Academy Password Has Been Updated 🔑'
+    : `Welcome to DP Skilltech — Your ${roleLabel} Credentials 🚀`;
+
+  const contentHtml = `
+    <h2 style="color:#0f172a; font-size:22px; margin-top:0; font-weight:800;">
+      ${actionTitle}
+    </h2>
+    <p style="font-size:15px; line-height:1.6; color:#334155;">
+      Hi <strong>${data.name}</strong>, your ${roleLabel} account credentials on the <strong>DP Skilltech Learning Platform</strong> are ready.
+    </p>
+
+    <div class="info-card" style="border-left-color: #2563eb; background:#f8fafc; padding:16px; border-radius:8px;">
+      <h3 style="margin-top:0; color:#1e293b; font-size:16px;">🔐 Login Credentials</h3>
+      <table style="width:100%; font-size:14px; color:#475569;" cellpadding="6">
+        <tr>
+          <td style="width:35%; font-weight:600;">Account Role:</td>
+          <td style="color:#0f172a; font-weight:700;">${roleLabel}</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">Login Email:</td>
+          <td style="color:#2563eb; font-weight:700;">${data.email}</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">Login Password:</td>
+          <td style="color:#0f172a; font-family:monospace; font-size:15px; font-weight:700; background:#ffffff; padding:4px 8px; border:1px solid #e2e8f0; border-radius:4px; display:inline-block;">${data.password}</td>
+        </tr>
+        ${data.courseOrBatch ? `
+        <tr>
+          <td style="font-weight:600;">Program / Cohort:</td>
+          <td style="color:#0f172a;">${data.courseOrBatch}</td>
+        </tr>
+        ` : ''}
+      </table>
+    </div>
+
+    <div style="text-align:center; margin-top:24px;">
+      <a href="${data.loginUrl}" class="action-btn" target="_blank" style="background:#ea580c; color:#ffffff; padding:12px 28px; text-decoration:none; font-weight:700; border-radius:6px; display:inline-block;">
+        🚀 Log In to DP Skilltech Portal
+      </a>
+    </div>
+
+    <div style="margin-top:24px; padding:12px 16px; background:#fef3c7; border:1px solid #fde68a; border-radius:6px; font-size:13px; color:#92400e;">
+      <strong>Security Notice:</strong> For your protection, please do not share these credentials with anyone. You can change your password anytime under Account Settings.
+    </div>
+  `;
+
+  return {
+    subject: data.isPasswordReset
+      ? `[DP SKILLTECH] Password Updated for ${data.name}`
+      : `[DP SKILLTECH] Your ${roleLabel} Portal Login Credentials`,
+    html: wrapInBaseTemplate({
+      title: `${roleLabel} Credentials`,
+      preheader: `Login to DP Skilltech with your email ${data.email}`,
+      contentHtml
+    }),
+    text: `Hi ${data.name},\n\nYour DP Skilltech ${roleLabel} credentials:\nEmail: ${data.email}\nPassword: ${data.password}\nLogin URL: ${data.loginUrl}`
+  };
+}

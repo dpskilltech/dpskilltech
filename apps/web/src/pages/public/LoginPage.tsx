@@ -18,14 +18,17 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { TerminalLoader } from '../../components/common/TerminalLoader';
+import brandLogo from '../../assets/dp-skilltech-logo-transparent.png';
+import brandEmblem from '../../assets/dp-skilltech-emblem.png';
 import './LoginPage.css';
 
 interface LoginPageProps {
   onNavigate: (page: string, params?: Record<string, string>) => void;
   onOpenDemoModal: () => void;
+  initialError?: string | null;
 }
 
-export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModal }) => {
+export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModal, initialError }) => {
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,8 +36,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loginMessage, setLoginMessage] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(initialError || null);
   const [showForgotModal, setShowForgotModal] = useState(false);
+
+  React.useEffect(() => {
+    if (initialError) {
+      setErrorMessage(initialError);
+    }
+  }, [initialError]);
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,7 +63,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
             onNavigate('student-dashboard');
           } else if (role === 'TEACHER') {
             onNavigate('teacher-dashboard');
-          } else if (role === 'ADMIN') {
+          } else if (role === 'ADMIN' || role === 'SUPER_ADMIN') {
             onNavigate('admin-dashboard');
           } else {
             onNavigate('home');
@@ -77,7 +86,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
           {/* Left Info Column */}
           <div className="login-info-panel">
             <div className="login-brand-tag">
-              <span className="brand-dot"></span>
+              <img
+                src={brandEmblem}
+                alt="DP Emblem"
+                className="login-brand-tag-emblem"
+              />
               <span>DP Skilltech Learning Platform</span>
             </div>
 
@@ -137,6 +150,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
           <div className="login-form-panel">
             <div className="login-card">
               <div className="login-card-header">
+                <div className="login-card-logo-wrap">
+                  <img
+                    src={brandLogo}
+                    alt="DP SkillTech - Learn. Build. Grow."
+                    className="login-card-logo-img"
+                  />
+                </div>
                 <h2>Sign In to Academy</h2>
                 <p>Enter your registered credentials to access your portal workspace.</p>
               </div>

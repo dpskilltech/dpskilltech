@@ -1599,6 +1599,27 @@
   align-items: center;
 }
 
+.cert-card-emblem-wrap {
+  width: 64px;
+  height: 64px;
+  background: #ffffff;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+  border: 1px solid var(--gray-200);
+  margin-bottom: 1rem;
+}
+
+.cert-card-emblem-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
 .cert-big-icon {
   margin-bottom: 1rem;
 }

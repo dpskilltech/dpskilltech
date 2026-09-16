@@ -4,7 +4,8 @@ import {
   getClassReminderEmailTemplate,
   getMockInterviewBookingTemplate,
   getMockScorecardTemplate,
-  getTestEmailTemplate
+  getTestEmailTemplate,
+  getAccountCredentialsTemplate
 } from './email.templates';
 
 export interface SendEmailOptions {
@@ -212,6 +213,35 @@ class EmailService {
     improvements: string[];
   }): Promise<EmailDeliveryResult> {
     const template = getMockScorecardTemplate(data);
+    return this.sendEmail({
+      to: data.email,
+      subject: template.subject,
+      html: template.html,
+      text: template.text
+    });
+  }
+
+  /**
+   * Sends Account Credentials or Password Reset Notice
+   */
+  public async sendAccountCredentialsEmail(data: {
+    name: string;
+    role: 'STUDENT' | 'TEACHER';
+    email: string;
+    password: string;
+    loginUrl?: string;
+    courseOrBatch?: string;
+    isPasswordReset?: boolean;
+  }): Promise<EmailDeliveryResult> {
+    const template = getAccountCredentialsTemplate({
+      name: data.name,
+      role: data.role,
+      email: data.email,
+      password: data.password,
+      loginUrl: data.loginUrl || 'http://localhost:5173/#login',
+      courseOrBatch: data.courseOrBatch,
+      isPasswordReset: data.isPasswordReset
+    });
     return this.sendEmail({
       to: data.email,
       subject: template.subject,

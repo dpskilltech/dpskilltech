@@ -1,49 +1,46 @@
-export type UserRole = 'STUDENT' | 'TEACHER' | 'ADMIN';
+// =============================================================================
+// DP SKILL TECH ACADEMY — Authentication & Authorization Types
+// Supabase Auth is the sole credential authority.
+// Permissions are resolved from PostgreSQL via RBAC tables.
+// =============================================================================
 
-export interface User {
-  id: string;
+export type UserRole = 'SUPER_ADMIN' | 'ADMIN' | 'TEACHER' | 'STUDENT' | 'PARENT';
+
+// Granular permission codes matching the permissions table in PostgreSQL
+export type PermissionCode =
+  | 'student.view' | 'student.create' | 'student.update' | 'student.archive'
+  | 'teacher.view' | 'teacher.create' | 'teacher.update'
+  | 'course.view' | 'course.create' | 'course.update' | 'course.delete'
+  | 'batch.view' | 'batch.create' | 'batch.update'
+  | 'attendance.view' | 'attendance.mark'
+  | 'assignment.create' | 'assignment.grade' | 'project.grade' | 'exam.grade'
+  | 'certificate.view' | 'certificate.approve' | 'certificate.issue' | 'certificate.revoke'
+  | 'payment.view' | 'payment.verify'
+  | 'demo.manage' | 'report.export' | 'audit.view' | 'system.manage';
+
+/**
+ * Authenticated user context attached to Express Request by auth.middleware.ts
+ * Permissions are resolved from PostgreSQL role_permissions, NOT from JWT metadata.
+ */
+export interface AuthenticatedUser {
+  /** Supabase Auth user UUID (matches profiles.id and auth.users.id) */
+  userId: string;
   email: string;
-  passwordHash: string;
-  role: UserRole;
   fullName: string;
-  phone?: string;
-  avatarUrl?: string;
-  bio?: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  /** Primary role from user_roles */
+  role: UserRole;
+  /** All roles assigned to this user */
+  roles: UserRole[];
+  /** All permission codes from role_permissions (resolved server-side) */
+  permissions: PermissionCode[];
+  /** If true, user must change password before accessing the academy dashboard */
+  requiresPasswordChange: boolean;
 }
 
-export interface StudentProfile {
-  userId: string;
-  batchId: string;
-  batchName: string;
-  enrolledCourseId: string;
-  enrolledCourseName: string;
-  attendanceRate: number; // e.g. 94%
-  completedLessons: number;
-  totalLessons: number;
-  submittedAssignments: number;
-  totalAssignments: number;
-  mockInterviewCredits: number;
-  mockInterviewsCompleted: number;
-}
-
-export interface TeacherProfile {
-  userId: string;
-  specialization: string;
-  assignedBatchIds: string[];
-  totalStudentsMentored: number;
-  rating: number; // e.g. 4.9
-  mockInterviewSlotsAvailable: number;
-}
-
-export interface AdminProfile {
-  userId: string;
-  department: string;
-  accessLevel: 'SUPERADMIN' | 'OPERATIONS' | 'ACADEMIC';
-}
-
+/**
+ * Legacy JWTPayload — kept for backward compatibility during dev fallback only.
+ * Will be removed once Supabase Auth is fully configured.
+ */
 export interface JWTPayload {
   userId: string;
   email: string;
@@ -58,12 +55,23 @@ export interface AuthResponseUser {
   fullName: string;
   phone?: string;
   avatarUrl?: string;
-  studentProfile?: StudentProfile;
-  teacherProfile?: TeacherProfile;
-  adminProfile?: AdminProfile;
+  requiresPasswordChange: boolean;
 }
 
 export interface AuthSuccessResponse {
-  token: string;
   user: AuthResponseUser;
+}
+
+// Prisma-era types retained for reference during migration only
+/** @deprecated Use Supabase profiles table instead */
+export interface User {
+  id: string;
+  email: string;
+  role: UserRole;
+  fullName: string;
+  phone?: string;
+  avatarUrl?: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

@@ -11,4 +11,7 @@ dist/
 .npm-cache/
 .DS_Store
 Thumbs.db
+.temp/
+supabase/.temp/
+*.backup.*
 
