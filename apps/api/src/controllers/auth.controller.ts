@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
-import { db } from '../db/database';
+import { db, User } from '../db/database';
 import { JWTPayload, UserRole } from '../types/auth';
 import { supabaseAdmin, isSupabaseConfigured } from '../lib/supabase';
 
@@ -12,6 +12,14 @@ const JWT_EXPIRES_IN: jwt.SignOptions['expiresIn'] = '7d';
 const loginSchema = z.object({
   email: z.string().email('Please provide a valid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters')
+});
+
+const registerSchema = z.object({
+  fullName: z.string().min(2, 'Full name must be at least 2 characters'),
+  email: z.string().email('Please provide a valid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  phone: z.string().optional(),
+  courseId: z.string().optional()
 });
 
 /**
@@ -41,23 +49,10 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         });
 
         if (!authError && authData.user && authData.session) {
-          // Resolve profile and assigned roles from Supabase PostgreSQL
+          // Resolve profile and assigned roles from Supabase PostgreSQL without ambiguous join
           const { data: profile } = await supabaseAdmin
             .from('profiles')
-            .select(`
-              id,
-              full_name,
-              email,
-              phone,
-              avatar_url,
-              status,
-              requires_password_change,
-              user_roles (
-                roles (
-                  name
-                )
-              )
-            `)
+            .select('id, full_name, email, phone, avatar_url, status, requires_password_change')
             .eq('id', authData.user.id)
             .single();
 
@@ -70,7 +65,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
               return;
             }
 
-            const roles: UserRole[] = (profile.user_roles ?? [])
+            const { data: userRoleRecords } = await supabaseAdmin
+              .from('user_roles')
+              .select('roles(name)')
+              .eq('user_id', authData.user.id);
+
+            const roles: UserRole[] = (userRoleRecords ?? [])
               .map((ur: any) => ur.roles?.name as UserRole)
               .filter(Boolean);
 
@@ -164,15 +164,164 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 };
 
 /**
- * Public self-registration is explicitly disabled in Phase 1 (Rule 40).
- * Student accounts are provisioned by admissions upon enrollment.
+ * Handles student account creation and Student ID provisioning.
+ * Supports Supabase Auth with dev offline fallback.
  */
-export const register = async (_req: Request, res: Response): Promise<void> => {
-  res.status(403).json({
-    success: false,
-    error: 'Self-registration is disabled. Student accounts are provisioned by admissions upon cohort enrollment.',
-    code: 'SELF_REGISTRATION_DISABLED'
-  });
+export const register = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const parseResult = registerSchema.safeParse(req.body);
+    if (!parseResult.success) {
+      res.status(400).json({
+        success: false,
+        error: parseResult.error.errors[0].message
+      });
+      return;
+    }
+
+    const { fullName, email, password, phone, courseId } = parseResult.data;
+    const emailNorm = email.trim().toLowerCase();
+
+    // 1. Check if user already exists
+    const existing = await db.findUserByEmail(emailNorm);
+    if (existing) {
+      res.status(409).json({
+        success: false,
+        error: 'An account with this email address already exists. Please sign in.'
+      });
+      return;
+    }
+
+    let createdUserId: string | null = null;
+    let createdToken: string | null = null;
+    let authUser: any = null;
+
+    // 2. Primary: Supabase Auth
+    if (isSupabaseConfigured() && supabaseAdmin) {
+      try {
+        const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+          email: emailNorm,
+          password,
+          email_confirm: true,
+          user_metadata: {
+            full_name: fullName.trim(),
+            role: 'STUDENT'
+          }
+        });
+
+        if (!authError && authData.user) {
+          createdUserId = authData.user.id;
+
+          // Insert or update profiles record
+          await supabaseAdmin.from('profiles').upsert({
+            id: createdUserId,
+            full_name: fullName.trim(),
+            email: emailNorm,
+            phone: phone?.trim() || null,
+            status: 'ACTIVE',
+            requires_password_change: false,
+            updated_at: new Date().toISOString()
+          });
+
+          // Assign STUDENT role in user_roles
+          const { data: roleData } = await supabaseAdmin
+            .from('roles')
+            .select('id')
+            .eq('name', 'STUDENT')
+            .single();
+
+          if (roleData) {
+            await supabaseAdmin.from('user_roles').upsert({
+              user_id: createdUserId,
+              role_id: roleData.id
+            }, { onConflict: 'user_id,role_id' });
+          }
+
+          // Generate student profile / ID
+          const studentCode = `DPSK-${new Date().getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
+          await supabaseAdmin.from('student_profiles').upsert({
+            profile_id: createdUserId,
+            student_id: studentCode,
+            mock_interview_credits: 2
+          }, { onConflict: 'profile_id' });
+
+          // Generate session or sign in
+          const { data: signInData, error: signInError } = await supabaseAdmin.auth.signInWithPassword({
+            email: emailNorm,
+            password
+          });
+
+          if (!signInError && signInData.session) {
+            createdToken = signInData.session.access_token;
+          }
+        }
+      } catch (sbErr) {
+        console.warn('[Register] Supabase registration error:', sbErr);
+      }
+    }
+
+    // 3. Dev Offline fallback or token generation
+    if (!createdUserId) {
+      if (process.env.NODE_ENV === 'production') {
+        res.status(500).json({
+          success: false,
+          error: 'Registration service currently unavailable. Please try again or contact admissions.'
+        });
+        return;
+      }
+
+      // In dev offline mode: create in memory DB
+      createdUserId = `usr_student_${Date.now()}`;
+      const passwordHash = bcrypt.hashSync(password, 10);
+      const newMemoryUser: User = {
+        id: createdUserId,
+        email: emailNorm,
+        passwordHash,
+        role: 'STUDENT',
+        fullName: fullName.trim(),
+        phone: phone?.trim(),
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      await db.createMemoryStudent(newMemoryUser, courseId || 'full-stack-python-ai');
+      authUser = await db.getAuthUserResponse(newMemoryUser);
+    }
+
+    if (!createdToken) {
+      const payload: JWTPayload = {
+        userId: createdUserId,
+        email: emailNorm,
+        role: 'STUDENT',
+        fullName: fullName.trim()
+      };
+      createdToken = jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+    }
+
+    if (!authUser) {
+      authUser = {
+        id: createdUserId,
+        email: emailNorm,
+        role: 'STUDENT',
+        roles: ['STUDENT'],
+        fullName: fullName.trim(),
+        phone: phone?.trim(),
+        requiresPasswordChange: false
+      };
+    }
+
+    res.status(201).json({
+      success: true,
+      token: createdToken,
+      user: authUser,
+      message: 'Account and Student ID created successfully.'
+    });
+  } catch (error: any) {
+    console.error('Registration error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'An internal error occurred during account registration.'
+    });
+  }
 };
 
 /**
@@ -188,25 +337,17 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
     if (isSupabaseConfigured() && supabaseAdmin) {
       const { data: profile } = await supabaseAdmin
         .from('profiles')
-        .select(`
-          id,
-          full_name,
-          email,
-          phone,
-          avatar_url,
-          status,
-          requires_password_change,
-          user_roles (
-            roles (
-              name
-            )
-          )
-        `)
+        .select('id, full_name, email, phone, avatar_url, status, requires_password_change')
         .eq('id', req.user.userId)
         .single();
 
       if (profile) {
-        const roles: UserRole[] = (profile.user_roles ?? [])
+        const { data: userRoleRecords } = await supabaseAdmin
+          .from('user_roles')
+          .select('roles(name)')
+          .eq('user_id', req.user.userId);
+
+        const roles: UserRole[] = (userRoleRecords ?? [])
           .map((ur: any) => ur.roles?.name as UserRole)
           .filter(Boolean);
 

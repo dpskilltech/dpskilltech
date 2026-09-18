@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import './CourseDetailPage.css';
 import { getCourseBySlug, COURSES_DATA } from '../../data/coursesData';
+import { SEOHead } from '../../components/common/SEOHead';
 
 interface CourseDetailPageProps {
   slug: string;
@@ -50,13 +51,84 @@ export const CourseDetailPage: React.FC<CourseDetailPageProps> = ({
 
   return (
     <div className="course-detail-page">
+      <SEOHead
+        title={`${course.title} | DP Skill Tech`}
+        description={`${course.shortDesc} Live interactive training with 15-student batch caps, sandboxed coding labs, and 1-on-1 mock interviews at DP Skill Tech.`}
+        canonicalUrl={`https://www.dpskilltech.in/courses/${course.slug}`}
+        schema={[
+          {
+            '@type': 'Course',
+            '@id': `https://www.dpskilltech.in/courses/${course.slug}#course`,
+            name: course.title,
+            description: course.shortDesc,
+            provider: {
+              '@type': 'EducationalOrganization',
+              name: 'DP Skill Tech',
+              sameAs: 'https://www.dpskilltech.in'
+            },
+            educationalCredentialAwarded: 'DP Skill Tech Certificate of Completion',
+            timeRequired: course.duration,
+            occupationalCredentialAwarded: course.careerRoles?.[0] || 'Software Engineer',
+            teaches: course.skills,
+            hasCourseInstance: {
+              '@type': 'CourseInstance',
+              courseMode: 'Online Live Interactive via Zoom',
+              courseSchedule: {
+                '@type': 'Schedule',
+                repeatFrequency: 'Daily (Mon-Sat)'
+              }
+            }
+          },
+          {
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: 'https://www.dpskilltech.in/'
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Courses',
+                item: 'https://www.dpskilltech.in/courses'
+              },
+              {
+                '@type': 'ListItem',
+                position: 3,
+                name: course.title,
+                item: `https://www.dpskilltech.in/courses/${course.slug}`
+              }
+            ]
+          }
+        ]}
+      />
       {/* Top Breadcrumb & Hero */}
       <section className={`course-hero ${course.id === 'course-py-ai' || course.slug?.includes('python') ? 'course-hero-python' : ''}`}>
         <div className="container">
           <div className="breadcrumb">
-            <button className="breadcrumb-link" onClick={() => onNavigate('home')}>Home</button>
+            <a
+              href="/"
+              className="breadcrumb-link"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('home');
+              }}
+            >
+              Home
+            </a>
             <span>/</span>
-            <button className="breadcrumb-link" onClick={() => onNavigate('courses')}>Courses</button>
+            <a
+              href="/courses"
+              className="breadcrumb-link"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('courses');
+              }}
+            >
+              Courses
+            </a>
             <span>/</span>
             <span className="breadcrumb-current">{course.title}</span>
           </div>

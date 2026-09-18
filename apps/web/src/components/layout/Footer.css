@@ -177,6 +177,8 @@
   cursor: pointer;
   transition: color 0.2s;
   padding: 0;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .footer-link-btn:hover {

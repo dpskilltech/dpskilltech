@@ -40,6 +40,7 @@ import { FAQ_DATA } from '../../data/faqData';
 import { useAuth } from '../../context/AuthContext';
 import { reviewService, type Review } from '../../services/reviewService';
 import { ReviewModal } from '../../components/modals/ReviewModal';
+import { SEOHead } from '../../components/common/SEOHead';
 
 interface HomePageProps {
   onNavigate: (page: string, params?: Record<string, string>) => void;
@@ -584,9 +585,9 @@ const METHODOLOGY_PIPELINE = [
     headline: 'Instant Public Verification for Employers & Universities',
     tagline: 'Open Registry • Zero Student PII Leakage • Direct URL Lookup',
     description:
-      'Anyone—HR managers, university admissions officers, or hiring directors—can verify student credentials at dpskilltech.in/#verify-certificate/:id. Displays verified skills, issue date, and authentic grade without exposing private phone numbers or emails.',
+      'Anyone—HR managers, university admissions officers, or hiring directors—can verify student credentials at dpskilltech.in/verify-certificate/:id. Displays verified skills, issue date, and authentic grade without exposing private phone numbers or emails.',
     bullets: [
-      'Instant validation at https://www.dpskilltech.in/#verify-certificate/{id}',
+      'Instant validation at https://www.dpskilltech.in/verify-certificate/{id}',
       'Protects student privacy—no phone numbers, emails, or personal addresses exposed',
       'Guarantees 100% authentic credentials with zero possibility of forgery'
     ],
@@ -841,6 +842,35 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
 
   return (
     <div className="home-page-container">
+      <SEOHead
+        title="DP Skill Tech | Full Stack, AI, Cyber Security & Data Science"
+        description="DP Skill Tech is a premier technical academy providing hands-on training in Full Stack Python, Full Stack Java, Cyber Security, and Data Science with AI."
+        canonicalUrl="https://www.dpskilltech.in/"
+        schema={[
+          {
+            '@type': 'EducationalOrganization',
+            '@id': 'https://www.dpskilltech.in/#organization',
+            name: 'DP Skill Tech',
+            alternateName: ['DP Skilltech', 'DPSkillTech'],
+            url: 'https://www.dpskilltech.in',
+            logo: 'https://www.dpskilltech.in/images/dp-skilltech-logo-full.png',
+            description: 'Premier technology academy providing hands-on training in Full Stack Python, Full Stack Java, Cyber Security, and Data Science with AI.',
+            address: {
+              '@type': 'PostalAddress',
+              addressCountry: 'IN'
+            }
+          },
+          {
+            '@type': 'WebSite',
+            '@id': 'https://www.dpskilltech.in/#website',
+            url: 'https://www.dpskilltech.in',
+            name: 'DP Skill Tech',
+            publisher: {
+              '@id': 'https://www.dpskilltech.in/#organization'
+            }
+          }
+        ]}
+      />
       {/* ===================================================================
           1. HERO SECTION — HIGH-CONVERTING EDTECH EXPERIENCE (Quality Thought / Byju's inspired)
           =================================================================== */}
@@ -1451,7 +1481,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
               </h2>
             </div>
             <p className="editorial-subtitle">
-              Passive video watching produces zero engineering retention. DP Skilltech integrates in-browser sandboxed coding environments right alongside daily lessons. Run real code, inspect errors, and build muscle memory.
+              Passive video watching produces zero engineering retention. DP Skill Tech integrates in-browser sandboxed coding environments right alongside daily lessons. Run real code, inspect errors, and build muscle memory.
             </p>
           </div>
 
@@ -1584,7 +1614,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
             <div className="classroom-chrome-header">
               <div className="room-identity">
                 <Video size={16} className="text-cyan" />
-                <span className="room-name">DP Skilltech Live Room • Full Stack Python + AI</span>
+                <span className="room-name">DP Skill Tech Live Room • Full Stack Python + AI</span>
               </div>
               <div className="room-meta-group">
                 <span className="room-timer-pill">
@@ -1913,16 +1943,16 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
           <div className="why-editorial-grid">
             {/* Left: Manifesto */}
             <div className="why-editorial-manifesto">
-              <span className="editorial-tag">The DP Skilltech Standard</span>
+              <span className="editorial-tag">The DP Skill Tech Standard</span>
               <h2 className="why-editorial-heading">
-                <span className="text-blue-mix">Learn by building,</span><br />
+                 <span className="text-blue-mix">Learn by building,</span><br />
                 <span className="text-orange-mix">not by memorizing.</span>
               </h2>
               <p className="why-manifesto-para">
                 Most commercial EdTech institutes pack 200+ students into one webinar where you are a muted spectator reading bullet points.
               </p>
               <p className="why-manifesto-para">
-                At DP Skilltech, we designed our platform around the engineering realities of software development: small batches, daily live practice, hands-on debugging, and private 1-on-1 interview simulations.
+                At DP Skill Tech, we designed our platform around the engineering realities of software development: small batches, daily live practice, hands-on debugging, and private 1-on-1 interview simulations.
               </p>
 
               <div className="manifesto-cta-box">
@@ -2202,7 +2232,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onOpenDemoModal 
                   <span className="badge-integrity">Verified Policy</span>
                 </div>
                 <blockquote className="carousel-quote-body">
-                  "Under DP Skilltech integrity policy (Rule 22), authentic reviews will appear here in real-time as learners progress through their programs."
+                  "Under DP Skill Tech integrity policy (Rule 22), authentic reviews will appear here in real-time as learners progress through their programs."
                 </blockquote>
                 <div className="carousel-author-strip">
                   <div className="author-details">

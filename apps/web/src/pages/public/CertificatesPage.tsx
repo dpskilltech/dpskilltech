@@ -10,6 +10,7 @@ import {
   Users,
   Code
 } from 'lucide-react';
+import { SEOHead } from '../../components/common/SEOHead';
 import './CertificatesPage.css';
 
 interface CertificatesPageProps {
@@ -20,6 +21,19 @@ interface CertificatesPageProps {
 export const CertificatesPage: React.FC<CertificatesPageProps> = ({ onNavigate }) => {
   return (
     <div className="certs-page-root">
+      <SEOHead
+        title="Verifiable Credentials & Certificates | DP Skill Tech"
+        description="Learn about DP Skill Tech verifiable certificates, awarded upon completing rigorous coursework, capstone projects, and 1-on-1 mock interview defenses."
+        canonicalPath="/certificates"
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: 'DP Skill Tech Verifiable Certificates',
+          url: 'https://www.dpskilltech.in/certificates',
+          description: 'Official verifiable certificates awarded by DP Skill Tech upon successful completion of technical courses.'
+        }}
+      />
+
       {/* Hero Banner */}
       <section className="certs-hero-section">
         <div className="container">
@@ -37,23 +51,29 @@ export const CertificatesPage: React.FC<CertificatesPageProps> = ({ onNavigate }
           </p>
 
           <div className="certs-hero-actions">
-            <button
-              type="button"
+            <a
+              href="/verify-certificate"
               className="btn-certs-primary"
-              onClick={() => onNavigate('verify-certificate')}
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('verify-certificate');
+              }}
             >
               <Search size={18} />
               <span>Verify a Certificate</span>
-            </button>
+            </a>
 
-            <button
-              type="button"
+            <a
+              href="/courses"
               className="btn-certs-secondary"
-              onClick={() => onNavigate('courses')}
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('courses');
+              }}
             >
               <span>Explore Courses</span>
               <ArrowRight size={18} />
-            </button>
+            </a>
           </div>
         </div>
       </section>

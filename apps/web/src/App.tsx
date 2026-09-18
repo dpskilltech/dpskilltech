@@ -29,53 +29,80 @@ import { AdminDashboard } from './pages/admin/AdminDashboard';
 const AppContent: React.FC = () => {
   const { role, isAuthenticated, isLoading } = useAuth();
 
-  const [activePage, setActivePage] = useState<string>('home');
-  const [pageParams, setPageParams] = useState<Record<string, string>>({});
+  // Helper to parse route and params from either HTML5 pathname or legacy hash
+  const parseCurrentLocation = React.useCallback((): { page: string; params: Record<string, string> } => {
+    const rawHash = window.location.hash.replace(/^#\/?/, '').trim();
+    const rawPath = window.location.pathname.replace(/^\/+|\/+$/g, '').trim();
+
+    // Prefer hash if present (for backward compatibility / anchor links), otherwise use pathname
+    const target = rawHash || rawPath;
+
+    if (!target) {
+      return { page: 'home', params: {} };
+    }
+
+    // Courses directory or Course detail
+    if (target === 'courses') {
+      return { page: 'courses', params: {} };
+    }
+    if (target.startsWith('courses/') || target.startsWith('course/')) {
+      const slug = target.replace(/^(courses|course)\//, '').trim();
+      return { page: 'course-detail', params: { slug } };
+    }
+
+    // Certificate verification
+    if (target === 'verify-certificate') {
+      return { page: 'verify-certificate', params: {} };
+    }
+    if (target.startsWith('verify-certificate/')) {
+      const id = target.replace('verify-certificate/', '').trim();
+      return { page: 'verify-certificate', params: { id } };
+    }
+
+    // Portals & Admin routes
+    if (target === 'admin' || target.startsWith('admin/') || target === 'admin-dashboard') {
+      return { page: 'admin-dashboard', params: {} };
+    }
+    if (target === 'super-admin' || target.startsWith('super-admin/')) {
+      return { page: 'admin-dashboard', params: { mode: 'super-admin' } };
+    }
+    if (target === 'teacher' || target.startsWith('teacher/') || target === 'teacher-dashboard') {
+      return { page: 'teacher-dashboard', params: {} };
+    }
+    if (target === 'student' || target.startsWith('student/') || target === 'student-dashboard') {
+      return { page: 'student-dashboard', params: {} };
+    }
+    if (target === 'parent' || target.startsWith('parent/') || target === 'parent-dashboard') {
+      return { page: 'parent-dashboard', params: {} };
+    }
+
+    // Known public pages
+    const publicPages = [
+      'why-choose-us',
+      'learning',
+      'career-support',
+      'about',
+      'trainers',
+      'testimonials',
+      'faq',
+      'contact',
+      'login',
+      'certificates'
+    ];
+
+    if (publicPages.includes(target)) {
+      return { page: target, params: {} };
+    }
+
+    return { page: 'home', params: {} };
+  }, []);
+
+  const [activePage, setActivePage] = useState<string>(() => parseCurrentLocation().page);
+  const [pageParams, setPageParams] = useState<Record<string, string>>(() => parseCurrentLocation().params);
   const [demoModalOpen, setDemoModalOpen] = useState<boolean>(false);
   const [demoCourseId, setDemoCourseId] = useState<string | undefined>(undefined);
 
-  // Hash-based URL synchronizer for seamless navigation and back/forward browser support
-  useEffect(() => {
-    if (isLoading) return;
-
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace(/^#\/?/, '');
-      if (!hash) {
-        setActivePage('home');
-        setPageParams({});
-        return;
-      }
-
-      if (hash.startsWith('course/')) {
-        const slug = hash.replace('course/', '');
-        setActivePage('course-detail');
-        setPageParams({ slug });
-      } else if (hash.startsWith('verify-certificate/')) {
-        const id = hash.replace('verify-certificate/', '');
-        setActivePage('verify-certificate');
-        setPageParams({ id });
-      } else if (hash === 'admin' || hash.startsWith('admin/') || hash === 'admin-dashboard') {
-        navigate('admin-dashboard');
-      } else if (hash === 'super-admin' || hash.startsWith('super-admin/')) {
-        navigate('admin-dashboard', { mode: 'super-admin' });
-      } else if (hash === 'teacher' || hash.startsWith('teacher/') || hash === 'teacher-dashboard') {
-        navigate('teacher-dashboard');
-      } else if (hash === 'student' || hash.startsWith('student/') || hash === 'student-dashboard') {
-        navigate('student-dashboard');
-      } else if (hash === 'parent' || hash.startsWith('parent/') || hash === 'parent-dashboard') {
-        navigate('parent-dashboard');
-      } else {
-        setActivePage(hash);
-        setPageParams({});
-      }
-    };
-
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, [isLoading, isAuthenticated, role]);
-
-  const navigate = (page: string, params?: Record<string, string>) => {
+  const navigate = React.useCallback((page: string, params?: Record<string, string>, pushState = true) => {
     // Immediate fallback to localStorage to avoid React state batching race conditions
     let effectiveRole = role;
     let effectiveAuth = isAuthenticated;
@@ -89,42 +116,78 @@ const AppContent: React.FC = () => {
           effectiveAuth = true;
         }
       }
-    } catch (_) {}
+    } catch {
+      // Safe fallback
+    }
 
     // Role-Based Route Guard (Rule 15, 16, 32: Server & Client-side Protection)
     let nextParams = { ...(params || {}) };
-    if ((page === 'student-dashboard' || page === 'student') && (!effectiveAuth || effectiveRole !== 'STUDENT')) {
-      page = 'login';
+    let targetPage = page;
+    if ((targetPage === 'student-dashboard' || targetPage === 'student') && (!effectiveAuth || effectiveRole !== 'STUDENT')) {
+      targetPage = 'login';
       nextParams = { ...nextParams, error: 'Access Restricted: Please sign in with an enrolled Student account to access this portal.' };
-    } else if ((page === 'teacher-dashboard' || page === 'teacher') && (!effectiveAuth || (effectiveRole !== 'TEACHER' && effectiveRole !== 'ADMIN' && effectiveRole !== 'SUPER_ADMIN'))) {
-      page = 'login';
+    } else if ((targetPage === 'teacher-dashboard' || targetPage === 'teacher') && (!effectiveAuth || (effectiveRole !== 'TEACHER' && effectiveRole !== 'ADMIN' && effectiveRole !== 'SUPER_ADMIN'))) {
+      targetPage = 'login';
       nextParams = { ...nextParams, error: 'Access Restricted: Instructor credentials required to enter this studio.' };
-    } else if ((page === 'admin-dashboard' || page === 'admin') && (!effectiveAuth || (effectiveRole !== 'ADMIN' && effectiveRole !== 'SUPER_ADMIN'))) {
-      page = 'login';
+    } else if ((targetPage === 'admin-dashboard' || targetPage === 'admin') && (!effectiveAuth || (effectiveRole !== 'ADMIN' && effectiveRole !== 'SUPER_ADMIN'))) {
+      targetPage = 'login';
       nextParams = { ...nextParams, error: 'Access Restricted: Administrator credentials required for Academy Governance.' };
-    } else if (page === 'super-admin' && (!effectiveAuth || effectiveRole !== 'SUPER_ADMIN')) {
-      page = 'login';
+    } else if (targetPage === 'super-admin' && (!effectiveAuth || effectiveRole !== 'SUPER_ADMIN')) {
+      targetPage = 'login';
       nextParams = { ...nextParams, error: 'Access Restricted: Super Administrator credentials required.' };
-    } else if (page === 'parent-dashboard' && (!effectiveAuth || effectiveRole !== 'PARENT')) {
-      page = 'login';
+    } else if (targetPage === 'parent-dashboard' && (!effectiveAuth || effectiveRole !== 'PARENT')) {
+      targetPage = 'login';
       nextParams = { ...nextParams, error: 'Access Restricted: Please sign in with an authorized Parent account.' };
     }
 
-    setActivePage(page);
+    setActivePage(targetPage);
     setPageParams(nextParams);
 
-    if (page === 'home') {
-      window.location.hash = '';
-    } else if (page === 'course-detail' && nextParams?.slug) {
-      window.location.hash = `course/${nextParams.slug}`;
-    } else if (page === 'verify-certificate' && nextParams?.id) {
-      window.location.hash = `verify-certificate/${nextParams.id}`;
+    // Compute canonical URL path for history pushState
+    let targetPath = '/';
+    if (targetPage === 'home') {
+      targetPath = '/';
+    } else if (targetPage === 'course-detail' && nextParams?.slug) {
+      targetPath = `/courses/${nextParams.slug}`;
+    } else if (targetPage === 'verify-certificate' && nextParams?.id) {
+      targetPath = `/verify-certificate/${nextParams.id}`;
+    } else if (targetPage === 'admin-dashboard' && nextParams?.mode === 'super-admin') {
+      targetPath = '/super-admin';
+    } else if (targetPage === 'admin-dashboard') {
+      targetPath = '/admin-dashboard';
+    } else if (targetPage === 'teacher-dashboard') {
+      targetPath = '/teacher-dashboard';
+    } else if (targetPage === 'student-dashboard') {
+      targetPath = '/student-dashboard';
+    } else if (targetPage === 'parent-dashboard') {
+      targetPath = '/parent-dashboard';
     } else {
-      window.location.hash = page;
+      targetPath = `/${targetPage}`;
+    }
+
+    if (pushState && (window.location.pathname !== targetPath || window.location.hash)) {
+      window.history.pushState({ page: targetPage, params: nextParams }, '', targetPath);
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, [role, isAuthenticated]);
+
+  // Handle browser back/forward buttons and hash changes
+  useEffect(() => {
+    if (isLoading) return;
+
+    const handleLocationChange = () => {
+      const resolved = parseCurrentLocation();
+      navigate(resolved.page, resolved.params, false);
+    };
+
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
+  }, [isLoading, parseCurrentLocation, navigate]);
 
   const openDemoModal = (courseId?: string) => {
     setDemoCourseId(courseId);

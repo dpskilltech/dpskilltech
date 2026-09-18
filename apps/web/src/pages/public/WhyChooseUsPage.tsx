@@ -9,6 +9,7 @@ import {
   Sparkles,
   ArrowRight
 } from 'lucide-react';
+import { SEOHead } from '../../components/common/SEOHead';
 import './WhyChooseUsPage.css';
 
 interface WhyChooseUsPageProps {
@@ -57,13 +58,26 @@ export const WhyChooseUsPage: React.FC<WhyChooseUsPageProps> = ({ onNavigate, on
 
   return (
     <div className="why-choose-us-page">
+      <SEOHead
+        title="Why Choose DP Skill Tech | 15-Student Live Batches & 1-on-1 Mentorship"
+        description="Compare DP Skill Tech with traditional EdTech platforms: strict 15-student live batches, 6 days a week instruction, 1-on-1 private mock interviews, and cloud coding labs."
+        canonicalPath="/why-choose-us"
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: 'Why Choose DP Skill Tech',
+          url: 'https://www.dpskilltech.in/why-choose-us',
+          description: 'Learn why DP Skill Tech offers superior technical training with intimate 15-student batches and individual 1-on-1 mentorship.'
+        }}
+      />
+
       {/* Hero Header */}
       <section className="why-hero-section">
         <div className="container text-center">
           <span className="section-tag">Quality-First Philosophy</span>
-          <h1 className="why-hero-title">Why Serious Coders Choose DP Skilltech</h1>
+          <h1 className="why-hero-title">Why Serious Coders Choose DP Skill Tech</h1>
           <p className="why-hero-desc">
-            We built DP Skilltech because we were exhausted by EdTech factories treating students as numbers. Here is how our engineering-first, 15-student academy produces real software engineers.
+            We built DP Skill Tech because we were exhausted by EdTech factories treating students as numbers. Here is how our engineering-first, 15-student academy produces real software engineers.
           </p>
         </div>
       </section>
@@ -73,7 +87,7 @@ export const WhyChooseUsPage: React.FC<WhyChooseUsPageProps> = ({ onNavigate, on
         <div className="container">
           <div className="section-header">
             <span className="section-tag">The Head-to-Head Comparison</span>
-            <h2 className="section-title">DP Skilltech vs. Generic Online Platforms</h2>
+            <h2 className="section-title">DP Skill Tech vs. Generic Online Platforms</h2>
             <p className="section-desc">
               Compare our transparent standards side-by-side with typical industry providers.
             </p>
@@ -86,7 +100,7 @@ export const WhyChooseUsPage: React.FC<WhyChooseUsPageProps> = ({ onNavigate, on
                   <th className="th-feature">Core Training Parameter</th>
                   <th className="th-dp">
                     <div className="th-brand">
-                      <span>DP Skilltech Academy</span>
+                      <span>DP Skill Tech</span>
                       <span className="badge-highlight">The Standard</span>
                     </div>
                   </th>
@@ -177,10 +191,17 @@ export const WhyChooseUsPage: React.FC<WhyChooseUsPageProps> = ({ onNavigate, on
               <Sparkles size={18} />
               <span>Book Your Free Live Demo</span>
             </button>
-            <button className="btn btn-secondary btn-lg" onClick={() => onNavigate('courses')}>
+            <a
+              href="/courses"
+              className="btn btn-secondary btn-lg"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('courses');
+              }}
+            >
               <span>Browse All Courses</span>
               <ArrowRight size={18} />
-            </button>
+            </a>
           </div>
         </div>
       </section>

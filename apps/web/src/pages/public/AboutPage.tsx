@@ -1,5 +1,6 @@
 import React from 'react';
 import { Target, Users, ShieldCheck, HeartHandshake, Sparkles, ArrowRight, Award } from 'lucide-react';
+import { SEOHead } from '../../components/common/SEOHead';
 import './AboutPage.css';
 
 interface AboutPageProps {
@@ -10,13 +11,26 @@ interface AboutPageProps {
 export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenDemoModal }) => {
   return (
     <div className="about-page">
+      <SEOHead
+        title="About DP Skill Tech | Our Mission & Mentorship Philosophy"
+        description="Discover DP Skill Tech's mission to deliver rigorous live technical training in Full Stack Python, Java, Cyber Security, and Data Science in intimate 15-student batches."
+        canonicalPath="/about"
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'AboutPage',
+          name: 'About DP Skill Tech',
+          description: 'DP Skill Tech is an online coding academy offering instructor-led live training with strict 15-student batch limits and 1-on-1 mentorship.',
+          url: 'https://www.dpskilltech.in/about'
+        }}
+      />
+
       {/* Header */}
       <section className="about-hero">
         <div className="container text-center">
-          <span className="section-tag">About DP Skilltech</span>
+          <span className="section-tag">About DP Skill Tech</span>
           <h1 className="about-hero-title">Restoring Craftsmanship to Online IT Education</h1>
           <p className="about-hero-desc">
-            DP Skilltech was founded on a simple premise: learning to code requires direct mentorship, disciplined daily practice, and individual accountability—not mass webinars with hundreds of passive spectators.
+            DP Skill Tech was founded on a simple premise: learning to code requires direct mentorship, disciplined daily practice, and individual accountability—not mass webinars with hundreds of passive spectators.
           </p>
         </div>
       </section>
@@ -89,17 +103,24 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate, onOpenDemoModa
         <div className="container text-center">
           <h2>Ready to Begin Your Engineering Journey?</h2>
           <p className="max-w-600 mx-auto mb-4">
-            Join the next intimate 15-student live batch at DP Skilltech.
+            Join the next intimate 15-student live batch at DP Skill Tech.
           </p>
           <div className="cta-row">
             <button className="btn btn-primary btn-lg" onClick={onOpenDemoModal}>
               <Sparkles size={18} />
               <span>Book a Free Live Demo</span>
             </button>
-            <button className="btn btn-secondary btn-lg" onClick={() => onNavigate('courses')}>
+            <a
+              href="/courses"
+              className="btn btn-secondary btn-lg"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('courses');
+              }}
+            >
               <span>Explore Programs</span>
               <ArrowRight size={18} />
-            </button>
+            </a>
           </div>
         </div>
       </section>

@@ -25,6 +25,11 @@ body {
   background-color: var(--bg-canvas);
 }
 
+img, video, iframe, canvas, svg {
+  max-width: 100%;
+  height: auto;
+}
+
 /* Accessible reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -116,6 +121,20 @@ button, input, select, textarea {
     padding-left: 0.875rem;
     padding-right: 0.875rem;
   }
+}
+
+@media (max-width: 360px) {
+  .container, .container-wide, .container-fluid {
+    padding-left: 0.65rem;
+    padding-right: 0.65rem;
+  }
+}
+
+/* ── Responsive Table Wrapper ── */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ── Section Backgrounds ── */

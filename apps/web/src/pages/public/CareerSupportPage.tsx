@@ -9,6 +9,7 @@ import {
   FileCheck2,
   MessageSquareCode
 } from 'lucide-react';
+import { SEOHead } from '../../components/common/SEOHead';
 import './CareerSupportPage.css';
 
 interface CareerSupportPageProps {
@@ -29,6 +30,19 @@ export const CareerSupportPage: React.FC<CareerSupportPageProps> = ({ onNavigate
 
   return (
     <div className="career-support-page">
+      <SEOHead
+        title="Career Support & 1-on-1 Mock Interviews | DP Skill Tech"
+        description="Accelerate your tech career with DP Skill Tech's career services: private 1-on-1 mock interviews, ATS resume reviews, GitHub portfolio polishing, and technical defense."
+        canonicalPath="/career-support"
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: 'DP Skill Tech Career Support & Mock Interviews',
+          url: 'https://www.dpskilltech.in/career-support',
+          description: 'Real technical competence with private 1-on-1 live mock interviews and objective evaluation scorecards.'
+        }}
+      />
+
       {/* Header Banner */}
       <section className="career-hero">
         <div className="container text-center">
@@ -74,7 +88,7 @@ export const CareerSupportPage: React.FC<CareerSupportPageProps> = ({ onNavigate
                   <div className="feature-num">02</div>
                   <h4>Live Screen Code Challenge</h4>
                   <p>
-                    You share your screen and solve algorithmic and architectural challenges in real-time inside the DP Skilltech coding lab under authentic interview pressure.
+                    You share your screen and solve algorithmic and architectural challenges in real-time inside the DP Skill Tech coding lab under authentic interview pressure.
                   </p>
                 </div>
 
@@ -179,10 +193,17 @@ export const CareerSupportPage: React.FC<CareerSupportPageProps> = ({ onNavigate
                 <Sparkles size={18} />
                 <span>Book Free Live Demo</span>
               </button>
-              <button type="button" className="btn-career-secondary" onClick={() => onNavigate('courses')}>
+              <a
+                href="/courses"
+                className="btn-career-secondary"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate('courses');
+                }}
+              >
                 <span>Browse All Curricula</span>
                 <ArrowRight size={16} />
-              </button>
+              </a>
             </div>
           </div>
         </div>

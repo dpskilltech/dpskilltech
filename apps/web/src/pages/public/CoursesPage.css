@@ -451,6 +451,7 @@
   border: 1.5px solid #e2e8f0;
   cursor: pointer;
   transition: all 0.2s ease;
+  text-decoration: none;
 }
 
 .btn-card-secondary:hover {
@@ -663,3 +664,33 @@
 .text-blue { color: #2563eb; }
 .text-emerald { color: #16a34a; }
 .mt-3 { margin-top: 1rem; }
+
+@media (max-width: 640px) {
+  .catalog-attributes-grid {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+  .featured-card-inner {
+    padding: 1.25rem 0.85rem;
+  }
+  .policy-card {
+    padding: 1.5rem 1rem;
+    gap: 1.25rem;
+  }
+  .btn-policy-cta {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .catalog-card-header {
+    padding: 1.25rem 0.75rem 0.5rem;
+  }
+  .catalog-card-body {
+    padding: 0 0.75rem 1.25rem;
+  }
+  .catalog-card-actions {
+    padding: 1rem 0.75rem;
+  }
+}

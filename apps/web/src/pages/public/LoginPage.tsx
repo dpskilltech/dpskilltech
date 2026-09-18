@@ -14,7 +14,9 @@ import {
   HelpCircle,
   X,
   Phone,
-  Clock
+  Clock,
+  User,
+  BookOpen
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { TerminalLoader } from '../../components/common/TerminalLoader';
@@ -29,11 +31,23 @@ interface LoginPageProps {
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModal, initialError }) => {
-  const { login } = useAuth();
+  const { login, register } = useAuth();
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+
+  // Login form state
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+
+  // Register / Create ID form state
+  const [regFullName, setRegFullName] = useState('');
+  const [regEmail, setRegEmail] = useState('');
+  const [regPhone, setRegPhone] = useState('');
+  const [regPassword, setRegPassword] = useState('');
+  const [regCourse, setRegCourse] = useState('full-stack-python-ai');
+  const [showRegPassword, setShowRegPassword] = useState(false);
+
   const [isLoading, setIsLoading] = useState(false);
   const [loginMessage, setLoginMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(initialError || null);
@@ -44,6 +58,51 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
       setErrorMessage(initialError);
     }
   }, [initialError]);
+
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!regFullName.trim() || regFullName.trim().length < 2) {
+      setErrorMessage('Please enter your full name (at least 2 characters).');
+      return;
+    }
+    if (!regEmail.trim() || !/^\S+@\S+\.\S+$/.test(regEmail.trim())) {
+      setErrorMessage('Please enter a valid email address.');
+      return;
+    }
+    if (!regPassword || regPassword.length < 6) {
+      setErrorMessage('Password must be at least 6 characters.');
+      return;
+    }
+
+    setIsLoading(true);
+    setLoginMessage(null);
+    setErrorMessage(null);
+
+    try {
+      const res = await register({
+        fullName: regFullName.trim(),
+        email: regEmail.trim(),
+        password: regPassword,
+        phone: regPhone.trim() || undefined,
+        courseId: regCourse
+      });
+
+      if (res.success && res.user) {
+        setLoginMessage(
+          `Student ID created successfully for ${res.user.fullName}! Redirecting to student workspace...`
+        );
+        setTimeout(() => {
+          onNavigate('student-dashboard');
+        }, 600);
+      } else {
+        setErrorMessage(res.error || 'Unable to create student account. Please try again.');
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Unable to connect to the registration service. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -157,8 +216,45 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
                     className="login-card-logo-img"
                   />
                 </div>
-                <h2>Sign In to Academy</h2>
-                <p>Enter your registered credentials to access your portal workspace.</p>
+
+                {/* Tab Pill Toggle */}
+                <div className="auth-mode-toggle" role="tablist" aria-label="Authentication Type">
+                  <button
+                    type="button"
+                    role="tab"
+                    id="tab-login"
+                    aria-selected={authMode === 'login'}
+                    className={`auth-toggle-tab ${authMode === 'login' ? 'active' : ''}`}
+                    onClick={() => {
+                      setAuthMode('login');
+                      setErrorMessage(null);
+                      setLoginMessage(null);
+                    }}
+                  >
+                    Sign In
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    id="tab-register"
+                    aria-selected={authMode === 'register'}
+                    className={`auth-toggle-tab ${authMode === 'register' ? 'active' : ''}`}
+                    onClick={() => {
+                      setAuthMode('register');
+                      setErrorMessage(null);
+                      setLoginMessage(null);
+                    }}
+                  >
+                    Create Student ID
+                  </button>
+                </div>
+
+                <h2>{authMode === 'login' ? 'Sign In to Academy' : 'Create Student ID'}</h2>
+                <p>
+                  {authMode === 'login'
+                    ? 'Enter your registered credentials to access your portal workspace.'
+                    : 'Generate your official DP Skilltech Student ID and enter your engineering workspace.'}
+                </p>
               </div>
 
               {loginMessage && (
@@ -179,84 +275,224 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate, onOpenDemoModa
                 <div className="login-loader-wrap">
                   <TerminalLoader
                     title="Auth-Daemon"
-                    text="Authenticating credentials..."
+                    text={authMode === 'login' ? 'Authenticating credentials...' : 'Generating Student ID & enrolling...'}
                   />
                   <p className="loader-subtext">Verifying role permissions with secure DP-Kernel...</p>
                 </div>
+              ) : authMode === 'login' ? (
+                <>
+                  <form onSubmit={handleLoginSubmit} className="login-form">
+                    <div className="form-group">
+                      <label className="form-label" htmlFor="login-email">Email Address</label>
+                      <div className="input-with-icon">
+                        <Mail size={18} className="field-icon" />
+                        <input
+                          id="login-email"
+                          type="email"
+                          className="form-input with-icon"
+                          required
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="you@dpskilltech.in"
+                          autoComplete="email"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <div className="password-label-row">
+                        <label className="form-label" htmlFor="login-pass">Password</label>
+                        <button
+                          type="button"
+                          className="forgot-link-btn"
+                          onClick={() => setShowForgotModal(true)}
+                        >
+                          Forgot password?
+                        </button>
+                      </div>
+
+                      <div className="input-with-icon">
+                        <Lock size={18} className="field-icon" />
+                        <input
+                          id="login-pass"
+                          type={showPassword ? 'text' : 'password'}
+                          className="form-input with-icon"
+                          required
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          placeholder="••••••••••••"
+                          autoComplete="current-password"
+                        />
+                        <button
+                          type="button"
+                          className="toggle-password-btn"
+                          onClick={() => setShowPassword(!showPassword)}
+                          aria-label="Toggle password visibility"
+                        >
+                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="remember-me-row">
+                      <label className="checkbox-label">
+                        <input
+                          type="checkbox"
+                          checked={rememberMe}
+                          onChange={(e) => setRememberMe(e.target.checked)}
+                        />
+                        <span>Keep me signed in for 7 days</span>
+                      </label>
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="btn-login-submit"
+                      disabled={isLoading}
+                    >
+                      <span>Sign In to Academy</span>
+                      <ArrowRight size={18} />
+                    </button>
+                  </form>
+
+                  <div className="auth-switch-prompt">
+                    <span>Don't have an academy account yet?</span>
+                    <button
+                      type="button"
+                      className="auth-switch-btn"
+                      onClick={() => {
+                        setAuthMode('register');
+                        setErrorMessage(null);
+                        setLoginMessage(null);
+                      }}
+                    >
+                      Create Student ID &rarr;
+                    </button>
+                  </div>
+                </>
               ) : (
-                <form onSubmit={handleLoginSubmit} className="login-form">
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="login-email">Email Address</label>
-                    <div className="input-with-icon">
-                      <Mail size={18} className="field-icon" />
-                      <input
-                        id="login-email"
-                        type="email"
-                        className="form-input with-icon"
-                        required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="you@dpskilltech.in"
-                        autoComplete="email"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="form-group">
-                    <div className="password-label-row">
-                      <label className="form-label" htmlFor="login-pass">Password</label>
-                      <button
-                        type="button"
-                        className="forgot-link-btn"
-                        onClick={() => setShowForgotModal(true)}
-                      >
-                        Forgot password?
-                      </button>
+                <>
+                  <form onSubmit={handleRegisterSubmit} className="login-form register-form">
+                    <div className="form-group">
+                      <label className="form-label" htmlFor="reg-fullname">Full Name *</label>
+                      <div className="input-with-icon">
+                        <User size={18} className="field-icon" />
+                        <input
+                          id="reg-fullname"
+                          type="text"
+                          className="form-input with-icon"
+                          required
+                          value={regFullName}
+                          onChange={(e) => setRegFullName(e.target.value)}
+                          placeholder="e.g. Arun Kumar"
+                          autoComplete="name"
+                        />
+                      </div>
                     </div>
 
-                    <div className="input-with-icon">
-                      <Lock size={18} className="field-icon" />
-                      <input
-                        id="login-pass"
-                        type={showPassword ? 'text' : 'password'}
-                        className="form-input with-icon"
-                        required
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="••••••••••••"
-                        autoComplete="current-password"
-                      />
-                      <button
-                        type="button"
-                        className="toggle-password-btn"
-                        onClick={() => setShowPassword(!showPassword)}
-                        aria-label="Toggle password visibility"
-                      >
-                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                      </button>
+                    <div className="form-group">
+                      <label className="form-label" htmlFor="reg-email">Email Address *</label>
+                      <div className="input-with-icon">
+                        <Mail size={18} className="field-icon" />
+                        <input
+                          id="reg-email"
+                          type="email"
+                          className="form-input with-icon"
+                          required
+                          value={regEmail}
+                          onChange={(e) => setRegEmail(e.target.value)}
+                          placeholder="you@example.com"
+                          autoComplete="email"
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="remember-me-row">
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={rememberMe}
-                        onChange={(e) => setRememberMe(e.target.checked)}
-                      />
-                      <span>Keep me signed in for 7 days</span>
-                    </label>
-                  </div>
+                    <div className="form-group">
+                      <label className="form-label" htmlFor="reg-phone">Phone Number (Optional)</label>
+                      <div className="input-with-icon">
+                        <Phone size={18} className="field-icon" />
+                        <input
+                          id="reg-phone"
+                          type="tel"
+                          className="form-input with-icon"
+                          value={regPhone}
+                          onChange={(e) => setRegPhone(e.target.value)}
+                          placeholder="+91 98765 43210"
+                          autoComplete="tel"
+                        />
+                      </div>
+                    </div>
 
-                  <button
-                    type="submit"
-                    className="btn-login-submit"
-                    disabled={isLoading}
-                  >
-                    <span>Sign In to Academy</span>
-                    <ArrowRight size={18} />
-                  </button>
-                </form>
+                    <div className="form-group">
+                      <label className="form-label" htmlFor="reg-course">Selected Track *</label>
+                      <div className="input-with-icon">
+                        <BookOpen size={18} className="field-icon" />
+                        <select
+                          id="reg-course"
+                          className="form-input with-icon form-select"
+                          value={regCourse}
+                          onChange={(e) => setRegCourse(e.target.value)}
+                        >
+                          <option value="full-stack-python-ai">Full Stack Python with AI</option>
+                          <option value="full-stack-java-ai">Full Stack Java with AI</option>
+                          <option value="cyber-security-ethical-hacking">Cyber Security &amp; Ethical Hacking</option>
+                          <option value="data-science-analytics">Data Science &amp; Data Analytics</option>
+                          <option value="ui-ux-design-specialist">UI/UX Design Specialist</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <label className="form-label" htmlFor="reg-pass">Create Password * (Min. 6 chars)</label>
+                      <div className="input-with-icon">
+                        <Lock size={18} className="field-icon" />
+                        <input
+                          id="reg-pass"
+                          type={showRegPassword ? 'text' : 'password'}
+                          className="form-input with-icon"
+                          required
+                          minLength={6}
+                          value={regPassword}
+                          onChange={(e) => setRegPassword(e.target.value)}
+                          placeholder="••••••••••••"
+                          autoComplete="new-password"
+                        />
+                        <button
+                          type="button"
+                          className="toggle-password-btn"
+                          onClick={() => setShowRegPassword(!showRegPassword)}
+                          aria-label="Toggle password visibility"
+                        >
+                          {showRegPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="btn-login-submit btn-register-submit"
+                      disabled={isLoading}
+                    >
+                      <span>Create Student ID &amp; Enter Portal</span>
+                      <ArrowRight size={18} />
+                    </button>
+                  </form>
+
+                  <div className="auth-switch-prompt">
+                    <span>Already have a registered account?</span>
+                    <button
+                      type="button"
+                      className="auth-switch-btn"
+                      onClick={() => {
+                        setAuthMode('login');
+                        setErrorMessage(null);
+                        setLoginMessage(null);
+                      }}
+                    >
+                      Sign In &rarr;
+                    </button>
+                  </div>
+                </>
               )}
 
               <div className="login-security-footer">

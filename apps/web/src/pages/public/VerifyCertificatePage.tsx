@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { findCertificateById, type VerifiableCertificate } from '../../data/certificatesData';
 import brandEmblem from '../../assets/dp-skilltech-emblem.png';
+import { SEOHead } from '../../components/common/SEOHead';
 import './VerifyCertificatePage.css';
 
 interface VerifyCertificatePageProps {
@@ -57,7 +58,7 @@ export const VerifyCertificatePage: React.FC<VerifyCertificatePageProps> = ({
 
   const handleCopyLink = () => {
     if (!searchedCert) return;
-    const url = `https://www.dpskilltech.in/#verify-certificate/${searchedCert.certificateId}`;
+    const url = `https://www.dpskilltech.in/verify-certificate/${searchedCert.certificateId}`;
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
@@ -65,6 +66,19 @@ export const VerifyCertificatePage: React.FC<VerifyCertificatePageProps> = ({
 
   return (
     <div className="verify-page-root">
+      <SEOHead
+        title="Public Certificate Verification Registry | DP Skill Tech"
+        description="Verify authentic academic credentials and certificates issued by DP Skill Tech. Validate student certification status, course track, and graduation date."
+        canonicalPath="/verify-certificate"
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: 'DP Skill Tech Certificate Verification Registry',
+          url: 'https://www.dpskilltech.in/verify-certificate',
+          description: 'Official portal to authenticate certificates issued by DP Skill Tech.'
+        }}
+      />
+
       {/* Top Header Banner */}
       <section className="verify-header-section">
         <div className="container">
@@ -157,7 +171,7 @@ export const VerifyCertificatePage: React.FC<VerifyCertificatePageProps> = ({
                   <div className="academy-brand">
                     <img
                       src={brandEmblem}
-                      alt="DP SkillTech Emblem"
+                      alt="DP Skill Tech Emblem"
                       className="cert-brand-emblem-img"
                     />
                     <div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, CheckCircle2, Sparkles, ArrowRight } from 'lucide-react';
+import { SEOHead } from '../../components/common/SEOHead';
 import './ContactPage.css';
 
 interface ContactPageProps {
@@ -62,6 +63,19 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onOpenDemoModal }) => 
 
   return (
     <div className="contact-page">
+      <SEOHead
+        title="Contact Admissions & Inquiries | DP Skill Tech"
+        description="Contact DP Skill Tech admissions desk for course inquiries, batch timings, fees, 1-on-1 mock interviews, and live demo registration."
+        canonicalPath="/contact"
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'ContactPage',
+          name: 'Contact DP Skill Tech Admissions',
+          url: 'https://www.dpskilltech.in/contact',
+          description: 'Get in touch with DP Skill Tech admissions for live instructor-led technical courses and demo bookings.'
+        }}
+      />
+
       {/* Hero Header */}
       <section className="contact-hero">
         <div className="container text-center">
@@ -70,7 +84,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onOpenDemoModal }) => 
             <span>DIRECT COMMUNICATION • ADMISSIONS & ADVISORY</span>
           </div>
           <h1 className="contact-hero-title">
-            Contact <span className="contact-title-gradient">DP Skilltech Academy</span>
+            Contact <span className="contact-title-gradient">DP Skill Tech</span>
           </h1>
           <p className="contact-hero-desc">
             Have questions about upcoming batches, technical prerequisites, or live class schedules? Our admissions team responds within 24 business hours.
@@ -152,7 +166,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({ onOpenDemoModal }) => 
                       </div>
                       <h3>Message Received!</h3>
                       <p>
-                        Thank you for contacting DP Skilltech, <strong>{formData.name}</strong>. Our academic counselor has received your inquiry and will reach out to <strong>{formData.email}</strong> shortly.
+                        Thank you for contacting DP Skill Tech, <strong>{formData.name}</strong>. Our academic counselor has received your inquiry and will reach out to <strong>{formData.email}</strong> shortly.
                       </p>
                       <button
                         type="button"

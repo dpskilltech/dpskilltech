@@ -14,6 +14,13 @@ interface AuthContextType {
   /** DB-sourced flag (profiles.requires_password_change). Frontend only reads, API clears. */
   requiresPasswordChange: boolean;
   login: (emailOrPhone: string, password: string) => Promise<AuthResponse>;
+  register: (data: {
+    fullName: string;
+    email: string;
+    password: string;
+    phone?: string;
+    courseId?: string;
+  }) => Promise<AuthResponse>;
   changePassword: (newPassword: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   refreshUser: () => Promise<void>;
@@ -290,6 +297,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // ============================================================================
+  // Register / Create ID
+  // ============================================================================
+  const register = async (data: {
+    fullName: string;
+    email: string;
+    password: string;
+    phone?: string;
+    courseId?: string;
+  }): Promise<AuthResponse> => {
+    setIsLoading(true);
+    try {
+      const res = await api.register(data);
+      if (res.success && res.user && res.token) {
+        setUser(res.user);
+        setToken(res.token);
+        localStorage.setItem('dpskilltech_auth_token', res.token);
+        localStorage.setItem('dpskilltech_user_profile', JSON.stringify(res.user));
+        setRequiresPasswordChange(false);
+      }
+      return res;
+    } catch (err: any) {
+      return { success: false, error: err.message || 'Registration failed' };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const role: UserRole | null = user ? (user.role as UserRole) : null;
   const isAuthenticated = !!user && !!token;
 
@@ -303,6 +338,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isLoading,
         requiresPasswordChange,
         login,
+        register,
         changePassword,
         logout,
         refreshUser

@@ -157,12 +157,34 @@
   filter: drop-shadow(0 2px 6px rgba(15, 23, 42, 0.05));
 }
 
+@media (max-width: 768px) {
+  .brand-logo-img {
+    height: 44px;
+    max-width: 185px;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand-logo-img {
+    height: 38px;
+    max-width: 155px;
+  }
+}
+
+@media (max-width: 360px) {
+  .brand-logo-img {
+    height: 34px;
+    max-width: 130px;
+  }
+}
+
 .brand-link:hover .brand-logo-img {
   transform: scale(1.02);
 }
 
 .brand-logo-mobile {
-  height: 46px;
+  height: 38px;
+  max-width: 150px;
 }
 
 .brand-monogram {
@@ -251,6 +273,7 @@
   align-items: center;
   gap: 0.3rem;
   white-space: nowrap;
+  text-decoration: none;
 }
 
 .menu-item:hover {
@@ -316,6 +339,7 @@
   color: #1a56db;
   cursor: pointer;
   transition: color 0.2s;
+  text-decoration: none;
 }
 
 .panel-all-btn:hover { color: #1a4da8; }
@@ -327,6 +351,8 @@
 }
 
 .dropdown-course-item {
+  display: block;
+  text-decoration: none;
   padding: 0.6rem 0.85rem;
   border-radius: 8px;
   cursor: pointer;
@@ -416,6 +442,8 @@
   border-radius: 8px;
   color: #334155;
   padding: 0.5rem;
+  min-width: 44px;
+  min-height: 44px;
   cursor: pointer;
   align-items: center;
   justify-content: center;
@@ -434,14 +462,14 @@
 }
 
 .mobile-nav-drawer {
-  width: 85%;
-  max-width: 360px;
+  width: min(88vw, 340px);
+  max-width: 100%;
   height: 100%;
   background: #ffffff;
   border-left: 1px solid #e2e8f0;
   display: flex;
   flex-direction: column;
-  padding: 1.5rem;
+  padding: 1.25rem 1rem;
   overflow-y: auto;
   box-shadow: -8px 0 32px rgba(15, 27, 53, 0.12);
 }
@@ -459,7 +487,8 @@
   background: #f1f5f9;
   border: 1px solid #e2e8f0;
   color: #64748b;
-  padding: 0.4rem;
+  width: 44px;
+  height: 44px;
   border-radius: 8px;
   cursor: pointer;
   display: flex;
@@ -480,6 +509,7 @@
   justify-content: center;
   gap: 0.4rem;
   padding: 0.55rem;
+  min-height: 44px;
   border-radius: 8px;
   background: #eff6ff;
   border: 1px solid #bfdbfe;
@@ -511,11 +541,13 @@
   color: #334155;
   font-size: 0.95rem;
   font-weight: 600;
-  padding: 0.75rem 0.5rem;
+  padding: 0.65rem 0.75rem;
+  min-height: 44px;
   border-radius: 8px;
   text-align: left;
   cursor: pointer;
   transition: all 0.2s;
+  text-decoration: none;
 }
 
 .mobile-nav-link:hover,
@@ -544,6 +576,7 @@
   border-radius: 6px;
   cursor: pointer;
   text-align: left;
+  text-decoration: none;
 }
 
 .mobile-subcourse-link:hover {

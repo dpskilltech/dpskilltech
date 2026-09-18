@@ -82,28 +82,34 @@ export const Navbar: React.FC<NavbarProps> = ({
       <header className={`navbar-wrapper ${isScrolled ? 'navbar-scrolled' : 'navbar-top'}`}>
         <div className="container nav-inner">
           {/* Brand Logo */}
-          <div
+          <a
+            href="/"
             className="brand-link"
-            onClick={() => handleNavClick('home')}
-            role="button"
-            tabIndex={0}
-            aria-label="DP SkillTech Home"
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavClick('home');
+            }}
+            aria-label="DP Skill Tech Home"
           >
             <img
               src={brandLogo}
-              alt="DP SkillTech - Learn. Build. Grow."
+              alt="DP Skill Tech - Learn. Build. Grow."
               className="brand-logo-img"
             />
-          </div>
+          </a>
 
           {/* Desktop Navigation Links */}
           <nav className="desktop-menu" aria-label="Main Navigation">
-            <button
+            <a
+              href="/"
               className={`menu-item ${activePage === 'home' ? 'active' : ''}`}
-              onClick={() => handleNavClick('home')}
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('home');
+              }}
             >
               Home
-            </button>
+            </a>
 
             {/* Courses Dropdown */}
             <div
@@ -111,81 +117,120 @@ export const Navbar: React.FC<NavbarProps> = ({
               onMouseEnter={() => setCoursesDropdownOpen(true)}
               onMouseLeave={() => setCoursesDropdownOpen(false)}
             >
-              <button
+              <a
+                href="/courses"
                 className={`menu-item dropdown-btn ${activePage === 'courses' || activePage === 'course-detail' ? 'active' : ''}`}
-                onClick={() => handleNavClick('courses')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick('courses');
+                }}
               >
                 <span>Courses</span>
                 <ChevronDown size={14} className={`dropdown-arrow ${coursesDropdownOpen ? 'rotated' : ''}`} />
-              </button>
+              </a>
 
               {coursesDropdownOpen && (
                 <div className="courses-dropdown-panel">
                   <div className="dropdown-panel-header">
                     <span className="panel-category-title">Core Engineering Tracks (Max 15 / Batch)</span>
-                    <button className="panel-all-btn" onClick={() => handleNavClick('courses')}>
+                    <a
+                      href="/courses"
+                      className="panel-all-btn"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleNavClick('courses');
+                      }}
+                    >
                       All 5 Curricula &rarr;
-                    </button>
+                    </a>
                   </div>
                   <div className="dropdown-panel-grid">
                     {COURSES_DATA.map((course) => (
-                      <div
+                      <a
                         key={course.id}
+                        href={`/courses/${course.slug}`}
                         className="dropdown-course-item"
-                        onClick={() => handleNavClick('course-detail', { slug: course.slug })}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleNavClick('course-detail', { slug: course.slug });
+                        }}
                       >
                         <div className="dropdown-course-title">{course.title}</div>
                         <div className="dropdown-course-meta">
                           <span>{course.duration}</span> • <span>{course.batchSize}</span> • <span className="meta-accent">Live Zoom</span>
                         </div>
-                      </div>
+                      </a>
                     ))}
                   </div>
                 </div>
               )}
             </div>
 
-            <button
+            <a
+              href="/learning"
               className={`menu-item ${activePage === 'learning' ? 'active' : ''}`}
-              onClick={() => handleNavClick('learning')}
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('learning');
+              }}
             >
               Learning
-            </button>
+            </a>
 
-            <button
+            <a
+              href="/career-support"
               className={`menu-item ${activePage === 'career-support' ? 'active' : ''}`}
-              onClick={() => handleNavClick('career-support')}
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('career-support');
+              }}
             >
-              Career & Mocks
-            </button>
+              Career &amp; Mocks
+            </a>
 
-            <button
+            <a
+              href="/why-choose-us"
               className={`menu-item ${activePage === 'why-choose-us' ? 'active' : ''}`}
-              onClick={() => handleNavClick('why-choose-us')}
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('why-choose-us');
+              }}
             >
               Why Us
-            </button>
+            </a>
 
-            <button
+            <a
+              href="/certificates"
               className={`menu-item ${activePage === 'certificates' || activePage === 'verify-certificate' ? 'active' : ''}`}
-              onClick={() => handleNavClick('certificates')}
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('certificates');
+              }}
             >
               Certificates
-            </button>
+            </a>
 
-            <button
+            <a
+              href="/about"
               className={`menu-item ${activePage === 'about' ? 'active' : ''}`}
-              onClick={() => handleNavClick('about')}
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('about');
+              }}
             >
               About
-            </button>
+            </a>
 
-            <button
+            <a
+              href="/contact"
               className={`menu-item ${activePage === 'contact' ? 'active' : ''}`}
-              onClick={() => handleNavClick('contact')}
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('contact');
+              }}
             >
               Contact
-            </button>
+            </a>
           </nav>
 
           {/* Right Action Buttons */}
@@ -245,13 +290,21 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="mobile-nav-overlay" onClick={() => setMobileMenuOpen(false)}>
           <div className="mobile-nav-drawer" onClick={(e) => e.stopPropagation()}>
             <div className="mobile-drawer-header">
-              <div className="brand-link" onClick={() => handleNavClick('home')} role="button" tabIndex={0} aria-label="DP SkillTech Home">
+              <a
+                href="/"
+                className="brand-link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick('home');
+                }}
+                aria-label="DP Skill Tech Home"
+              >
                 <img
                   src={brandLogo}
-                  alt="DP SkillTech - Learn. Build. Grow."
+                  alt="DP Skill Tech - Learn. Build. Grow."
                   className="brand-logo-img brand-logo-mobile"
                 />
-              </div>
+              </a>
               <button className="mobile-close-btn" onClick={() => setMobileMenuOpen(false)}>
                 <X size={22} />
               </button>
@@ -275,66 +328,102 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
 
             <div className="mobile-nav-links">
-              <button
+              <a
+                href="/"
                 className={`mobile-nav-link ${activePage === 'home' ? 'active' : ''}`}
-                onClick={() => handleNavClick('home')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick('home');
+                }}
               >
                 Home
-              </button>
-              <button
+              </a>
+              <a
+                href="/courses"
                 className={`mobile-nav-link ${activePage === 'courses' ? 'active' : ''}`}
-                onClick={() => handleNavClick('courses')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick('courses');
+                }}
               >
                 Courses Catalog (5 Tracks)
-              </button>
+              </a>
               <div className="mobile-subcourses">
                 {COURSES_DATA.map((c) => (
-                  <button
+                  <a
                     key={c.id}
+                    href={`/courses/${c.slug}`}
                     className="mobile-subcourse-link"
-                    onClick={() => handleNavClick('course-detail', { slug: c.slug })}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavClick('course-detail', { slug: c.slug });
+                    }}
                   >
                     <span>{c.title}</span>
                     <ArrowRight size={13} />
-                  </button>
+                  </a>
                 ))}
               </div>
-              <button
+              <a
+                href="/learning"
                 className={`mobile-nav-link ${activePage === 'learning' ? 'active' : ''}`}
-                onClick={() => handleNavClick('learning')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick('learning');
+                }}
               >
-                Learning Engine & Labs
-              </button>
-              <button
+                Learning Engine &amp; Labs
+              </a>
+              <a
+                href="/career-support"
                 className={`mobile-nav-link ${activePage === 'career-support' ? 'active' : ''}`}
-                onClick={() => handleNavClick('career-support')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick('career-support');
+                }}
               >
                 1-on-1 Mock Interviews
-              </button>
-              <button
+              </a>
+              <a
+                href="/why-choose-us"
                 className={`mobile-nav-link ${activePage === 'why-choose-us' ? 'active' : ''}`}
-                onClick={() => handleNavClick('why-choose-us')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick('why-choose-us');
+                }}
               >
-                Why DP Skilltech (15 Cap)
-              </button>
-              <button
+                Why DP Skill Tech (15 Cap)
+              </a>
+              <a
+                href="/certificates"
                 className={`mobile-nav-link ${activePage === 'certificates' || activePage === 'verify-certificate' ? 'active' : ''}`}
-                onClick={() => handleNavClick('certificates')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick('certificates');
+                }}
               >
                 Certificates &amp; Verification
-              </button>
-              <button
+              </a>
+              <a
+                href="/about"
                 className={`mobile-nav-link ${activePage === 'about' ? 'active' : ''}`}
-                onClick={() => handleNavClick('about')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick('about');
+                }}
               >
                 About Us
-              </button>
-              <button
+              </a>
+              <a
+                href="/contact"
                 className={`mobile-nav-link ${activePage === 'contact' ? 'active' : ''}`}
-                onClick={() => handleNavClick('contact')}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick('contact');
+                }}
               >
                 Contact Admissions
-              </button>
+              </a>
             </div>
 
             <div className="mobile-drawer-footer">

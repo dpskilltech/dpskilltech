@@ -11,6 +11,7 @@ import {
   Terminal,
   Play
 } from 'lucide-react';
+import { SEOHead } from '../../components/common/SEOHead';
 import './LearningPage.css';
 
 interface LearningPageProps {
@@ -105,7 +106,7 @@ export const LearningPage: React.FC<LearningPageProps> = ({ onNavigate, onOpenDe
       title: 'Verifiable Certification & Career Launch',
       icon: Award,
       tag: 'Cryptographically Verifiable',
-      summary: 'Upon completing all course modules, assignments, and mock interview milestones, you are awarded an official DP Skilltech Completion Certificate.',
+      summary: 'Upon completing all course modules, assignments, and mock interview milestones, you are awarded an official DP Skill Tech Completion Certificate.',
       highlights: [
         'Unique cryptographic verification code',
         'Public verification link shareable on LinkedIn and resumes',
@@ -117,6 +118,19 @@ export const LearningPage: React.FC<LearningPageProps> = ({ onNavigate, onOpenDe
 
   return (
     <div className="learning-page">
+      <SEOHead
+        title="The DP Skill Tech Learning Engine | 7-Stage Engineering Curriculum"
+        description="Explore the 7-stage learning pedagogy at DP Skill Tech: interactive Zoom classes, cloud coding labs, graded assignments, capstone projects, and 1-on-1 mock interviews."
+        canonicalPath="/learning"
+        schema={{
+          '@context': 'https://schema.org',
+          '@type': 'WebPage',
+          name: 'DP Skill Tech Learning Engine',
+          url: 'https://www.dpskilltech.in/learning',
+          description: 'A 7-stage engineering curriculum bridging the gap between beginner theory and production-grade software development.'
+        }}
+      />
+
       {/* Hero Header */}
       <section className="learning-hero">
         <div className="container text-center">
@@ -125,7 +139,7 @@ export const LearningPage: React.FC<LearningPageProps> = ({ onNavigate, onOpenDe
             <span>PEDAGOGICAL PHILOSOPHY • THE 7-STAGE CURRICULUM</span>
           </div>
           <h1 className="learning-hero-title">
-            The DP Skilltech <span className="learning-title-gradient">Learning Engine</span>
+            The DP Skill Tech <span className="learning-title-gradient">Learning Engine</span>
           </h1>
           <p className="learning-hero-desc">
             A structured, 7-step engineering curriculum designed to bridge the gap between beginner theory and production-grade software mastery.

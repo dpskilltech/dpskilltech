@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Search, Clock, Users, Calendar, Sparkles, CheckCircle2, ArrowRight, ShieldCheck, Zap, Code2 } from 'lucide-react';
 import './CoursesPage.css';
 import { COURSES_DATA } from '../../data/coursesData';
+import { SEOHead } from '../../components/common/SEOHead';
 
 interface CoursesPageProps {
   onNavigate: (page: string, params?: Record<string, string>) => void;
@@ -28,6 +29,28 @@ export const CoursesPage: React.FC<CoursesPageProps> = ({ onNavigate, onOpenDemo
 
   return (
     <div className="courses-page">
+      <SEOHead
+        title="Technical Training Courses & Programs | DP Skill Tech"
+        description="Explore career-ready tech tracks at DP Skill Tech: Full Stack Python with AI, Full Stack Java, Cyber Security, and Data Science. Strictly 15 students per batch."
+        canonicalUrl="https://www.dpskilltech.in/courses"
+        schema={{
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            {
+              '@type': 'ListItem',
+              position: 1,
+              name: 'Home',
+              item: 'https://www.dpskilltech.in/'
+            },
+            {
+              '@type': 'ListItem',
+              position: 2,
+              name: 'Courses',
+              item: 'https://www.dpskilltech.in/courses'
+            }
+          ]
+        }}
+      />
       {/* Header Banner */}
       <section className="courses-hero-banner">
         <div className="container">
@@ -175,13 +198,17 @@ export const CoursesPage: React.FC<CoursesPageProps> = ({ onNavigate, onOpenDemo
                             <Sparkles size={16} />
                             <span>Book Free Live Demo Class</span>
                           </button>
-                          <button
+                          <a
+                            href={`/courses/${course.slug}`}
                             className="btn-card-secondary"
-                            onClick={() => onNavigate('course-detail', { slug: course.slug })}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              onNavigate('course-detail', { slug: course.slug });
+                            }}
                           >
                             <span>View Full Curriculum &amp; Syllabus</span>
                             <ArrowRight size={15} />
-                          </button>
+                          </a>
                         </div>
                       </div>
                     </div>
@@ -263,13 +290,17 @@ export const CoursesPage: React.FC<CoursesPageProps> = ({ onNavigate, onOpenDemo
                       <Sparkles size={16} />
                       <span>Book Free Live Demo Class</span>
                     </button>
-                    <button
+                    <a
+                      href={`/courses/${course.slug}`}
                       className="btn-card-secondary"
-                      onClick={() => onNavigate('course-detail', { slug: course.slug })}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onNavigate('course-detail', { slug: course.slug });
+                      }}
                     >
                       <span>View Full Curriculum</span>
                       <ArrowRight size={15} />
-                    </button>
+                    </a>
                   </div>
                 </div>
               );
@@ -302,7 +333,7 @@ export const CoursesPage: React.FC<CoursesPageProps> = ({ onNavigate, onOpenDemo
           <div className="policy-content">
             <h3>Our Non-Negotiable 15-Student Batch Policy</h3>
             <p>
-              At DP Skilltech, we reject the mass-enrollment webinar model. Every batch is locked at exactly 15 students to ensure that every learner receives real-time code reviews, active Zoom screen sharing, personalized doubt clearance, and private 1-to-1 mock interview evaluations.
+              At DP Skill Tech, we reject the mass-enrollment webinar model. Every batch is locked at exactly 15 students to ensure that every learner receives real-time code reviews, active Zoom screen sharing, personalized doubt clearance, and private 1-to-1 mock interview evaluations.
             </p>
           </div>
           <button className="btn-policy-cta" onClick={() => onOpenDemoModal()}>

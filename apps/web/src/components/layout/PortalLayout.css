@@ -552,7 +552,8 @@
   position: absolute;
   top: calc(100% + 0.65rem);
   right: 0;
-  width: 360px;
+  width: min(360px, calc(100vw - 1.5rem));
+  max-width: calc(100vw - 1.5rem);
   background-color: var(--white);
   border: 1.5px solid var(--gray-200);
   border-radius: var(--radius-lg);
@@ -953,5 +954,21 @@
 
   .bottom-nav-btn.active {
     color: var(--brand-orange);
+  }
+}
+
+@media (max-width: 360px) {
+  .portal-main-canvas {
+    padding: 0.65rem;
+    padding-bottom: 5.5rem;
+  }
+  .portal-topbar {
+    padding: 0 0.5rem;
+  }
+  .topbar-title-text {
+    font-size: 0.95rem;
+  }
+  .topbar-actions {
+    gap: 0.35rem;
   }
 }

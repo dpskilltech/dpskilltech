@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, ChevronDown, Sparkles, MessageCircleQuestion } from 'lucide-react';
+import { SEOHead } from '../../components/common/SEOHead';
 import './FAQPage.css';
 import { FAQ_DATA } from '../../data/faqData';
 
@@ -32,8 +33,28 @@ export const FAQPage: React.FC<FAQPageProps> = ({ onOpenDemoModal }) => {
     }));
   };
 
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: FAQ_DATA.map((f) => ({
+      '@type': 'Question',
+      name: f.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: f.answer
+      }
+    }))
+  };
+
   return (
     <div className="faq-page">
+      <SEOHead
+        title="Frequently Asked Questions (FAQ) | DP Skill Tech"
+        description="Find answers to common questions about DP Skill Tech: 15-student live batch sizes, daily class timings, 1-on-1 mock interviews, coding labs, and course tracks."
+        canonicalPath="/faq"
+        schema={faqSchema}
+      />
+
       {/* Header Banner */}
       <section className="faq-hero">
         <div className="container text-center">

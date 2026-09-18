@@ -1,11 +1,14 @@
 # DP SKILLTECH DEVELOPMENT STATUS
 
 Last Updated:
-2026-09-13 (Phase 1 Live Supabase Deployment Verified — 29/29 Tables Active)
+2026-09-17 (Comprehensive Mobile Usability & Responsive Overhaul Verified Across 320px–1366px + Student Registration / Create ID Flow Active)
 
 
-## PUBLIC WEBSITE (PHASE 1 - COMPLETE & PREMIUM REDESIGN)
+## PUBLIC WEBSITE & MOBILE USABILITY (PHASE 1 - COMPLETE & MOBILE OPTIMIZED)
 
+[x] Comprehensive Mobile Usability & Viewport Overhaul (100% responsive down to 320px across 320x568, 360x800, 375x812, 390x844, 412x915, 768x1024, 1366x768 with zero horizontal scrolling; fluid grids minmax(min(100%, 280px), 1fr); mobile navigation drawer with 44px touch targets; sticky mobile bottom quick actions bar)
+[x] Student Registration & Create ID Flow (Implemented POST /api/auth/register with Supabase Auth admin user creation, profile upsert, STUDENT role assignment, student ID generation, and automatic authenticated session token return; frontend auth mode toggle between Sign In and Create Student ID)
+[x] PostgREST Ambiguous Join Bugfix (Resolved PGRST201 on profiles and user_roles by decoupling queries, fixing silent login and profile lookup failures)
 [x] 7-Stage Academic Methodology Pipeline (Learn → Practice → Project → Assessment → Completion → Certificate → Public Verification with interactive stage-by-stage progression)
 [x] Public Certificate Verification Architecture (Live verification engine at /#verify-certificate and /#verify-certificate/:id with zero student PII leaks, privacy safeguards, SHA-256 tamper verification, and QR code verification)
 [x] Certificates Standards & Academic Rigor Page (Dedicated /#certificates portal explaining 7-stage pipeline, capstone defense criteria, and verified credentials)
@@ -132,6 +135,17 @@ Last Updated:
 [x] Notifications (Academy-wide announcements and targeted alerts)
 [x] Reviews Moderation (Real-time student and community review moderation with star rating filters and 1-click delete)
 
+## TEACHER & MENTOR STUDIO (PHASE 2 - COMPLETE & MODULAR OVERHAUL)
+
+[x] Modular Architecture: Decomposed monolithic TeacherDashboard into 6 independent feature tabs (`TeacherOverviewTab`, `TeacherBatchesTab`, `TeacherSubmissionsTab`, `TeacherQuestionsTab`, `TeacherMockInterviewsTab`, `TeacherMaterialsTab`) with zero TypeScript regressions.
+[x] Quick Action Command Center: 1-click CTA bar (`Start Live Class as Host`, `+ Open Mock Slot`, `Grade Submissions`, `Share Materials`, `Assigned Batches`) with dynamic count badges and instant session launches.
+[x] Tonight's Live Class Hero Banner: Dynamic countdown timer, cohort identification, and deep-linked host Zoom meeting launcher (`zoom.us/j/...`).
+[x] Cohort Roster & Attendance Drawer: Slide-over drawer inspecting the enrolled students for any cohort, enforcing the strict 15-student cap (Rules 18 & 19), with 1-click attendance toggles (`Present`, `Late`, `Absent`).
+[x] Assignment Evaluation Modal: Comprehensive grading interface featuring direct GitHub PR/repository links, syntax-highlighted code viewer, 0-100 numerical score input, evaluation status dropdown (`Graded & Approved`, `Needs Revision`), and written architecture feedback.
+[x] 1:1 Private Mock Interview Studio: Strictly private sessions (Rule 17) with slot generation modal, double-booking prevention, 1-click 1:1 video room launcher, and streamlined Pass/Fail rubric evaluation modal with composite scores and remarks.
+[x] Q&A Inbox & Code Discussion: Interactive student query triage with status filters (`All`, `Unanswered`, `Answered`), syntax-formatted code snippets, and in-app instructor reply composer.
+[x] Cohort Material Distribution: Lecture slides, starter repos, and project specifications distribution organized by active cohorts.
+
 ## INTEGRATIONS
 
 [x] Zoom (Embedded launcher with deep link protocol for live sessions)
@@ -163,6 +177,20 @@ Last Updated:
 [x] Responsive Testing
 [x] Production Build (Zero TS errors in apps/web & apps/api)
 
+## TECHNICAL SEO & INDEXING ARCHITECTURE (COMPLETE — 2026-09-17)
+
+[x] Comprehensive Technical SEO Audit (Identified root cause of 0 indexing: pure hash routing, `<button>` navigation preventing link discovery, and single static canonical)
+[x] Dual Router Engine (`apps/web/src/App.tsx` supports clean pathname routes `/courses`, `/courses/:slug`, `/about`, `/contact`, etc. with HTML5 History API `pushState` and hash backward-compatibility)
+[x] Crawler-Friendly Semantic Internal Linking (Upgraded all navigation links in `Navbar.tsx`, `Footer.tsx`, `CoursesPage.tsx`, and `HomePage.tsx` from `<button onClick>` to `<a href="...">` preserving visual styling and enabling Googlebot discovery)
+[x] Dynamic SEO Head Component (`apps/web/src/components/common/SEOHead.tsx` dynamically updating `<title>`, `<meta name="description">`, `<link rel="canonical">`, Open Graph, Twitter Cards, and Schema.org JSON-LD on route changes)
+[x] Clean Canonical Course URL Architecture (`/courses/full-stack-python-ai`, `/courses/full-stack-java-ai`, `/courses/cyber-security-ethical-hacking`, `/courses/data-science-data-analytics`, `/courses/web-development`) with backward-compatible slug aliases in `coursesData.ts`
+[x] Structured Data Engine (Valid Schema.org `EducationalOrganization`, `WebSite`, `Course`, `BreadcrumbList`, `AboutPage`, `ContactPage`, and `FAQPage` JSON-LD schemas ground in truthful academy data with zero fabricated reviews or placement statistics)
+[x] Robots.txt Protocol (`apps/web/public/robots.txt` allowing public routes and courses while strictly disallowing private authenticated LMS portals `/admin`, `/student`, `/teacher`, `/api/`)
+[x] XML Sitemap (`apps/web/public/sitemap.xml` listing all 13 canonical public URLs with priority and change frequencies)
+[x] Static Route Pre-Rendering Pipeline (`apps/web/scripts/prerender.mjs` generates 14 static route HTML files inside `dist/` with route-specific title, description, canonical link, and JSON-LD schema for instant crawler indexing without waiting for client-side JavaScript execution)
+[x] Brand Name Standardization (Standardized official brand name strictly to "DP Skill Tech" across public pages, headers, footers, FAQs, and metadata)
+[x] Verified Monorepo Production Build (Clean build passes in both `apps/web` and `apps/api` with zero TypeScript errors and zero lint errors)
+
 ## DEPLOYMENT
 
 [ ] Domain
@@ -173,3 +201,4 @@ Last Updated:
 [ ] Environment Variables
 [ ] Production Deployment
 [ ] Monitoring
+

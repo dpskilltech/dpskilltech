@@ -3,8 +3,8 @@ import type { Course } from '../types/course';
 export const COURSES_DATA: Course[] = [
   {
     id: 'course-cyber-sec',
-    slug: 'cyber-security',
-    slugAliases: ['cyber-security-fundamentals', 'cybersecurity-ethical-hacking', 'security'],
+    slug: 'cyber-security-ethical-hacking',
+    slugAliases: ['cyber-security', 'cyber-security-fundamentals', 'cybersecurity-ethical-hacking', 'security'],
     title: 'Cyber Security Fundamentals & Ethical Defense',
     badge: 'Industry Essential',
     badgeLabel: 'High Demand',
@@ -171,8 +171,8 @@ export const COURSES_DATA: Course[] = [
   },
   {
     id: 'course-py-ai',
-    slug: 'python-programming',
-    slugAliases: ['full-stack-python-ai', 'python-ai', 'python'],
+    slug: 'full-stack-python-ai',
+    slugAliases: ['python-programming', 'python-ai', 'python', 'fullstack-python'],
     title: 'Python Programming & Applied AI Systems',
     badge: 'Flagship Program',
     badgeLabel: 'Highest Rating',
@@ -255,8 +255,8 @@ export const COURSES_DATA: Course[] = [
   },
   {
     id: 'course-ds-ai',
-    slug: 'ai',
-    slugAliases: ['data-science-ai', 'machine-learning', 'artificial-intelligence'],
+    slug: 'data-science-data-analytics',
+    slugAliases: ['ai', 'data-science-ai', 'machine-learning', 'artificial-intelligence'],
     title: 'Artificial Intelligence, Data Science & Machine Learning',
     badge: 'Advanced Specialization',
     badgeLabel: 'Future Tech',
@@ -339,8 +339,8 @@ export const COURSES_DATA: Course[] = [
   },
   {
     id: 'course-java-ai',
-    slug: 'java-software-development',
-    slugAliases: ['full-stack-java-ai', 'software-development', 'java'],
+    slug: 'full-stack-java-ai',
+    slugAliases: ['java-software-development', 'full-stack-java', 'software-development', 'java'],
     title: 'Software Development with Java & Spring Boot',
     badge: 'Enterprise Standard',
     badgeLabel: 'Enterprise Core',
@@ -425,7 +425,7 @@ export const COURSES_DATA: Course[] = [
 
 export function getCourseBySlug(slug: string): Course | undefined {
   if (!slug) return undefined;
-  const normalized = slug.trim().toLowerCase();
+  const normalized = slug.trim().toLowerCase().replace(/^\/?(courses|course)\//, '').replace(/\/$/, '');
 
   return COURSES_DATA.find((c) => {
     if (c.slug.toLowerCase() === normalized) return true;

@@ -155,12 +155,17 @@ class DatabaseService {
       try {
         const { data: profile } = await supabaseAdmin
           .from('profiles')
-          .select('id, full_name, email, phone, avatar_url, status, created_at, updated_at, user_roles(roles(name))')
+          .select('id, full_name, email, phone, avatar_url, status, created_at, updated_at')
           .ilike('email', normalized)
           .single();
 
         if (profile) {
-          const role = (profile.user_roles?.[0] as any)?.roles?.name || 'STUDENT';
+          const { data: roleRecords } = await supabaseAdmin
+            .from('user_roles')
+            .select('roles(name)')
+            .eq('user_id', profile.id);
+
+          const role = (roleRecords?.[0] as any)?.roles?.name || 'STUDENT';
           return {
             id: profile.id,
             email: profile.email,
@@ -199,12 +204,17 @@ class DatabaseService {
       try {
         const { data: profile } = await supabaseAdmin
           .from('profiles')
-          .select('id, full_name, email, phone, avatar_url, status, created_at, updated_at, user_roles(roles(name))')
+          .select('id, full_name, email, phone, avatar_url, status, created_at, updated_at')
           .eq('id', id)
           .single();
 
         if (profile) {
-          const role = (profile.user_roles?.[0] as any)?.roles?.name || 'STUDENT';
+          const { data: roleRecords } = await supabaseAdmin
+            .from('user_roles')
+            .select('roles(name)')
+            .eq('user_id', profile.id);
+
+          const role = (roleRecords?.[0] as any)?.roles?.name || 'STUDENT';
           return {
             id: profile.id,
             email: profile.email,
@@ -430,6 +440,28 @@ class DatabaseService {
       }
     }
     return false;
+  }
+
+  public async createMemoryStudent(
+    user: User,
+    courseId: string = 'full-stack-python-ai',
+    courseName: string = 'Full Stack Python with AI'
+  ): Promise<void> {
+    this.memoryUsers.set(user.id, user);
+    this.memoryStudentProfiles.set(user.id, {
+      userId: user.id,
+      batchId: 'batch_new_' + Date.now(),
+      batchName: 'Batch 2026 (Live Cohort)',
+      enrolledCourseId: courseId,
+      enrolledCourseName: courseName,
+      attendanceRate: 100,
+      completedLessons: 0,
+      totalLessons: 48,
+      submittedAssignments: 0,
+      totalAssignments: 8,
+      mockInterviewCredits: 2,
+      mockInterviewsCompleted: 0
+    });
   }
 }
 
